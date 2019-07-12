@@ -1,0 +1,15 @@
+{
+  "name": "generator-conacyt",
+  "version": "0.1.0",
+  "description": "",
+  "files": [
+    "generators"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "ora": "^3.4.0",
+    "yeoman-generator": "^1.1.1"
+  }
+}
