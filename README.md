@@ -10,8 +10,14 @@ Into the root folder:
 npm link
 ```
 
-To run the generator:
+#### run default command:
 
 ```
 yo conacyt
+```
+
+#### command for getting info from newsapi
+
+```
+yo conacyt:info
 ```
