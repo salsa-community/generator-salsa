@@ -9,7 +9,11 @@
     "yeoman-generator"
   ],
   "dependencies": {
+    "chalk": "^2.4.2",
     "ora": "^3.4.0",
+    "prettycli": "^1.4.3",
+    "prompts": "^2.1.0",
+    "terminal-link": "^1.3.0",
     "yeoman-generator": "^1.1.1"
   }
 }

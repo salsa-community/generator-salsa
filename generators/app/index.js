@@ -1,20 +1,23 @@
 var Generator = require('yeoman-generator');
 
 const ora = require('ora');
+const chalk = require('chalk');
+const prompts = require('prompts');
+const terminalLink = require('terminal-link');
+const {info, warn} = require('prettycli');
 
-const spinner = ora('Loading unicorns').start();
+const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
 
-setTimeout(() => {
-	spinner.color = 'yellow';
-	spinner.text = 'Loading rainbows';
-}, 5000);
+// const spinner = ora(`Loading ${chalk.red('unicorns')}`).start();
+
 
 module.exports = class extends Generator {
     method1() {
-      this.log('method 1 just ran');
+        if (!process.env.PRODUCTION) info('BUILD', 'Running dev stuff');
+else warn('This is production mode! Are you sure?');
     }
-  
-    method2() {
-      this.log('method 2 just ran2');
-    }
+
+    writing() {
+        this.fs.write(this.destinationPath('index.js'), 'const foo = 1;');
+      }
   };
