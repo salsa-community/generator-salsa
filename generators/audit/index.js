@@ -12,13 +12,12 @@ const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
 
 
 module.exports = class extends Generator {
-    method1() {
-    if (!process.env.PRODUCTION) info('BUILD', "success!");
-    else warn('This is production mode! Are you sure?');
-    }
-
-    writing() {
-        this.fs.write(this.destinationPath('index.js'), 'const foo = 3;');
-      }
-  };
+  writing() {
+    this.fs.copyTpl(
+      this.templatePath('index.html'),
+      this.destinationPath('index.html'),
+      { title: 'Data Generator' }
+    );
+  }
+};
 

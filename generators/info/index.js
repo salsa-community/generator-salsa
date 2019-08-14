@@ -10,5 +10,6 @@ module.exports = class extends Generator {
                 console.log(terminalLink((++index)+" - "+element.title, element.url));
               });
         });
+        console.log(this.destinationRoot());
     }
 };
