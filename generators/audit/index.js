@@ -32,7 +32,7 @@ module.exports = class extends Generator {
       <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->`;
       this.fs.copy(templatePath, templatePath, {
         process: function(content) {
-            var regEx = new RegExp('.*jhipster-needle-liquibase-add-changelog.*', 'g');
+            var regEx = new RegExp('.*jhipster-needle-liquibase-add-column.*', 'g');
             var newContent = content.toString().replace(regEx, audittables);
             return newContent;
         }
