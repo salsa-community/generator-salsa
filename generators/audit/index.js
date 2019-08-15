@@ -19,25 +19,16 @@ const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
 
 module.exports = class extends Generator {  
   writing() {
-    fsreader.readdirSync(this.destinationRoot()).forEach(file => {
-      var templatePath = this.destinationPath(file);
-      console.log(file);
-      var audittables = `    
-      <column name="created_by" type="varchar(50)">
-          <constraints nullable="false"/>
-      </column>
-      <column name="created_date" type="timestamp"/>
-      <column name="last_modified_by" type="varchar(50)"/>
-      <column name="last_modified_date" type="timestamp"/>
-      <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->`;
-      this.fs.copy(templatePath, templatePath, {
+      var targetFilePath = this.destinationPath("testdir/master.xml");
+      var auditFileContent = this.templatePath("audit-tables.xml");
+      var auditablecontent = this.fs.read(auditFileContent);
+      console.log(auditablecontent);
+      this.fs.copy(targetFilePath, targetFilePath, {
         process: function(content) {
             var regEx = new RegExp('.*jhipster-needle-liquibase-add-column.*', 'g');
-            var newContent = content.toString().replace(regEx, audittables);
+            var newContent = content.toString().replace(regEx, auditablecontent);
             return newContent;
         }
-    });
-
     });
   }
 };
