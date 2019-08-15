@@ -10,26 +10,20 @@ const $ = cheerio.load('<h2 class="title">Hello world</h2>')
 var beautify = require("gulp-beautify");
 const fsreader = require('fs');
 
-
-
-const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
-
-// const spinner = ora(`Loading ${chalk.red('unicorns')}`).start();
-
-
 module.exports = class extends Generator {  
   writing() {
-      var targetFilePath = this.destinationPath("testdir/master.xml");
-      var auditFileContent = this.templatePath("audit-tables.xml");
-      var auditablecontent = this.fs.read(auditFileContent);
-      console.log(auditablecontent);
-      this.fs.copy(targetFilePath, targetFilePath, {
-        process: function(content) {
-            var regEx = new RegExp('.*jhipster-needle-liquibase-add-column.*', 'g');
-            var newContent = content.toString().replace(regEx, auditablecontent);
-            return newContent;
-        }
-    });
+      var scanDir = this.destinationPath("src/main/resources/config/liquibase/changelog");
+      var templateFile = this.templatePath("audit-tables.xml");
+      var templateContent = this.fs.read(templateFile);
+      fsreader.readdirSync(scanDir).forEach(file => {
+          this.fs.copy(this.destinationPath(scanDir+"/"+file), this.destinationPath(scanDir+"/"+file), {
+            process: function(content) {
+                var regEx = new RegExp('.*jhipster-needle-liquibase-add-column.*', 'g');
+                var newContent = content.toString().replace(regEx, templateContent);
+                return newContent;
+            }
+        });
+      });
   }
 };
 
