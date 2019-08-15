@@ -5,6 +5,9 @@ const chalk = require('chalk');
 const prompts = require('prompts');
 const terminalLink = require('terminal-link');
 const {info, warn} = require('prettycli');
+const cheerio = require('cheerio');
+const $ = cheerio.load('<h2 class="title">Hello world</h2>')
+
 
 const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
 
@@ -12,11 +15,19 @@ const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
 
 
 module.exports = class extends Generator {
+  async prompting() {
+    this.answers = await this.prompt([{
+      type    : 'input',
+      name    : 'title',
+      message : 'Your project title',
+    }]);
+  }
+  
   writing() {
     this.fs.copyTpl(
       this.templatePath('index.html'),
       this.destinationPath('index.html'),
-      { title: 'Data Generator' }
+      { title: this.answers.title }
     );
   }
 };
