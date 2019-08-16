@@ -8,4 +8,4 @@
 
             <column name="last_modified_date" type="timestamp"/>
 
-            <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
