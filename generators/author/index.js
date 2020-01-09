@@ -10,7 +10,8 @@ const $ = cheerio.load('<h2 class="title">Hello world</h2>')
 var beautify = require("gulp-beautify");
 const fsreader = require('fs');
 
-module.exports = class extends Generator {  
+
+module.exports = class extends Generator {
   async prompting() {
     this.answers = await this.prompt([{
       type    : 'input',
@@ -22,15 +23,19 @@ module.exports = class extends Generator {
   writing() {
       var authorName = this.answers.author;
       var scanDir = this.destinationPath("src/main/resources/config/liquibase/changelog");
-      fsreader.readdirSync(scanDir).forEach(file => {
-          this.fs.copy(this.destinationPath(scanDir+"/"+file), this.destinationPath(scanDir+"/"+file), {
-            process: function(content) {
-                var regEx = new RegExp('author="jhipster"', 'g');
-                var newContent = content.toString().replace(regEx, 'author="'+authorName+'"');
-                return newContent;
-            }
+      if(fsreader.existsSync(scanDir)){
+        fsreader.readdirSync(scanDir).forEach(file => {
+            this.fs.copy(this.destinationPath(scanDir+"/"+file), this.destinationPath(scanDir+"/"+file), {
+              process: function(content) {
+                  var regEx = new RegExp('author="jhipster"', 'g');
+                  var newContent = content.toString().replace(regEx, 'author="'+authorName+'"');
+                  return newContent;
+              }
+          });
         });
-      });
+      }else{
+        warn('The folder does not exist: ' + scanDir);
+      }
   }
 };
 
