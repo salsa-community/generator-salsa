@@ -21,6 +21,7 @@ module.exports = class extends Generator {
   }
 
   writing() {
+      var fecha = new Date().format('yyyymmddhhmmss'); 
       var authorName = this.answers.author;
       var scanDir = this.destinationPath("src/main/resources/config/liquibase/changelog");
       if(fsreader.existsSync(scanDir)){
@@ -34,6 +35,7 @@ module.exports = class extends Generator {
           });
         });
       }else{
+        //consultar los informes que se pueden utilizar 
         warn('The folder does not exist: ' + scanDir);
       }
   }
