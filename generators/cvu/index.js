@@ -1,8 +1,6 @@
-var Client = require('node-rest-client').Client;
 var Generator = require('yeoman-generator');
 const csv = require('csv-parser');
 const fs = require('fs');
-var path = require('path');
 const Files = require('../util/files');
 const Login = require('../util/login');
 const CvuService = require('../util/cvuService')
@@ -40,22 +38,24 @@ module.exports = class extends Generator {
     async create() {
         const spinner = ora('cargando cvus').start();
         const dataFile = this.destinationPath("data.csv");
-        const resultFile = this.destinationPath("result.csv");
+        // const resultFile = this.destinationPath("result.csv");
         Files.createIfNotExist(dataFile);
+        Files.mkdirSync(this.answers.outputdir + '/cvu-output/');
         var token = await Login.login(this.answers.username, this.answers.password);
-        var context = {};
-        context.token = token;
-        context.cvu = 218064;
-        var archivo = await CvuService.consultar(context);
-        console.log(archivo);
-        
-        // fs.createReadStream(dataFile)
-        //     .pipe(csv())
-        //     .on('data', (row) => {
 
-        //     })
-        //     .on('end', () => {
-        //         spinner.succeed("se completo la información");
-        //     });
+        fs.createReadStream(dataFile)
+            .pipe(csv())
+            .on('data', async (row) => {
+                var context = {};
+                context.token = token;
+                context.cvu = row.cvu;
+                var archivo = await CvuService.consultar(context);
+                let buff = Buffer.from(archivo, 'base64');
+                fs.writeFileSync(this.answers.outputdir + '/cvu-output/'+ context.cvu + '.pdf', buff);
+                spinner.succeed('Downloaded '+ row.cvu);
+            })
+            .on('end', () => {
+                spinner.succeed("se completo la información");
+            });
     }
 };
