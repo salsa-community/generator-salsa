@@ -2,7 +2,6 @@ var Generator = require('yeoman-generator');
 
 const ora = require('ora');
 const chalk = require('chalk');
-const prompts = require('prompts');
 const terminalLink = require('terminal-link');
 const {info, warn} = require('prettycli');
 const cheerio = require('cheerio');

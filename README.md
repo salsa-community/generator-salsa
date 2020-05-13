@@ -16,7 +16,9 @@
 
 ## Common snippets
 
+### Use of the spinner
 
+Four more information, visit [Spinner](https://github.com/sindresorhus/ora)
 ### User interations
 
 For user interactions, visit [User Interactions spec](https://yeoman.io/authoring/user-interactions.html)
