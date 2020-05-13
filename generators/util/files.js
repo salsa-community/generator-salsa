@@ -16,7 +16,7 @@ module.exports = class Files {
 
     static mkdirSync(dir) {
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+            fs.mkdirSync(dir, { recursive: true });
         }
     }
 };

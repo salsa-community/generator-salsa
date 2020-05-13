@@ -38,9 +38,10 @@ module.exports = class extends Generator {
     async create() {
         const spinner = ora('cargando cvus').start();
         const dataFile = this.destinationPath("data.csv");
+        const outputdir = this.answers.outputdir + '/output/cvu';
         // const resultFile = this.destinationPath("result.csv");
         Files.createIfNotExist(dataFile);
-        Files.mkdirSync(this.answers.outputdir + '/cvu-output/');
+        Files.mkdirSync(outputdir);
         var token = await Login.login(this.answers.username, this.answers.password);
 
         fs.createReadStream(dataFile)
@@ -51,8 +52,8 @@ module.exports = class extends Generator {
                 context.cvu = row.cvu;
                 var archivo = await CvuService.consultar(context);
                 let buff = Buffer.from(archivo, 'base64');
-                fs.writeFileSync(this.answers.outputdir + '/cvu-output/'+ context.cvu + '.pdf', buff);
-                spinner.succeed('Downloaded '+ row.cvu);
+                fs.writeFileSync(outputdir + '/' + context.cvu + '.pdf', buff);
+                spinner.succeed('Downloaded ' + row.cvu);
             })
             .on('end', () => {
                 spinner.succeed("se completo la información");
