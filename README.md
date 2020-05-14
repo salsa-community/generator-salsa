@@ -19,6 +19,16 @@
 ### Use of the spinner
 
 Four more information, visit [Spinner](https://github.com/sindresorhus/ora)
+
+
+```js
+const ora = require('ora');
+
+const spinner = ora('cargando cvus').start();
+spinner.succeed('Downloaded ' + row.cvu);
+spinner.
+
+```
 ### User interations
 
 For user interactions, visit [User Interactions spec](https://yeoman.io/authoring/user-interactions.html)
