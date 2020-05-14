@@ -55,7 +55,11 @@ module.exports = class extends Generator {
         this.config.set({ 'outputdir': this.answers.outputdir });
         Files.createIfNotExist(dataFile);
         Files.mkdirSync(outputdir);
-        var token = await Login.login(username, password);
+        var token = await Login.login(username, password);        
+        if(!token){
+            warn('Auth server is not reacheable, please verify the connection');
+            return
+        }
 
         const fileStream = fs.createReadStream(dataFile);
         const spinner = ora({ text: 'Dowloading...', interval: 80 });
