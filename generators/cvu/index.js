@@ -47,8 +47,6 @@ module.exports = class extends Generator {
         const outputdir = this.answers.outputdir + '/output/cvu';
         const username = this.answers.username;
         const password = this.answers.password;
-        this.config.set({ 'username': username });
-        this.config.set({ 'outputdir': this.answers.outputdir });
         Files.createIfNotExist(dataFile);
         Files.mkdirSync(outputdir);
         var response = await Login.login(username, password);
@@ -89,5 +87,10 @@ module.exports = class extends Generator {
         this.log(chalk.bold.white('Excecution time: ' + end + 's'));
         this.log(chalk.bold.green('success: ' + success));
         if (errors) this.log(chalk.bold.red('errors: ' + errors));
+    }
+
+    save() {
+        this.config.set('username', this.answers.username);
+        this.config.set('outputdir', this.answers.outputdir);
     }
 };
