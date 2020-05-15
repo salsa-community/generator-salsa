@@ -17,14 +17,22 @@ module.exports = class Login {
     static async login(username, password) {
         request.username = username;
         request.password = password;
-        var response = await axios.post(url, request, config).then( 
-            (response) => { return response },
-            (error) => { return undefined }
+        var response = await axios.post(url, request, config).then(
+            (response) => {
+                if (!response.token) {
+                    response.failure = true;
+                    response.error = "Login Failure ";
+                    response.message = "Username o password is wrong"
+                }
+                return response
+            },
+            (error) => {
+                error.failure = true;
+                error.error = "Login Failure ";
+                error.message = error.errno + error.address;
+                return error
+            }
         );
-        if(response){
-            return response.data.token;
-        }else{
-            return response;
-        }
+        return response;
     }
 };

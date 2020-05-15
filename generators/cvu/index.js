@@ -2,11 +2,12 @@ var Generator = require('yeoman-generator');
 const csv = require('csv-parser');
 const fs = require('fs');
 const Files = require('../util/files');
+const CvuService = require('./cvuService')
 const Login = require('../util/login');
-const CvuService = require('../util/cvuService')
 const { info, warn, loading, error } = require('prettycli');
 const chalk = require('chalk');
 const readline = require('readline');
+const Logger = require('../util/logger')
 
 
 const ora = require('ora');
@@ -41,12 +42,7 @@ module.exports = class extends Generator {
 
     async dowloadCvu() {
         var start = new Date()
-
-        const opts = {
-            logFilePath: Files.getLoggerName('cvu'),
-            timestampFormat: 'YYYY-MM-DD HH:mm:ss.SSS,'
-        }
-        const log = require('simple-node-logger').createSimpleFileLogger(opts);
+        const log = Logger.getLogger();
         const dataFile = this.destinationPath("data.csv");
         const outputdir = this.answers.outputdir + '/output/cvu';
         const username = this.answers.username;
@@ -55,12 +51,12 @@ module.exports = class extends Generator {
         this.config.set({ 'outputdir': this.answers.outputdir });
         Files.createIfNotExist(dataFile);
         Files.mkdirSync(outputdir);
-        var token = await Login.login(username, password);        
-        if(!token){
-            warn('Auth server is not reacheable, please verify the connection');
+        var response = await Login.login(username, password);
+        if (response.failure) {
+            warn(response.error + ': ' + response.message);
             return
         }
-
+        const token = response.data.token;
         const fileStream = fs.createReadStream(dataFile);
         const spinner = ora({ text: 'Dowloading...', interval: 80 });
         const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
@@ -92,6 +88,6 @@ module.exports = class extends Generator {
         this.log('');
         this.log(chalk.bold.white('Excecution time: ' + end + 's'));
         this.log(chalk.bold.green('success: ' + success));
-        if(errors) this.log(chalk.bold.red('errors: ' + errors));
+        if (errors) this.log(chalk.bold.red('errors: ' + errors));
     }
 };
