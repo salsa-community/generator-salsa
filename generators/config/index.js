@@ -1,6 +1,7 @@
 var Generator = require('yeoman-generator');
 
 const ora = require('ora');
+const Validator = require('./validator')
 
 module.exports = class extends Generator {
     async prompting() {
@@ -9,13 +10,13 @@ module.exports = class extends Generator {
                 type: "input",
                 name: "loginurl",
                 message: "what is the url for login?",
-                default: this.config.get('login-url')
+                default: this.config.get('login-url'),
             },
             {
                 type: "input",
                 name: "reporteEjecutivoUrl",
                 message: "what is the url for reporte Ejecutivo?",
-                default: this.config.get('reporte-ejecutivo-url')
+                default: this.config.get('reporte-ejecutivo-url'),
             }
         ]);
     }

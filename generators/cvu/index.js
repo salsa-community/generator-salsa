@@ -21,13 +21,18 @@ module.exports = class extends Generator {
                 type: "input",
                 name: "username",
                 message: "username",
-                default: this.config.get('username')
+                default: this.config.get('username'),
+                validate: function (input) {
+                    if (typeof input === 'undefined' || input == null || input === "") {
+                        return "username can not be empty";
+                    }
+                    return true;
+                }
             },
             {
                 type: "password",
                 name: "password",
                 message: "password",
-                default: "FI7732un@m",
                 mask: '*',
                 filter: function (val) {
                     return Buffer.from(val).toString('base64');
@@ -37,7 +42,7 @@ module.exports = class extends Generator {
     }
 
     async dowloadCvu() {
-        try {            
+        try {
             var start = new Date();
             Validator.validate(this.config);
             const log = Logger.getLogger();
@@ -85,7 +90,7 @@ module.exports = class extends Generator {
             this.log(chalk.bold.green('success: ' + success));
             if (errors) this.log(chalk.bold.red('errors: ' + errors));
         } catch (error) {
-                warn(error);
+            warn(error);
         }
     }
 
