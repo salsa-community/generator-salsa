@@ -1,7 +1,6 @@
 "use strict";
 const axios = require('axios').default;
 
-const url = 'http://VSMIIC230/generador-api/auth/login';
 const config = {
     headers: {
         'Content-Type': 'application/json'
@@ -14,12 +13,12 @@ const request = {
 }
 
 module.exports = class Login {
-    static async login(username, password) {
+    static async login(username, password, loginUrl) {
         request.username = username;
         request.password = password;
-        var response = await axios.post(url, request, config).then(
+        var response = await axios.post(loginUrl, request, config).then(
             (response) => {
-                if (!response.token) {
+                if (!response.data.token) {
                     response.failure = true;
                     response.error = "Login Failure ";
                     response.message = "Username o password is wrong"

@@ -1,6 +1,6 @@
 {
   "name": "generator-conacyt",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Conacyt generator is mainly used for the architecture theam",
   "files": [
     "generators"
