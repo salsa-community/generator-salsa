@@ -2,15 +2,14 @@ var Generator = require('yeoman-generator');
 const csv = require('csv-parser');
 const fs = require('fs');
 const Files = require('../util/files');
-const CvuService = require('./cvuService')
+const CvuService = require('./cvuService');
 const Login = require('../util/login');
 const { info, warn, loading, error } = require('prettycli');
 const chalk = require('chalk');
 const readline = require('readline');
 const Logger = require('../util/logger');
-const Validator = require('./validator')
-const GeneratorError = require('../util/GeneratorError')
-
+const Validator = require('./validator');
+const GeneratorError = require('../util/GeneratorError');
 
 const ora = require('ora');
 
@@ -18,26 +17,26 @@ module.exports = class extends Generator {
     async prompting() {
         this.answers = await this.prompt([
             {
-                type: "input",
-                name: "username",
-                message: "username",
+                type: 'input',
+                name: 'username',
+                message: 'username',
                 default: this.config.get('username'),
                 validate: function (input) {
-                    if (typeof input === 'undefined' || input == null || input === "") {
-                        return "username can not be empty";
+                    if (typeof input === 'undefined' || input == null || input === '') {
+                        return 'username can not be empty';
                     }
                     return true;
-                }
+                },
             },
             {
-                type: "password",
-                name: "password",
-                message: "password",
+                type: 'password',
+                name: 'password',
+                message: 'password',
                 mask: '*',
                 filter: function (val) {
                     return Buffer.from(val).toString('base64');
-                }
-            }
+                },
+            },
         ]);
     }
 
@@ -46,8 +45,8 @@ module.exports = class extends Generator {
             var start = new Date();
             Validator.validate(this.config);
             const log = Logger.getLogger();
-            const dataFile = this.destinationPath("data.csv");
-            const outputdir = this.destinationPath("downloaded");
+            const dataFile = this.destinationPath('data.csv');
+            const outputdir = this.destinationPath('downloaded');
             const username = this.answers.username;
             const password = this.answers.password;
             const loginUrl = this.config.get('login-url');
