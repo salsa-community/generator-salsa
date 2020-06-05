@@ -22,13 +22,7 @@ module.exports = class extends Generator {
         let count = 0;
         try {
             var start = new Date();
-            // Validator.validate(this.config);
             const log = Logger.getLogger('rcea_match');
-            const dataFile = this.destinationPath("match.csv");
-            const outputdir = this.destinationPath("rcea");
-            Files.createIfNotExist(dataFile);
-            Files.mkdirSync(outputdir);
-
             const spinner = ora({ text: 'looking for evaluator...', interval: 80 });
             spinner.start();
             let count = 0;

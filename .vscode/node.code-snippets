@@ -1,0 +1,7 @@
+{
+	"import": {
+		"prefix": "data-hola",
+		"body": "import ${2:moduleName} from '${1:module}';$0",
+		"description": "Imports entire module statement in ES6 syntax"
+	}
+}
