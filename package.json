@@ -1,6 +1,6 @@
 {
   "name": "generator-crip",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "Conacyt generator is mainly used for the architecture theam",
   "files": [
     "generators"
