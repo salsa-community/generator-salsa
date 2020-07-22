@@ -14,4 +14,4 @@
 
 ## run default command
 
-`yo conacyt`
+`yo crip`
