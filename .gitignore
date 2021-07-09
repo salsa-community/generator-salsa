@@ -1,22 +1,6 @@
-Skip to content
- 
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@danimaniarqsoft 
-2,826
-86,444 42,664 github/gitignore
- Code  Pull requests 100  Projects 0  Security  Insights
-gitignore/Node.gitignore
-@byeonggukgong byeonggukgong Update Node.gitignore (#2934)
-e58b3e0 on May 12
-@stuartpb @shiftkey @TennyZhuang @venatoria @ro31337 @melonmanchan @gouthamve @jucrouzet @cheddar @arcresu @kesoji @tejashah88 @sroberts @SimonSiefke @segayuu @Richienb @rgbkrk @rsolomo @peat @noinkling @ndelvalle @MikeRalphson @lmedson @unixchad @kerimdzhanov @joreyaesh
-89 lines (63 sloc)  1.28 KB
-  
+cvu.csv
+rcea.csv
+proyectos.csv
 # Logs
 logs
 *.log

@@ -41,11 +41,12 @@ module.exports = class extends Generator {
     }
 
     async dowloadCvu() {
+        let cvuFile = 'cvu.csv';
         try {
             var start = new Date();
             Validator.validate(this.config);
             const log = Logger.getLogger();
-            const dataFile = this.destinationPath('data.csv');
+            const dataFile = this.destinationPath(cvuFile);
             const outputdir = this.destinationPath('downloaded');
             const username = this.answers.username;
             const password = this.answers.password;
@@ -55,6 +56,8 @@ module.exports = class extends Generator {
             var response = await Login.login(username, password, loginUrl);
             if (response.failure) error(response.error + ': ' + response.message);
             const token = response.data.token;
+            this.log('');
+            this.log(chalk.bold.white('Reading: ' + cvuFile));
             const fileStream = fs.createReadStream(dataFile);
             const spinner = ora({ text: 'Dowloading...', interval: 80 });
             const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });

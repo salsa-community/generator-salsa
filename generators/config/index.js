@@ -15,8 +15,14 @@ module.exports = class extends Generator {
             {
                 type: "input",
                 name: "reporteEjecutivoUrl",
-                message: "what is the url for reporte Ejecutivo?",
+                message: "what is the url for reporte Executive?",
                 default: this.config.get('reporte-ejecutivo-url'),
+            },
+            {
+                type: "input",
+                name: "reporteCompletoUrl",
+                message: "what is the url for Full CVU Report?",
+                default: this.config.get('reporte-completo-url'),
             }
         ]);
     }
@@ -24,5 +30,6 @@ module.exports = class extends Generator {
     save() {
         this.config.set('login-url', this.answers.loginurl);
         this.config.set('reporte-ejecutivo-url', this.answers.reporteEjecutivoUrl);
+        this.config.set('reporte-completo-url', this.answers.reporteCompletoUrl);
     }
 };
