@@ -13,8 +13,7 @@ const readline = require('readline');
 const Logger = require('../util/logger');
 const Validator = require('./validator')
 const GeneratorError = require('../util/GeneratorError')
-
-
+const zlib = require('zlib');
 const ora = require('ora');
 
 module.exports = class extends Generator {
@@ -26,10 +25,12 @@ module.exports = class extends Generator {
             const spinner = ora({ text: 'looking for evaluator...', interval: 80 });
             spinner.start();
             let count = 0;
+            let source = this.templatePath('29ebf2f279da44f69a35206885cd2dbc');
             fs.createReadStream('proyectos.csv')
                 .pipe(csv())
                 .on('data', function (proyecto) {
-                    fs.createReadStream('rcea.csv')
+                    fs.createReadStream(source)
+                        .pipe(zlib.createGunzip())
                         .pipe(csv())
                         .on('data', function (rcea) {
                             let match = RceaService.findMatch(proyecto, rcea);
