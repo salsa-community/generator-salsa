@@ -1,5 +1,4 @@
 var Generator = require('yeoman-generator');
-const csv = require('csv-parser');
 const fs = require('fs');
 const Files = require('../util/files');
 const CvuService = require('./cvuService');
@@ -9,8 +8,6 @@ const chalk = require('chalk');
 const readline = require('readline');
 const Logger = require('../util/logger');
 const Validator = require('./validator');
-const GeneratorError = require('../util/GeneratorError');
-
 const ora = require('ora');
 
 module.exports = class extends Generator {
