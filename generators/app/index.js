@@ -16,22 +16,22 @@ module.exports = class extends Generator {
       {
         type: 'list',
         name: 'appType',
-        message: 'Which type of application you want to generate?',
+        message: 'Welcome to SALSA CLI?',
         choices: [
           {
-            value: 'microservice',
-            name: 'SpringBoot MicroService',
+            value: 'cvu',
+            name: 'Download cvus',
           },
           {
-            value: 'config-server',
-            name: 'Spring Cloud Config Server',
+            value: 'rcea',
+            name: 'Match Evaluator for a Project',
           },
           {
-            value: 'service-registry',
-            name: 'Spring Cloud Eureka Server for Service Registry and Discovery',
+            value: 'info',
+            name: 'Show General Information',
           },
         ],
-        default: 'microservice',
+        default: 'info',
       },
     ];
     return this.prompt(prompts).then(answers => {
