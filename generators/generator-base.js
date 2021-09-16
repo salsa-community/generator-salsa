@@ -16,6 +16,18 @@ module.exports = class SalsaBaseGenerator extends PrivateBase {
   }
 
   /**
+   * Print an error message.
+   *
+   * @param {string} msg - message to print
+   */
+  error(msg) {
+    if (this._debug && this._debug.enabled) {
+      this._debug(`${chalk.red.bold('ERROR!')} ${msg}`);
+    }
+    throw new Error(`${msg}`);
+  }
+
+  /**
    * Print a warning message.
    *
    * @param {string} msg - message to print
@@ -26,6 +38,27 @@ module.exports = class SalsaBaseGenerator extends PrivateBase {
     if (this._debug && this._debug.enabled) {
       this._debug(warn);
     }
+  }
+
+  /**
+   * Print an info message.
+   *
+   * @param {string} msg - message to print
+   */
+  info(msg) {
+    this.log.info(msg);
+    if (this._debug && this._debug.enabled) {
+      this._debug(`${chalk.green('INFO!')} ${msg}`);
+    }
+  }
+
+  /**
+   * Print a success message.
+   *
+   * @param {string} msg - message to print
+   */
+  success(msg) {
+    this.log.ok(msg);
   }
 
   checkInvocationFromCLI() {
