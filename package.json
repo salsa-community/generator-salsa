@@ -37,6 +37,7 @@
     "sequelize": "^6.6.5",
     "simple-node-logger": "^21.8.12",
     "terminal-link": "^2.1.1",
+    "yeoman-environment": "^3.6.0",
     "yeoman-generator": "^5.4.2"
   },
   "devDependencies": {

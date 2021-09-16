@@ -1,16 +1,11 @@
-var Generator = require('yeoman-generator');
-
-const ora = require('ora');
-const chalk = require('chalk');
-const prompts = require('prompts');
+const SalsaBaseGenerator = require('../generator-base');
 const terminalLink = require('terminal-link');
 const { info, warn } = require('prettycli');
 
-const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
-
-// const spinner = ora(`Loading ${chalk.red('unicorns')}`).start();
-
-module.exports = class extends Generator {
+module.exports = class extends SalsaBaseGenerator {
+  constructor(args, opts) {
+    super(args, opts, null);
+  }
   prompting() {
     const prompts = [
       {
@@ -41,5 +36,20 @@ module.exports = class extends Generator {
 
   default() {
     this.composeWith(require.resolve('../' + this.appType));
+  }
+
+  get initializing() {
+    return this._initializing();
+  }
+
+  _initializing() {
+    return {
+      validateFromCli() {
+        this.checkInvocationFromCLI();
+      },
+      displayLogo() {
+        this.printLogo();
+      },
+    };
   }
 };
