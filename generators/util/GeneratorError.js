@@ -1,8 +1,8 @@
 class GeneratorError extends Error {
-    constructor(title, cause) {
-        super(cause)
-        this.name = title
-    }
+  constructor(title, cause) {
+    super(cause);
+    this.name = title;
+  }
 }
 
-module.exports = GeneratorError  
+module.exports = GeneratorError;

@@ -1,6 +1,5 @@
 module.exports = {
-    reporteEjecutoRequest:
-        `
+  reporteEjecutoRequest: `
     <soapenv:Envelope
         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
         xmlns:rep="http://reporteexternocvu.conacyt.gob.mx">
@@ -16,10 +15,10 @@ module.exports = {
         </soapenv:Body>
     </soapenv:Envelope>
     `,
-    parseOptions: {
-        attributeNamePrefix: '',
-        attrNodeName: 'attr',
-        ignoreNameSpace: true,
-        ignoreAttributes: false
-    }
-}
+  parseOptions: {
+    attributeNamePrefix: '',
+    attrNodeName: 'attr',
+    ignoreNameSpace: true,
+    ignoreAttributes: false,
+  },
+};
