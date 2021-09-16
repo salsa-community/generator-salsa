@@ -1,15 +1,15 @@
 {
-    "name": "generator-crip",
+    "name": "generator-salsa",
     "version": "2.0.0",
-    "description": "Conacyt generator is mainly used for the architecture team",
-    "author": "Daniel Cortés Pichardo",
+    "description": "Salsa generator is mainly used for the software architecture team",
+    "author": "CONACYT",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https@github.com:conacyt-arquitectura/generator-conacyt.git"
+        "url": "git+https@github.com:salsa-community/generator-salsa.git"
     },
     "bugs": {
-        "url": "https://github.com/conacyt-arquitectura/generator-conacyt/issues"
+        "url": "https://github.com/salsa-community/generator-salsa/issues"
     },
     "files": [
         "generators"
