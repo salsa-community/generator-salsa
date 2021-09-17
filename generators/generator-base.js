@@ -2,7 +2,8 @@ const PrivateBase = require('./generator-base-private');
 const chalk = require('chalk');
 const packagejs = require('../package.json');
 const GENERATOR_SALSA = 'generator-salsa';
-
+const exec = require('child_process').exec;
+const semver = require('semver');
 /**
  * This is the Generator base class.
  * This provides all the public API methods exposed via the module system.
@@ -83,9 +84,14 @@ module.exports = class SalsaBaseGenerator extends PrivateBase {
    */
   printLogo() {
     this.log('\n');
-
-    this.log(chalk.white.bold('                            https://salsa.crip.conacyt.mx/\n'));
-    this.log(chalk.white('Welcome to Salsa ') + chalk.yellow(`v${packagejs.version}`));
+    this.log(`${chalk.greenBright('███████╗ █████╗ ██╗     ███████╗ █████╗ ')}`);
+    this.log(`${chalk.greenBright('██╔════╝██╔══██╗██║     ██╔════╝██╔══██╗')}`);
+    this.log(`${chalk.greenBright('███████╗███████║██║     ███████╗███████║')}`);
+    this.log(`${chalk.green('╚════██║██╔══██║██║     ╚════██║██╔══██║')}`);
+    this.log(`${chalk.green('███████║██║  ██║███████╗███████║██║  ██║')}`);
+    this.log(`${chalk.green('╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝')}`);
+    this.log(chalk.white.bold('    https://salsa.crip.conacyt.mx/\n'));
+    this.log(chalk.white('Welcome to ') + chalk.green(`salsa `) + chalk.yellow(`v${packagejs.version}`));
     this.log(chalk.white(`Application files will be generated in folder: ${chalk.yellow(process.cwd())}`));
     if (process.cwd() === this.getUserHome()) {
       this.log(chalk.red.bold('\n️⚠️  WARNING ⚠️  You are in your HOME folder!'));
@@ -128,6 +134,52 @@ module.exports = class SalsaBaseGenerator extends PrivateBase {
     } catch (err) {
       this.debug('Error:', err);
       // fail silently as this function doesn't affect normal generator flow
+    }
+  }
+
+  /**
+   * Check if Java is installed
+   */
+  checkJava() {
+    if (this.skipChecks || this.skipServer) return;
+    const done = this.async();
+    exec('java -version', (err, stdout, stderr) => {
+      if (err) {
+        this.warning('Java is not found on your computer.');
+      } else {
+        const javaVersion = stderr.match(/(?:java|openjdk) version "(.*)"/)[1];
+        if (
+          !javaVersion.match(new RegExp('16')) &&
+          !javaVersion.match(new RegExp('15')) &&
+          !javaVersion.match(new RegExp('14')) &&
+          !javaVersion.match(new RegExp('13')) &&
+          !javaVersion.match(new RegExp('12')) &&
+          !javaVersion.match(new RegExp('11')) &&
+          !javaVersion.match(new RegExp('1.8'.replace('.', '\\.')))
+        ) {
+          this.warning(
+            `Java 8, 11, 12, 13, 14, 15 or 16 are not found on your computer. Your Java version is: ${chalk.yellow(javaVersion)}`
+          );
+        }
+      }
+      done();
+    });
+  }
+  /**
+   * Check if Node is installed
+   */
+  checkNode() {
+    if (this.skipChecks) return;
+    const nodeFromPackageJson = packagejs.engines.node;
+    if (!semver.satisfies(process.version, nodeFromPackageJson)) {
+      this.warning(
+        `Your NodeJS version is too old (${process.version}). You should use at least NodeJS ${chalk.bold(nodeFromPackageJson)}`
+      );
+    }
+    if (!(process.release || {}).lts) {
+      this.warning(
+        'Your Node version is not LTS (Long Term Support), use it at your own risk! SALSA does not support non-LTS releases, so if you encounter a bug, please use a LTS version first.'
+      );
     }
   }
 };

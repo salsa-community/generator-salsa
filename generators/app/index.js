@@ -44,11 +44,17 @@ module.exports = class extends SalsaBaseGenerator {
 
   _initializing() {
     return {
+      displayLogo() {
+        this.printLogo();
+      },
       validateFromCli() {
         this.checkInvocationFromCLI();
       },
-      displayLogo() {
-        this.printLogo();
+      validateJava() {
+        this.checkJava();
+      },
+      validateNode() {
+        this.checkNode();
       },
     };
   }
