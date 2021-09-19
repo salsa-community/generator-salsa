@@ -18,13 +18,11 @@ const ora = require('ora');
 
 module.exports = class extends Generator {
   async rceaMatch() {
-    let count = 0;
     try {
-      var start = new Date();
+      let start = new Date();
       const log = Logger.getLogger('rcea_match');
       const spinner = ora({ text: 'looking for evaluator...', interval: 80 });
       spinner.start();
-      let count = 0;
       let source = this.templatePath('29ebf2f279da44f69a35206885cd2dbc');
       fs.createReadStream('proyectos.csv')
         .pipe(csv())

@@ -15,7 +15,7 @@ module.exports = class extends SalsaBaseGenerator {
         choices: [
           {
             value: 'cvu',
-            name: 'Download cvus',
+            name: 'Download cvu',
           },
           {
             value: 'rcea',

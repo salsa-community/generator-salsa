@@ -86,7 +86,7 @@ module.exports = class SalsaBaseGenerator extends PrivateBase {
     this.log('\n');
     this.log(`${chalk.greenBright('███████╗ █████╗ ██╗     ███████╗ █████╗ ')}`);
     this.log(`${chalk.greenBright('██╔════╝██╔══██╗██║     ██╔════╝██╔══██╗')}`);
-    this.log(`${chalk.greenBright('███████╗███████║██║     ███████╗███████║')}`);
+    this.log(`${chalk.green('███████╗███████║██║     ███████╗███████║')}`);
     this.log(`${chalk.green('╚════██║██╔══██║██║     ╚════██║██╔══██║')}`);
     this.log(`${chalk.green('███████║██║  ██║███████╗███████║██║  ██║')}`);
     this.log(`${chalk.green('╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝')}`);
