@@ -21,10 +21,6 @@ module.exports = class extends SalsaBaseGenerator {
             value: 'rcea',
             name: 'Match Evaluator for a Project',
           },
-          {
-            value: 'info',
-            name: 'Show General Information',
-          },
         ],
         default: 'info',
       },
