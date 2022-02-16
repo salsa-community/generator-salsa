@@ -1,0 +1,92 @@
+<template>
+  <b-row class="row mb-5">
+    <b-col md="12">
+      <header class="bx-header-title">
+        <h2 id="<%= seccion.props.dashCase %>-id">
+          <%= seccion.props.label%>
+          <small><%= seccion.props.label%></small>
+        </h2>
+        <div class="header-title-line"></div>
+      </header>
+    </b-col>
+    <b-col md="12" class="mb-5">
+      <div class="alert alert-success">
+        <span>Alert basetemplate</span>
+      </div>
+    </b-col>
+<%_ for (const mayBeSubseccion in seccion) { _%>
+  <%_ if (mayBeSubseccion != 'props') { _%>
+    <b-col md="12">
+      <header class="bx-header-title">
+        <h3 id="<%= seccion[mayBeSubseccion].props.dashCase %>-id">
+          <%= seccion[mayBeSubseccion].props.label %>
+          <small><%= seccion[mayBeSubseccion].props.label %></small>
+        </h3>
+        <div class="header-title-line"></div>
+      </header>
+    </b-col>
+    <b-col md="12">
+    <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+     <%_ if (campo.tipoUi === 'text') { _%>
+      <input-text
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        label="<%= campo.label %>"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+      />
+      <%_ } else if (campo.tipoUi === 'textArea') { _%>
+      <input-text-area
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        label="<%= campo.label %>"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+      />
+      <%_ } else if (campo.tipoUi === 'Radio Button') { _%>
+      <input-boolean
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        label="<%= campo.label %>"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+      />
+      <%_ } else if (campo.tipoUi === 'Date') { _%>
+      <input-date
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        label="<%= campo.label %>"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+      />
+      <%_ } else if (campo.tipoUi === 'selectOne') { _%>
+      <input-select-one
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        label="<%= campo.label %>"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :options="<%= campo.camelCase%>Options"
+        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+      />
+      <%_ } else if (campo.tipoUi === 'selectMultiple') { _%>
+      <input-select-many
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        label="<%= campo.label %>"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :options="<%= campo.camelCase%>Options"
+        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+      />
+      <%_ } _%>
+    <%_ }); _%>
+    </b-col>
+  <%_ } _%>
+<%_ } _%>
+    <b-col class="mb-5">
+      <b-button variant="outline-primary" size="lg">
+        <font-awesome-icon icon="ban" class="mr-2"></font-awesome-icon>
+        <span>Cancelar</span>
+      </b-button>
+      <b-button variant="primary" size="lg">
+        <font-awesome-icon icon="save" class="mr-2"></font-awesome-icon>
+        <span>Guardar</span>
+      </b-button>
+    </b-col>
+</b-row>
+</template>
+
+<script lang="ts" src="./<%= seccion.props.dashCase%>.component.ts"></script>

@@ -37,6 +37,17 @@ module.exports = class guiService {
     return seccion;
   }
 
+  static defaultVariables(secciones, seccion) {
+    return {
+      seccion: secciones[seccion],
+      seccionLabel: secciones[seccion].props.label,
+      seccionPascalCase: secciones[seccion].props.pascalCase,
+      seccionCamelCase: secciones[seccion].props.camelCase,
+      seccionSnakeCase: secciones[seccion].props.snakeCase,
+      seccionDashCase: secciones[seccion].props.dashCase,
+    };
+  }
+
   static defaultSubseccion(description) {
     let subseccion = { props: {} };
     subseccion.props.label = description;
@@ -54,6 +65,62 @@ module.exports = class guiService {
     campo.lowerCase = String.toCamelCase(campo.campo);
     campo.snakeCase = String.toSnakeCase(campo.campo);
     campo.dashCase = String.toDashCase(campo.campo);
+    campo.clientType = this.resolveClientType(campo.tipoUi);
+    campo.clientDefaultValue = this.resolveDefaultValue(campo.tipoUi);
     return campo;
+  }
+
+  static resolveClientType(tipoUi) {
+    if (tipoUi === 'Date') {
+      return 'Date';
+    }
+
+    if (tipoUi === 'Text' || tipoUi === 'TextArea' || tipoUi === 'ListBox') {
+      return 'string';
+    }
+
+    if (tipoUi === 'Number') {
+      return 'number';
+    }
+
+    if (tipoUi === 'ListBox') {
+      return 'string';
+    }
+
+    if (tipoUi === 'MultiSelect') {
+      return '[]';
+    }
+
+    if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
+      return 'boolean';
+    }
+    return 'string';
+  }
+
+  static resolveDefaultValue(tipoUi) {
+    if (tipoUi === 'Date') {
+      return 'null';
+    }
+
+    if (tipoUi === 'Text' || tipoUi === 'TextArea' || tipoUi === 'ListBox') {
+      return "''";
+    }
+
+    if (tipoUi === 'Number') {
+      return 'null';
+    }
+
+    if (tipoUi === 'ListBox') {
+      return "''";
+    }
+
+    if (tipoUi === 'MultiSelect') {
+      return '[]';
+    }
+
+    if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
+      return 'false';
+    }
+    return "''";
   }
 };

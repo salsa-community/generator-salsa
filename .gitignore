@@ -1,6 +1,7 @@
 cvu.csv
 rcea.csv
 proyectos.csv
+/src/
 # Logs
 logs
 *.log
