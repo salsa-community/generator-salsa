@@ -1,6 +1,9 @@
 cvu.csv
 rcea.csv
 proyectos.csv
+matricula.csv
+matricula.xlsx
+push-programas.sh
 /src/
 # Logs
 logs

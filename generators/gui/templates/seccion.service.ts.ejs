@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { I<%= seccionPascalCase%> } from '@/shared/model/msPerfil/campo.model';
+import { I<%= seccionPascalCase%> } from '@/shared/model/msPerfil/<%= seccionDashCase%>.model';
 
 const baseApiUrl = 'services/msperfil/api/campos';
 
@@ -60,7 +60,7 @@ export default class <%= seccionPascalCase%>Service {
   public update(entity: I<%= seccionPascalCase%>): Promise<I<%= seccionPascalCase%>> {
     return new Promise<I<%= seccion.props.pascalCase%>>((resolve, reject) => {
       axios
-        .put(`${baseApiUrl}/${entity.id}`, entity)
+        .put(`${baseApiUrl}/${entity}`, entity)
         .then(res => {
           resolve(res.data);
         })
@@ -73,7 +73,7 @@ export default class <%= seccionPascalCase%>Service {
   public partialUpdate(entity: I<%= seccionPascalCase%>): Promise<I<%= seccionPascalCase%>> {
     return new Promise<I<%= seccionPascalCase%>>((resolve, reject) => {
       axios
-        .patch(`${baseApiUrl}/${entity.id}`, entity)
+        .patch(`${baseApiUrl}/${entity}`, entity)
         .then(res => {
           resolve(res.data);
         })

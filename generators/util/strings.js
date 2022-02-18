@@ -4,10 +4,13 @@ const changeCase = require('change-case');
 // https://github.com/blakeembrey/change-case
 module.exports = class Strings {
   static normalize(string) {
-    return string
-      .normalize('NFD') // remove diatrics
-      .replace(/[\u0300-\u036f]/g, '') // remove spaces
-      .replace(/ *\([^)]*\) */g, ''); // remove parentheses and its content
+    if (string) {
+      return string
+        .normalize('NFD') // remove diatrics
+        .replace(/[\u0300-\u036f]/g, '') // remove spaces
+        .replace(/ *\([^)]*\) */g, ''); // remove parentheses and its content
+    }
+    return '';
   }
 
   static toLowerCase(string) {

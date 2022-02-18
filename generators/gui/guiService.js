@@ -87,7 +87,7 @@ module.exports = class guiService {
       return 'string';
     }
 
-    if (tipoUi === 'MultiSelect') {
+    if (tipoUi === 'MultiSelect' || tipoUi === 'selectMultiple') {
       return '[]';
     }
 
@@ -114,7 +114,7 @@ module.exports = class guiService {
       return "''";
     }
 
-    if (tipoUi === 'MultiSelect') {
+    if (tipoUi === 'MultiSelect' || tipoUi === 'selectMultiple') {
       return '[]';
     }
 

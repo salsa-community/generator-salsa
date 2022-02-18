@@ -24,6 +24,7 @@ module.exports = class extends Generator {
     context.modelDestinationPath = this.destinationPath('src/main/webapp/app/shared/model/msPerfil/');
     context.entitiesPath = this.destinationPath('src/main/webapp/app/router/entities.ts');
     context.mainPath = this.destinationPath('src/main/webapp/app/main.ts');
+    context.entitiesMenuPath = this.destinationPath('src/main/webapp/app/entities/entities-menu.vue');
     let campos = GuiService.resolveJson(context);
     let secciones = GuiService.resolveSecciones(campos);
     let seccionesOpt = this.config.get('secciones');
@@ -69,6 +70,20 @@ module.exports = class extends Generator {
             ${Constants.ENTITY_TO_ROUTER}
             `;
             newContent = newContent.toString().replace(regEx, entityToRouter);
+            return newContent;
+          },
+        });
+        // write in entities-menu.vue
+        this.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
+          process: function (content) {
+            let regEx = new RegExp(Constants.ENTITY_TO_MENU, 'g');
+            let entityToMenu = `
+                    <b-dropdown-item to="/${seccion.props.dashCase}" active-class="active">
+                      <span>${seccion.props.label}</span>
+                    </b-dropdown-item>
+                    ${Constants.ENTITY_TO_MENU}
+                    `;
+            let newContent = content.toString().replace(regEx, entityToMenu);
             return newContent;
           },
         });
