@@ -22,7 +22,7 @@ module.exports = class extends Generator {
   writing() {
     try {
       let start = new Date();
-      const log = Logger.getLogger('distribucion-matricula');
+      //const log = Logger.getLogger('distribucion-matricula');
       const spinner = ora({ text: 'subiendo matricula...', interval: 80 });
       spinner.start();
 
@@ -33,14 +33,14 @@ module.exports = class extends Generator {
           axios
             .post('http://localhost:8106/api/programas', programa)
             .then(response => {
-              spinner.succeed(chalk.green.bold('cvu - ') + chalk.green(response.data.nombreInstitucion));
+              spinner.succeed(chalk.green.bold('cvu - ') + chalk.green(response.data.acreditadoSnp));
             })
             .catch(error => {
               console.log(error);
             });
         })
         .on('end', function () {
-          spinner.succeed('finalizaci[on');
+          spinner.succeed('finalización');
         });
     } catch (error) {
       warn(error);
