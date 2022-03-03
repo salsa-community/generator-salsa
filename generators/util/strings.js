@@ -8,7 +8,8 @@ module.exports = class Strings {
       return string
         .normalize('NFD') // remove diatrics
         .replace(/[\u0300-\u036f]/g, '') // remove spaces
-        .replace(/ *\([^)]*\) */g, ''); // remove parentheses and its content
+        .replace(/ *\([^)]*\) */g, '') // remove parentheses and its content
+        .trim();
     }
     return '';
   }

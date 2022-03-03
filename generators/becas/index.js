@@ -19,32 +19,16 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const Logger = require('../util/logger');
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+    this.option('programas');
+    this.option('reglas');
+  }
   writing() {
-    try {
-      let start = new Date();
-      //const log = Logger.getLogger('distribucion-matricula');
-      const spinner = ora({ text: 'subiendo matricula...', interval: 80 });
-      spinner.start();
-
-      fs.createReadStream('matricula.csv')
-        .pipe(csv())
-        .on('data', function (m) {
-          let programa = BecasService.toPrograma(m);
-          axios
-            .post('http://localhost:8106/api/programas', programa)
-            .then(response => {
-              spinner.succeed(chalk.green.bold('cvu - ') + chalk.green(response.data.acreditadoSnp));
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        })
-        .on('end', function () {
-          spinner.succeed('finalización');
-        });
-    } catch (error) {
-      warn(error);
+    if (this.options.programas) {
+      BecasService.loadProgramas();
+    } else if (this.options.reglas) {
+      BecasService.loadReglas();
     }
-    let context = {};
   }
 };
