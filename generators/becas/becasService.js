@@ -26,7 +26,11 @@ const Logger = require('../util/logger');
 const Catalogos = require('../util/distribucion/constants');
 const { CATALOG } = require('./institucionesCatalog');
 
+const CAMPOS = require('../../campos.json');
+const DISCIPLINAS = require('../../disciplinas.json');
+
 module.exports = class guiService {
+  static log = Logger.getLogger('rules-warning');
   static toPrograma(m, spinner) {
     let programa = {};
     programa.id = m.REFERENCIA_SOLICITUD + '_' + m.CVU_INTEGRANTE;
@@ -97,24 +101,63 @@ module.exports = class guiService {
   }
 
   static toRegla(reglas, spinner) {
-    reglas.metodologias = this.split(reglas.metodologias, spinner, Catalogos.METODOLOGIAS, 'METODOLOGIAS');
-    reglas.grados = this.split(reglas.grados, spinner, Catalogos.GRADOS, 'GRADOS');
-    reglas.orientaciones = this.split(reglas.orientaciones, spinner, Catalogos.ORIENTACIONES, 'ORIENTACIONES');
-    reglas.areas = this.split(reglas.areas, spinner, Catalogos.AREAS, 'AREAS');
-    reglas.campos = this.split(reglas.campos, spinner, Catalogos.CAMPOS, 'CAMPOS');
-    reglas.disciplinas = this.split(reglas.disciplinas, spinner, Catalogos.DISCIPLINAS, 'DISCIPLINAS');
-    reglas.entidades = this.split(reglas.entidades, spinner, Catalogos.ENTIDADES, 'ENTIDADES');
-    reglas.tipoInstituciones = this.split(reglas.tipoInstituciones, spinner, Catalogos.TIPO_INSTITUCIONES, 'TIPO INSTITUCIONES');
+    reglas.id = reglas.orden;
+    reglas.metodologias = this.split(reglas.id, reglas.metodologias, spinner, Catalogos.METODOLOGIAS, 'METODOLOGIAS');
+    reglas.grados = this.split(reglas.id, reglas.grados, spinner, Catalogos.GRADOS, 'GRADOS');
+    reglas.orientaciones = this.split(reglas.id, reglas.orientaciones, spinner, Catalogos.ORIENTACIONES, 'ORIENTACIONES');
+    reglas.areas = this.split(reglas.id, reglas.areas, spinner, Catalogos.AREAS, 'AREAS');
+    reglas.campos = this.resolveCamposForRules(reglas.id, reglas.campos, spinner, Catalogos.CAMPOS, 'CAMPOS');
+    reglas.disciplinas = this.resolveDisciplinasForRules(reglas.id, reglas.disciplinas, spinner, Catalogos.DISCIPLINAS, 'DISCIPLINAS');
+    reglas.entidades = this.split(reglas.id, reglas.entidades, spinner, Catalogos.ENTIDADES, 'ENTIDADES');
+    reglas.tipoInstituciones = this.split(reglas.id, reglas.tipoInstituciones, spinner, Catalogos.TIPO_INSTITUCIONES, 'TIPO INSTITUCIONES');
     reglas.acreditadoSnp = this.resolveBoolean(reglas.acreditadoSnp);
+    reglas.activo = true;
     return reglas;
   }
 
-  static split(string, spinner, validate, modulo) {
+  static resolveCamposForRules(id, string, spinner, validate, modulo) {
+    let campos = CAMPOS[id];
+
+    if (campos) {
+      const elements = campos;
+      for (let index = 0; index < elements.length; index++) {
+        elements[index] = String.normalize(elements[index]);
+        if (!validate.includes(elements[index])) {
+          this.log.info(',' + modulo + ',' + id + ',' + elements[index]);
+          spinner.fail(chalk.green.bold(modulo + '>' + elements[index] + '<') + chalk.green('CATALOG NOT FOUND'));
+        }
+      }
+      return elements;
+    } else {
+      return [];
+    }
+  }
+
+  static resolveDisciplinasForRules(id, string, spinner, validate, modulo) {
+    let disciplinas = DISCIPLINAS[id];
+
+    if (disciplinas) {
+      const elements = disciplinas;
+      for (let index = 0; index < elements.length; index++) {
+        elements[index] = String.normalize(elements[index]);
+        if (!validate.includes(elements[index])) {
+          this.log.info(',' + modulo + ',' + id + ',' + elements[index]);
+          spinner.fail(chalk.green.bold(modulo + '>' + elements[index] + '<') + chalk.green('CATALOG NOT FOUND'));
+        }
+      }
+      return elements;
+    } else {
+      return [];
+    }
+  }
+
+  static split(id, string, spinner, validate, modulo) {
     if (string) {
       const elements = string.toString().split(',');
       for (let index = 0; index < elements.length; index++) {
         elements[index] = String.normalize(elements[index]);
         if (!validate.includes(elements[index])) {
+          this.log.info(',' + modulo + ',' + id + ',' + elements[index]);
           spinner.fail(chalk.green.bold(modulo + '>' + elements[index] + '<') + chalk.green('CATALOG NOT FOUND'));
         }
       }
@@ -196,12 +239,19 @@ module.exports = class guiService {
       reglas.forEach(regla => {
         regla = this.toRegla(regla, spinner);
         axios
-          .post('http://localhost:8106/api/criterios', regla)
+          .put('http://localhost:8106/api/criterios/' + regla.id, regla)
           .then(response => {
-            spinner.succeed(chalk.green.bold('regla - ') + chalk.green(response.data.id));
+            spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
           })
           .catch(error => {
-            spinner.fail('finalización', error);
+            axios
+              .post('http://localhost:8106/api/criterios', regla)
+              .then(response => {
+                spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
+              })
+              .catch(errorCreated => {
+                spinner.fail(chalk.green.bold('ups - ') + chalk.green(errorCreated));
+              });
           });
       });
     } catch (error) {

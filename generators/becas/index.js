@@ -18,6 +18,7 @@ const axios = require('axios');
 const fs = require('fs');
 const csv = require('csv-parser');
 const Logger = require('../util/logger');
+const String = require('../util/strings');
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
