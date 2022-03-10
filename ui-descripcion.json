@@ -13,7 +13,8 @@
     "tipoUi": "text",
     "opciones": "",
     "min": 5,
-    "max": 18
+    "max": 18,
+    "feedback": "Información inválida"
   },
   {
     "orden": 2,
@@ -29,7 +30,8 @@
     "tipoUi": "text",
     "opciones": "",
     "min": 3,
-    "max": 59
+    "max": 59,
+    "feedback": "Información inválida"
   },
   {
     "orden": 3,
@@ -45,7 +47,8 @@
     "tipoUi": "text",
     "opciones": "",
     "min": 8,
-    "max": 13
+    "max": 13,
+    "feedback": "Información inválida"
   },
   {
     "orden": 5,
@@ -173,7 +176,8 @@
     "tipoUi": "text",
     "opciones": "",
     "min": 8,
-    "max": 23
+    "max": 23,
+    "feedback": "Información inválida"
   },
   {
     "orden": 87,

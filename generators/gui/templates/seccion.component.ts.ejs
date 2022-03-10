@@ -4,15 +4,26 @@ import AlertService from '@/shared/alert/alert.service';
 
 import { I<%= seccion.props.pascalCase%>, <%= seccion.props.pascalCase%> } from '@/shared/model/msPerfil/<%= seccion.props.dashCase%>.model';
 import <%= seccion.props.pascalCase%>Service from './<%= seccion.props.dashCase%>.service';
+import { required, minLength, maxLength } from 'vuelidate/lib/validators';
 
 const validations: any = {
 
   <%= seccion.props.camelCase%>: {
   <%_ for (const mayBeSubseccion in seccion) { _%>
     <%_ if (mayBeSubseccion != 'props') { _%>
-        <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
-          <%= campo.camelCase%>: {},
-        <%_ }); _%>
+  <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+    <%= campo.camelCase%>: {
+      <%_ if (campo.validations.required) { _%>
+      required,
+      <%_ }_%>
+      <%_ if (campo.validations.min) { _%>
+      min: minLength(<%= campo.validations.min%>),
+      <%_ } _%>
+      <%_ if (campo.validations.max) { _%>
+      max: maxLength(<%= campo.validations.max%>),
+      <%_ } _%>
+    },
+  <%_ }); _%>
     <%_ } _%>
   <%_ } _%>
   },

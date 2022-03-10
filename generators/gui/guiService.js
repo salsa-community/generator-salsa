@@ -67,6 +67,8 @@ module.exports = class guiService {
     campo.dashCase = String.toDashCase(campo.campo);
     campo.clientType = this.resolveClientType(campo.tipoUi);
     campo.clientDefaultValue = this.resolveDefaultValue(campo.tipoUi);
+    campo.feedback = campo.feedback ? campo.feedback : null;
+    campo.validations = this.resolveValidations(campo);
     return campo;
   }
 
@@ -122,5 +124,17 @@ module.exports = class guiService {
       return 'false';
     }
     return "''";
+  }
+
+  static resolveValidations(campo) {
+    let validations = {};
+    validations.required = campo.requerido;
+    if (campo.min) {
+      validations.min = campo.min;
+    }
+    if (campo.max) {
+      validations.max = campo.max;
+    }
+    return validations;
   }
 };

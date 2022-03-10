@@ -33,6 +33,7 @@
         label="<%= campo.label %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
         :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+        feedback="<%= campo.feedback %>"
       />
       <%_ } else if (campo.tipoUi === 'textArea') { _%>
       <input-text-area
