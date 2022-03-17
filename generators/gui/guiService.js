@@ -65,9 +65,11 @@ module.exports = class guiService {
     campo.lowerCase = String.toCamelCase(campo.campo);
     campo.snakeCase = String.toSnakeCase(campo.campo);
     campo.dashCase = String.toDashCase(campo.campo);
+    campo.constantCase = String.toConstantCase(campo.campo);
     campo.clientType = this.resolveClientType(campo.tipoUi);
     campo.clientDefaultValue = this.resolveDefaultValue(campo.tipoUi);
     campo.feedback = campo.feedback ? campo.feedback : null;
+    campo.description = campo.descripcion ? campo.descripcion : null;
     campo.validations = this.resolveValidations(campo);
     return campo;
   }
@@ -129,11 +131,19 @@ module.exports = class guiService {
   static resolveValidations(campo) {
     let validations = {};
     validations.required = campo.requerido;
+    validations.requiredValue = campo.requerido;
+    validations.requiredMessage = campo.mensajeRequerido;
     if (campo.min) {
       validations.min = campo.min;
+      validations.minMessage = campo.mensajeMin;
     }
     if (campo.max) {
       validations.max = campo.max;
+      validations.maxMessage = campo.mensajeMax;
+    }
+    if (campo.regex) {
+      validations.regex = campo.regex;
+      validations.regexMessage = campo.mensajeRegex;
     }
     return validations;
   }

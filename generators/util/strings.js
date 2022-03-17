@@ -33,4 +33,8 @@ module.exports = class Strings {
   static toSnakeCase(string) {
     return changeCase.snakeCase(this.normalize(string));
   }
+
+  static toConstantCase(string) {
+    return changeCase.constantCase(this.normalize(string));
+  }
 };

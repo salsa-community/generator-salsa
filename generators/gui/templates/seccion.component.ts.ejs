@@ -4,7 +4,20 @@ import AlertService from '@/shared/alert/alert.service';
 
 import { I<%= seccion.props.pascalCase%>, <%= seccion.props.pascalCase%> } from '@/shared/model/msPerfil/<%= seccion.props.dashCase%>.model';
 import <%= seccion.props.pascalCase%>Service from './<%= seccion.props.dashCase%>.service';
-import { required, minLength, maxLength } from 'vuelidate/lib/validators';
+import { required, minLength, maxLength, helpers } from 'vuelidate/lib/validators';
+
+<%_ for (const mayBeSubseccion in seccion) { _%>
+  <%_ if (mayBeSubseccion != 'props') { _%>
+    <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+      <%_ if (campo.validations.regex) { _%>
+const <%= campo.constantCase%> = helpers.regex(
+  '<%=campo.lowerCase%>',
+  <%=campo.validations.regex%>
+);
+        <%_ } _%>
+    <%_ }); _%>
+  <%_ } _%>
+<%_ } _%>
 
 const validations: any = {
 
@@ -21,6 +34,9 @@ const validations: any = {
       <%_ } _%>
       <%_ if (campo.validations.max) { _%>
       max: maxLength(<%= campo.validations.max%>),
+      <%_ } _%>
+      <%_ if (campo.validations.regex) { _%>
+      <%= campo.constantCase%>,
       <%_ } _%>
     },
   <%_ }); _%>

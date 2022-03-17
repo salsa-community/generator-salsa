@@ -32,8 +32,27 @@
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         label="<%= campo.label %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
-        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
-        feedback="<%= campo.feedback %>"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        description="<%=campo.description %>"
+        :objectFeedback="{
+          <%_ if (campo.validations.required) { _%>
+          required: true,
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          <%_ } _%>
+          <%_ if (campo.validations.min) { _%>
+          minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
+          minMessaje: '<%=campo.validations.minMessage,%>',
+          <%_ } _%>
+          <%_ if (campo.validations.max) { _%>
+          maxValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.maxLength,
+          maxMessaje: '<%=campo.validations.maxMessage,%>',
+          <%_ } _%>
+          <%_ if (campo.validations.regex) { _%>
+          regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
+          regexMessaje: '<%=campo.validations.regexMessage,%>',
+          <%_ } _%>
+        }"
       />
       <%_ } else if (campo.tipoUi === 'textArea') { _%>
       <input-text-area
