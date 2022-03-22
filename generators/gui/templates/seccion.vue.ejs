@@ -17,7 +17,7 @@
 <%_ for (const mayBeSubseccion in seccion) { _%>
   <%_ if (mayBeSubseccion != 'props') { _%>
     <b-col md="12">
-      <header class="bx-header-title">
+      <header class="mt-5 bx-header-title">
         <h3 id="<%= seccion[mayBeSubseccion].props.dashCase %>-id">
           <%= seccion[mayBeSubseccion].props.label %>
           <small><%= seccion[mayBeSubseccion].props.label %></small>
@@ -31,9 +31,10 @@
       <input-text
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         label="<%= campo.label %>"
+        description="<%=campo.description%>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :readonly="false"
         :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
-        description="<%=campo.description %>"
         :objectFeedback="{
           <%_ if (campo.validations.required) { _%>
           required: true,
@@ -54,42 +55,92 @@
           <%_ } _%>
         }"
       />
-      <%_ } else if (campo.tipoUi === 'textArea') { _%>
+      <%_ } else if (campo.tipoUi === 'TextArea') { _%>
       <input-text-area
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         label="<%= campo.label %>"
+        description="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
-        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+        :readonly="false"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        :objectFeedback="{
+          <%_ if (campo.validations.required) { _%>
+          required: true,
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          <%_ } _%>
+          <%_ if (campo.validations.min) { _%>
+          minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
+          minMessaje: '<%=campo.validations.minMessage,%>',
+          <%_ } _%>
+          <%_ if (campo.validations.max) { _%>
+          maxValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.maxLength,
+          maxMessaje: '<%=campo.validations.maxMessage,%>',
+          <%_ } _%>
+          <%_ if (campo.validations.regex) { _%>
+          regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
+          regexMessaje: '<%=campo.validations.regexMessage,%>',
+          <%_ } _%>
+        }"
+        <%_ if (campo.props) { _%>
+        :maxCaracteres="<%=campo.props.maxCaracteres%>"
+        <%_ } _%>
       />
       <%_ } else if (campo.tipoUi === 'Radio Button') { _%>
       <input-boolean
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         label="<%= campo.label %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :readonly="false"
         :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
       />
       <%_ } else if (campo.tipoUi === 'Date') { _%>
       <input-date
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         label="<%= campo.label %>"
+        description="<%=campo.description %>"
+        placeholder="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
-        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+        :readonly="false"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        :objectFeedback="{
+          <%_ if (campo.validations.required) { _%>
+          required: true,
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          <%_ } _%>
+        }"
+        <%_ if (campo.props) { _%>
+        :minDate="<%=campo.props.minDate%>"
+        :maxDate="<%=campo.props.maxDate%>"
+        <%_ } _%>
       />
       <%_ } else if (campo.tipoUi === 'selectOne') { _%>
       <input-select-one
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         label="<%= campo.label %>"
+        description="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :readonly="false"
         :options="<%= campo.camelCase%>Options"
-        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        :objectFeedback="{
+          <%_ if (campo.validations.required) { _%>
+          required: true,
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          <%_ } _%>
+        }"
       />
       <%_ } else if (campo.tipoUi === 'selectMultiple') { _%>
       <input-select-many
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         label="<%= campo.label %>"
+        description="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :readonly="false"
         :options="<%= campo.camelCase%>Options"
-        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+        :valid="$v.<%=seccion.props.camelCase%>.$dirty ? !$v.<%=seccion.props.camelCase%>.$error && <%=seccion.props.camelCase%>.<%= campo.camelCase%>.length >= <%=campo.props.minimosRequeridos%>: null"
       />
       <%_ } _%>
     <%_ }); _%>
@@ -101,7 +152,7 @@
         <font-awesome-icon icon="ban" class="mr-2"></font-awesome-icon>
         <span>Cancelar</span>
       </b-button>
-      <b-button variant="primary" size="lg">
+      <b-button @click="$v.<%= seccion.props.camelCase%>.$touch" variant="primary" size="lg">
         <font-awesome-icon icon="save" class="mr-2"></font-awesome-icon>
         <span>Guardar</span>
       </b-button>

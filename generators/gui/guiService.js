@@ -68,9 +68,9 @@ module.exports = class guiService {
     campo.constantCase = String.toConstantCase(campo.campo);
     campo.clientType = this.resolveClientType(campo.tipoUi);
     campo.clientDefaultValue = this.resolveDefaultValue(campo.tipoUi);
-    campo.feedback = campo.feedback ? campo.feedback : null;
     campo.description = campo.descripcion ? campo.descripcion : null;
     campo.validations = this.resolveValidations(campo);
+    campo.props = this.resolveProps(campo);
     return campo;
   }
 
@@ -129,7 +129,7 @@ module.exports = class guiService {
   }
 
   static resolveValidations(campo) {
-    let validations = {};
+    const validations = {};
     validations.required = campo.requerido;
     validations.requiredValue = campo.requerido;
     validations.requiredMessage = campo.mensajeRequerido;
@@ -146,5 +146,20 @@ module.exports = class guiService {
       validations.regexMessage = campo.mensajeRegex;
     }
     return validations;
+  }
+
+  static resolveProps(campo) {
+    const props = {};
+    if (campo.tipoUi === 'TextArea') {
+      props.maxCaracteres = campo.maxCaracteres;
+    }
+    if (campo.tipoUi === 'Date' && campo.minDate && campo.maxDate) {
+      props.minDate = campo.minDate;
+      props.maxDate = campo.maxDate;
+    }
+    if (campo.tipoUi === 'MultiSelect' || campo.tipoUi === 'selectMultiple') {
+      props.minimosRequeridos = campo.minimosRequeridos;
+    }
+    return props;
   }
 };

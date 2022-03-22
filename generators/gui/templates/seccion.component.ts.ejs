@@ -30,10 +30,10 @@ const validations: any = {
       required,
       <%_ }_%>
       <%_ if (campo.validations.min) { _%>
-      min: minLength(<%= campo.validations.min%>),
+      minLength: minLength(<%= campo.validations.min%>),
       <%_ } _%>
       <%_ if (campo.validations.max) { _%>
-      max: maxLength(<%= campo.validations.max%>),
+      maxLength: maxLength(<%= campo.validations.max%>),
       <%_ } _%>
       <%_ if (campo.validations.regex) { _%>
       <%= campo.constantCase%>,
@@ -61,7 +61,7 @@ export default class <%= seccion.props.pascalCase%>Component extends Vue {
         <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
           <%_ if (campo.tipoUi === 'selectOne' || campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
             public <%= campo.camelCase%>Options = [
-              { value: null, text: 'Seleccione <%= campo.label%>' },
+              { value: null, text: 'Seleccione <%= campo.label%>', disabled: true },
               { value: '<%= campo.camelCase%>1', text: '<%= campo.label%> 1' },
               { value: '<%= campo.camelCase%>2', text: '<%= campo.label%> 2' },
               { value: '<%= campo.camelCase%>3', text: '<%= campo.label%> 3' },
