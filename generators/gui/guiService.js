@@ -24,6 +24,7 @@ module.exports = class guiService {
       }
       secciones[seccion][subseccion].campos.push(this.formatCampo(campo));
     });
+    console.log(secciones);
     return secciones;
   }
 
@@ -132,18 +133,14 @@ module.exports = class guiService {
     const validations = {};
     validations.required = campo.requerido;
     validations.requiredValue = campo.requerido;
-    validations.requiredMessage = campo.mensajeRequerido;
     if (campo.min) {
       validations.min = campo.min;
-      validations.minMessage = campo.mensajeMin;
     }
     if (campo.max) {
       validations.max = campo.max;
-      validations.maxMessage = campo.mensajeMax;
     }
     if (campo.regex) {
       validations.regex = campo.regex;
-      validations.regexMessage = campo.mensajeRegex;
     }
     return validations;
   }

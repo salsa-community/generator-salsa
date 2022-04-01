@@ -2,9 +2,9 @@
   <b-row class="row mb-5">
     <b-col md="12">
       <header class="bx-header-title">
-        <h2 id="<%= seccion.props.dashCase %>-id">
+        <h2 id="<%= seccion.props.dashCase %>-id" v-text="$t('<%= seccion.props.dashCase%>.title')">
           <%= seccion.props.label%>
-          <small><%= seccion.props.label%></small>
+          <small v-text="$t('<%= seccion.props.dashCase%>.subtitle')"><%= seccion.props.label%></small>
         </h2>
         <div class="header-title-line"></div>
       </header>
@@ -16,11 +16,12 @@
     </b-col>
 <%_ for (const mayBeSubseccion in seccion) { _%>
   <%_ if (mayBeSubseccion != 'props') { _%>
+    <%_ let pathSubseccion = seccion.props.dashCase + '.' + seccion[mayBeSubseccion].props.dashCase; _%>
     <b-col md="12">
       <header class="mt-5 bx-header-title">
-        <h3 id="<%= seccion[mayBeSubseccion].props.dashCase %>-id">
+        <h3 id="<%= seccion[mayBeSubseccion].props.dashCase %>-id" v-text="$t('<%= pathSubseccion %>.title')">
           <%= seccion[mayBeSubseccion].props.label %>
-          <small><%= seccion[mayBeSubseccion].props.label %></small>
+          <small v-text="$t('<%= pathSubseccion %>.subtitle')"><%= seccion[mayBeSubseccion].props.label %></small>
         </h3>
         <div class="header-title-line"></div>
       </header>
@@ -30,56 +31,56 @@
      <%_ if (campo.tipoUi === 'text') { _%>
       <input-text
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        label="<%= campo.label %>"
-        description="<%=campo.description%>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         :readonly="false"
+        :required="<%= campo.validations.required %>"
         :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
-        :objectFeedback="{
+        :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
-          required: true,
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
           <%_ } _%>
           <%_ if (campo.validations.min) { _%>
           minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
-          minMessaje: '<%=campo.validations.minMessage,%>',
+          minMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.minMessage', { min: '<%=campo.validations.min%>' }),
           <%_ } _%>
           <%_ if (campo.validations.max) { _%>
           maxValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.maxLength,
-          maxMessaje: '<%=campo.validations.maxMessage,%>',
+          maxMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.maxMessage', { max: '<%=campo.validations.max%>' }),
           <%_ } _%>
           <%_ if (campo.validations.regex) { _%>
           regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
-          regexMessaje: '<%=campo.validations.regexMessage,%>',
+          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage', { field: '<%= campo.label%>' }),
           <%_ } _%>
         }"
       />
       <%_ } else if (campo.tipoUi === 'TextArea') { _%>
       <input-text-area
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        label="<%= campo.label %>"
-        description="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         :readonly="false"
+        :required="<%= campo.validations.required %>"
         :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
-        :objectFeedback="{
+        :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
-          required: true,
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
           <%_ } _%>
           <%_ if (campo.validations.min) { _%>
           minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
-          minMessaje: '<%=campo.validations.minMessage,%>',
+          minMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.minMessage', { min: '<%=campo.validations.min%>' }),
           <%_ } _%>
           <%_ if (campo.validations.max) { _%>
           maxValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.maxLength,
-          maxMessaje: '<%=campo.validations.maxMessage,%>',
+          maxMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.maxMessage', { max: '<%=campo.validations.max%>' }),
           <%_ } _%>
           <%_ if (campo.validations.regex) { _%>
           regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
-          regexMessaje: '<%=campo.validations.regexMessage,%>',
+          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage', { field: '<%= campo.label%>' }),
           <%_ } _%>
         }"
         <%_ if (campo.props) { _%>
@@ -89,25 +90,25 @@
       <%_ } else if (campo.tipoUi === 'Radio Button') { _%>
       <input-boolean
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        label="<%= campo.label %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :readonly="false"
         :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
       />
       <%_ } else if (campo.tipoUi === 'Date') { _%>
       <input-date
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        label="<%= campo.label %>"
-        description="<%=campo.description %>"
-        placeholder="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        :placeholder="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         :readonly="false"
+        :required="<%= campo.validations.required %>"
         :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
-        :objectFeedback="{
+        :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
-          required: true,
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
           <%_ } _%>
         }"
         <%_ if (campo.props) { _%>
@@ -118,29 +119,37 @@
       <%_ } else if (campo.tipoUi === 'selectOne') { _%>
       <input-select-one
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        label="<%= campo.label %>"
-        description="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
-        :readonly="false"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         :options="<%= campo.camelCase%>Options"
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
         :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
-        :objectFeedback="{
+        :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
-          required: true,
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessaje: '<%=campo.validations.requiredMessage,%>',
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
           <%_ } _%>
         }"
       />
       <%_ } else if (campo.tipoUi === 'selectMultiple') { _%>
       <input-select-many
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        label="<%= campo.label %>"
-        description="<%=campo.description %>"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
-        :readonly="false"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         :options="<%= campo.camelCase%>Options"
+        :markedSelections="selected"
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
         :valid="$v.<%=seccion.props.camelCase%>.$dirty ? !$v.<%=seccion.props.camelCase%>.$error && <%=seccion.props.camelCase%>.<%= campo.camelCase%>.length >= <%=campo.props.minimosRequeridos%>: null"
+        :validationsCommons="{
+          <%_ if (campo.validations.required) { _%>
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
+          <%_ } _%>
+        }"
       />
       <%_ } _%>
     <%_ }); _%>
@@ -157,7 +166,7 @@
         <span>Guardar</span>
       </b-button>
     </b-col>
-</b-row>
+  </b-row>
 </template>
 
 <script lang="ts" src="./<%= seccion.props.dashCase%>.component.ts"></script>
