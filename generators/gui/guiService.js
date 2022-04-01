@@ -18,9 +18,11 @@ module.exports = class guiService {
       let subseccion = String.toCamelCase(campo.subseccion);
       if (!secciones[seccion]) {
         secciones[seccion] = this.defaultSeccion(campo.seccion);
+        secciones[seccion].props.labelEn = campo.seccionEn;
       }
       if (!secciones[seccion][subseccion]) {
         secciones[seccion][subseccion] = this.defaultSubseccion(campo.subseccion);
+        secciones[seccion][subseccion].props.labelEn = campo.subseccionEn;
       }
       secciones[seccion][subseccion].campos.push(this.formatCampo(campo));
     });
@@ -62,6 +64,7 @@ module.exports = class guiService {
 
   static formatCampo(campo) {
     campo.label = campo.campo;
+    campo.labelEn = campo.campoEn;
     campo.pascalCase = String.toPascalCase(campo.campo);
     campo.lowerCase = String.toCamelCase(campo.campo);
     campo.snakeCase = String.toSnakeCase(campo.campo);
@@ -69,7 +72,8 @@ module.exports = class guiService {
     campo.constantCase = String.toConstantCase(campo.campo);
     campo.clientType = this.resolveClientType(campo.tipoUi);
     campo.clientDefaultValue = this.resolveDefaultValue(campo.tipoUi);
-    campo.description = campo.descripcion ? campo.descripcion : null;
+    campo.description = campo.descripcion;
+    campo.descriptionEn = campo.descripcionEn;
     campo.validations = this.resolveValidations(campo);
     campo.props = this.resolveProps(campo);
     return campo;
