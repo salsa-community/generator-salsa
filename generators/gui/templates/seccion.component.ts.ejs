@@ -59,15 +59,18 @@ export default class <%= seccion.props.pascalCase%>Component extends Vue {
   <%_ for (const mayBeSubseccion in seccion) { _%>
     <%_ if (mayBeSubseccion != 'props') { _%>
         <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+          <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
+  public selected<%= campo.pascalCase%> = [];
+          <%_ } _%>
           <%_ if (campo.tipoUi === 'selectOne' || campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
-            public <%= campo.camelCase%>Options = [
-              { value: null, text: 'Seleccione <%= campo.label%>', disabled: true },
-              { value: '<%= campo.camelCase%>1', text: '<%= campo.label%> 1' },
-              { value: '<%= campo.camelCase%>2', text: '<%= campo.label%> 2' },
-              { value: '<%= campo.camelCase%>3', text: '<%= campo.label%> 3' },
-              { value: '<%= campo.camelCase%>4', text: '<%= campo.label%> 4' },
-              { value: '<%= campo.camelCase%>5', text: '<%= campo.label%> 5' }
-            ];
+  public <%= campo.camelCase%>Options = [
+    { value: null, text: 'Seleccione <%= campo.label%>', disabled: true },
+    { value: '<%= campo.camelCase%>1', text: '<%= campo.label%> 1' },
+    { value: '<%= campo.camelCase%>2', text: '<%= campo.label%> 2' },
+    { value: '<%= campo.camelCase%>3', text: '<%= campo.label%> 3' },
+    { value: '<%= campo.camelCase%>4', text: '<%= campo.label%> 4' },
+    { value: '<%= campo.camelCase%>5', text: '<%= campo.label%> 5' },
+  ];
           <%_ } _%>
         <%_ }); _%>
     <%_ } _%>

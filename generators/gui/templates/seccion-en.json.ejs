@@ -16,10 +16,10 @@
           "label": "<%= campo.labelEn%>",
           "description": "<%= campo.descriptionEn%>",
           "validations": {
-            "required": "The field {field} is required",
+            "required": "The field <%= campo.label%> is required",
             "minMessage": "The number of characters must be at least of {min}",
             "maxMessage": "The number of characters must be as much as {max}",
-            "regexMessage": "Invalid {field} format"
+            "regexMessage": "Invalid <%= campo.label%> format"
           }
         }<% if ((seccion[mayBeSubseccion].campos.length -1) !== index ) { %>,<% } %>
       <%_ }) _%>

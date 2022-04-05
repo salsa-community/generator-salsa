@@ -40,7 +40,7 @@
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
           <%_ } _%>
           <%_ if (campo.validations.min) { _%>
           minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
@@ -52,7 +52,7 @@
           <%_ } _%>
           <%_ if (campo.validations.regex) { _%>
           regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
-          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage', { field: '<%= campo.label%>' }),
+          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage'),
           <%_ } _%>
         }"
       />
@@ -68,7 +68,7 @@
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
           <%_ } _%>
           <%_ if (campo.validations.min) { _%>
           minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
@@ -80,7 +80,7 @@
           <%_ } _%>
           <%_ if (campo.validations.regex) { _%>
           regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
-          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage', { field: '<%= campo.label%>' }),
+          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage'),
           <%_ } _%>
         }"
         <%_ if (campo.props) { _%>
@@ -108,7 +108,7 @@
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
           <%_ } _%>
         }"
         <%_ if (campo.props) { _%>
@@ -129,7 +129,7 @@
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
           <%_ } _%>
         }"
       />
@@ -140,14 +140,16 @@
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         :options="<%= campo.camelCase%>Options"
-        :markedSelections="selected"
+        :markedSelections="selected<%= campo.pascalCase%>"
         :readonly="false"
         :required="<%= campo.validations.required %>"
-        :valid="$v.<%=seccion.props.camelCase%>.$dirty ? !$v.<%=seccion.props.camelCase%>.$error && <%=seccion.props.camelCase%>.<%= campo.camelCase%>.length >= <%=campo.props.minimosRequeridos%>: null"
+        :valid="$v.<%=seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ?
+          !$v.<%=seccion.props.camelCase%>.<%= campo.camelCase%>.$error && <%=seccion.props.camelCase%>.<%= campo.camelCase%>.length >= <%=campo.props.minimosRequeridos%> : 
+          null"
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
           requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
-          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required', { field: '<%= campo.label%>' }),
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
           <%_ } _%>
         }"
       />
