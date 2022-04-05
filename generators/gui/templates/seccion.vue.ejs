@@ -112,8 +112,8 @@
           <%_ } _%>
         }"
         <%_ if (campo.props) { _%>
-        :minDate="<%=campo.props.minDate%>"
-        :maxDate="<%=campo.props.maxDate%>"
+        :minDate="minDate<%= campo.pascalCase%>"
+        :maxDate="maxDate<%= campo.pascalCase%>"
         <%_ } _%>
       />
       <%_ } else if (campo.tipoUi === 'selectOne') { _%>

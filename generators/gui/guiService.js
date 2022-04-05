@@ -154,7 +154,7 @@ module.exports = class guiService {
     if (campo.tipoUi === 'TextArea') {
       props.maxCaracteres = campo.maxCaracteres;
     }
-    if (campo.tipoUi === 'Date' && campo.minDate && campo.maxDate) {
+    if (campo.tipoUi === 'Date') {
       props.minDate = campo.minDate;
       props.maxDate = campo.maxDate;
     }

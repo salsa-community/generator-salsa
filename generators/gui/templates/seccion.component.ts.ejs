@@ -59,6 +59,12 @@ export default class <%= seccion.props.pascalCase%>Component extends Vue {
   <%_ for (const mayBeSubseccion in seccion) { _%>
     <%_ if (mayBeSubseccion != 'props') { _%>
         <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+          <%_ if (campo.tipoUi === 'Date') { _%>
+            <%_ if (campo.props) { _%>
+  public minDate<%= campo.pascalCase%> = new Date('<%=campo.props.minDate%>');
+  public maxDate<%= campo.pascalCase%> = new Date('<%=campo.props.maxDate%>');
+            <%_ } _%>
+          <%_ } _%>
           <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
   public selected<%= campo.pascalCase%> = [];
           <%_ } _%>
