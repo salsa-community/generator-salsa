@@ -26,7 +26,6 @@ module.exports = class guiService {
       }
       secciones[seccion][subseccion].campos.push(this.formatCampo(campo));
     });
-    console.log(secciones);
     return secciones;
   }
 

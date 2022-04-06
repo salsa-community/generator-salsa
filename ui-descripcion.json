@@ -15,11 +15,8 @@
     "min": 5,
     "max": 18,
     "descripcion": "Ingrese su CURP (Clave Única de Registro de Población)",
-    "mensajeRequerido": "Campo requerido",
-    "mensajeMin": "El tamaño del campo CURP no puede ser menor a 18 caracteres.",
-    "mensajeMax": "El tamaño del campo CURP no puede ser mayor a 18 caracteres.",
-    "regex": "/^[A-Z]{1}[AEIOU]{1}[A-Z]{2}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM]{1}(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]{1}$/",
-    "mensajeRegex": "Curp Inválido"
+    "descripcionEn": "Type your CURP (Clave Única de Registro de Población)",
+    "regex": "/^[A-Z]{1}[AEIOU]{1}[A-Z]{2}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM]{1}(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]{1}$/"
   },
   {
     "orden": 2,
@@ -35,8 +32,7 @@
     "tipoUi": "text",
     "opciones": "",
     "min": 3,
-    "max": 59,
-    "feedback": "Información inválida"
+    "max": 59
   },
   {
     "orden": 3,
@@ -52,8 +48,7 @@
     "tipoUi": "text",
     "opciones": "",
     "min": 8,
-    "max": 13,
-    "feedback": "Información inválida"
+    "max": 13
   },
   {
     "orden": 5,
@@ -69,7 +64,9 @@
     "tipoUi": "Date",
     "opciones": "",
     "min": 8,
-    "max": 19
+    "max": 19,
+    "minDate": "2000-12-30",
+    "maxDate": "2022-12-30"
   },
   {
     "orden": 6,
@@ -101,7 +98,8 @@
     "tipoUi": "selectMultiple",
     "opciones": "",
     "min": "",
-    "max": ""
+    "max": "",
+    "minimosRequeridos": 2
   },
   {
     "orden": 13,
@@ -146,10 +144,11 @@
     "subseccion": "Domicilio Residencia (requerido)",
     "tipoDato": "string",
     "requerido": false,
-    "tipoUi": "text",
+    "tipoUi": "TextArea",
     "opciones": "",
     "min": "",
-    "max": ""
+    "max": "",
+    "maxCaracteres": 100
   },
   {
     "orden": 85,
