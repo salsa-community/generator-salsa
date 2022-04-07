@@ -79,11 +79,11 @@ module.exports = class extends Generator {
           process: function (content) {
             let regEx = new RegExp(Constants.ENTITY_TO_MENU, 'g');
             let entityToMenu = `
-                    <b-dropdown-item to="/${seccion.props.dashCase}" active-class="active">
-                      <span>${seccion.props.label}</span>
-                    </b-dropdown-item>
-                    ${Constants.ENTITY_TO_MENU}
-                    `;
+    <b-dropdown-item to="/${seccion.props.dashCase}" active-class="active">
+      <span v-text="$t('${seccion.props.dashCase}.title')">${seccion.props.label}</span>
+    </b-dropdown-item>
+    ${Constants.ENTITY_TO_MENU}
+    `;
             let newContent = content.toString().replace(regEx, entityToMenu);
             return newContent;
           },
