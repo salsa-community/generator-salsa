@@ -158,7 +158,7 @@ module.exports = class guiService {
       props.maxDate = campo.maxDate;
     }
     if (campo.tipoUi === 'MultiSelect' || campo.tipoUi === 'selectMultiple') {
-      props.minimosRequeridos = campo.minimosRequeridos;
+      props.minimosRequeridos = campo.minimosRequeridos ? campo.minimosRequeridos : 1;
     }
     return props;
   }
