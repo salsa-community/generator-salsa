@@ -19,6 +19,8 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const Logger = require('../util/logger');
 const String = require('../util/strings');
+const Catalogos = require('../util/distribucion/constants');
+
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);

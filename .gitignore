@@ -2,6 +2,11 @@ cvu.csv
 rcea.csv
 proyectos.csv
 matricula.csv
+matricula-latest.json
+matricula-latest.csv
+reglas-test.json
+reglas-latest.json
+test-data.csv
 matricula.xlsx
 push-programas.sh
 /src/

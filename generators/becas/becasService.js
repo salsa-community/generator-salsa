@@ -29,6 +29,7 @@ const { CATALOG } = require('./institucionesCatalog');
 const CAMPOS = require('../../campos.json');
 const DISCIPLINAS = require('../../disciplinas.json');
 
+const moment = require('moment');
 module.exports = class guiService {
   static log = Logger.getLogger('rules-warning');
   static toPrograma(m, spinner) {
@@ -36,6 +37,9 @@ module.exports = class guiService {
     programa.id = m.REFERENCIA_SOLICITUD + '_' + m.CVU_INTEGRANTE;
     programa.cvu = m.CVU_INTEGRANTE;
     programa.clave = m.REFERENCIA_PROGRAMA;
+    programa.claveTipoPrograma = m.CVE_TIPO_PROGRAMA;
+    programa.promedioRecuperado = m.PROMEDIO_RECUPERADO;
+    programa.periodoLectivo = String.normalize(m.DESC_PERIODO_LECTIVO);
     programa.nombre = String.normalize(m.NOMBRE_PROGRAMA);
     programa.nombreAspirante = String.normalize(m.NOMBRE_INTEGRANTE);
     programa.metodologia = m.ABREV_MODALIDAD;
@@ -49,7 +53,7 @@ module.exports = class guiService {
     programa.entidad = this.resolveEntidad(m.NOM_ENT);
     programa.tipoInstitucion = this.resolveTipoInstitucion(m.CVE_INSTITUCION);
     programa.nombreInstitucion = m.NOMBRE;
-    programa.estadoSolicitud = m.DESC_ESTADO_SOLICITUD_EVALUACN;
+    programa.estado = String.normalize(m.DESC_ESTADO_SOLICITUD_EVALUACN);
     programa.dictamen = '';
     programa.acreditadoSnp = this.resolveAcreditadoSnp(m.POR_CONVENIO);
     programa.tiempoDedicacion = '';
@@ -57,12 +61,47 @@ module.exports = class guiService {
     programa.numeroBecasHistorico = '';
     programa.numeroBecasFormalizadas = '';
     programa.numeroBecasCanceladas = '';
-    programa.inicioEstancia = m.INICIO_ESTUDIOS;
-    programa.finEstancia = m.FIN_ESTUDIOS;
+    programa.inicioEstancia = this.formatDate(m.INICIO_ESTUDIOS);
+    programa.finEstancia = this.formatDate(m.FIN_ESTUDIOS);
+    //programa.inicioBeca = this.formatDate(m.INICIO_BECA);
+    //programa.finBeca = this.formatDate(m.FIN_BECA);
     programa.montoMensual = this.resolveMontoMensual(m.ABREV_GRADO);
     programa.orden = 214748364;
-    programa.grupo = 'Z_NO_RANKED';
+    programa.grupo = 'Z_NO_EVALUADO';
+    programa.estadoSolicitud = String.normalize(m.DESC_ESTADO_SOLICITUD);
+    this.verifyFechas(programa);
     return programa;
+  }
+
+  static verifyFechas(programa) {
+    if (programa.finEstancia === 'Invalid Date') {
+      this.log.error(programa.cvu + '-  programa.finEstancia' + '-' + 'Invalid Date');
+    }
+    if (programa.inicioBeca === 'Invalid Date') {
+      this.log.error(programa.cvu + '- programa.inicioBeca' + '-' + 'Invalid Date');
+    }
+    if (programa.finBeca === 'Invalid Date') {
+      this.log.error(programa.cvu + '- programa.finBeca' + '-' + 'Invalid Date');
+    }
+    if (programa.inicioEstancia === 'Invalid Date') {
+      this.log.error(programa.cvu + '- programa.inicioEstancia' + '-' + 'Invalid Date');
+    }
+  }
+
+  // from en-US 'MM/dd/YYYY';
+  // to en-GB 'dd/MM/YYYY';
+  static formatDate(date) {
+    let result = moment(date, 'MM/DD/YYYY').format('DD/MM/YYYY');
+    this.log.info(date + ' to ' + result);
+    return result;
+  }
+
+  // from en-US 'MM/dd/YYYY';
+  // to en-GB 'dd/MM/YYYY';
+  static formatBecaDate(date) {
+    let result = moment(date, 'DD/MM/YYYY').format('DD/MM/YYYY');
+    this.log.info(date + ' to ' + result);
+    return result;
   }
 
   static resolveCampo(value, spinner) {
@@ -80,7 +119,7 @@ module.exports = class guiService {
       return disciplina;
     }
     spinner.fail(chalk.green.bold('>' + disciplina + '<') + chalk.green('DISCIPLINA NOT FOUND'));
-    return 'DISCIPLINA NOT FOUND';
+    return 'CIUDAD TERRITORIO  Y SUSTENTABILIDAD';
   }
 
   static resolveInteger(value) {
@@ -101,7 +140,7 @@ module.exports = class guiService {
   }
 
   static toRegla(reglas, spinner) {
-    reglas.id = reglas.orden;
+    reglas.orden = reglas.orden;
     reglas.metodologias = this.split(reglas.id, reglas.metodologias, spinner, Catalogos.METODOLOGIAS, 'METODOLOGIAS');
     reglas.grados = this.split(reglas.id, reglas.grados, spinner, Catalogos.GRADOS, 'GRADOS');
     reglas.orientaciones = this.split(reglas.id, reglas.orientaciones, spinner, Catalogos.ORIENTACIONES, 'ORIENTACIONES');
@@ -109,7 +148,13 @@ module.exports = class guiService {
     reglas.campos = this.resolveCamposForRules(reglas.id, reglas.campos, spinner, Catalogos.CAMPOS, 'CAMPOS');
     reglas.disciplinas = this.resolveDisciplinasForRules(reglas.id, reglas.disciplinas, spinner, Catalogos.DISCIPLINAS, 'DISCIPLINAS');
     reglas.entidades = this.split(reglas.id, reglas.entidades, spinner, Catalogos.ENTIDADES, 'ENTIDADES');
-    reglas.tipoInstituciones = this.split(reglas.id, reglas.tipoInstituciones, spinner, Catalogos.TIPO_INSTITUCIONES, 'TIPO INSTITUCIONES');
+    reglas.tipoInstituciones = this.split(
+      reglas.id,
+      reglas.tipo_instituciones,
+      spinner,
+      Catalogos.TIPO_INSTITUCIONES,
+      'TIPO INSTITUCIONES'
+    );
     reglas.acreditadoSnp = this.resolveBoolean(reglas.acreditadoSnp);
     reglas.activo = true;
     return reglas;
@@ -153,7 +198,7 @@ module.exports = class guiService {
 
   static split(id, string, spinner, validate, modulo) {
     if (string) {
-      const elements = string.toString().split(',');
+      const elements = string; //string.toString().split(',');
       for (let index = 0; index < elements.length; index++) {
         elements[index] = String.normalize(elements[index]);
         if (!validate.includes(elements[index])) {
@@ -198,17 +243,25 @@ module.exports = class guiService {
     }
   }
 
+  static wait(ms) {
+    var start = Date.now(),
+      now = start;
+    while (now - start < ms) {
+      now = Date.now();
+    }
+  }
+
   static loadProgramas() {
     try {
       const spinner = ora({ text: 'subiendo matricula...', interval: 80 });
       spinner.start();
       let that = this;
-      fs.createReadStream('matricula.csv')
+      fs.createReadStream('test-data.csv')
         .pipe(csv())
         .on('data', function (m) {
           let programa = that.toPrograma(m, spinner);
           axios
-            .put('http://localhost:8106/api/programas/' + programa.id, programa)
+            .patch('http://localhost:8106/api/programas/' + programa.id, programa)
             .then(response => {
               spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
             })
@@ -235,7 +288,7 @@ module.exports = class guiService {
     try {
       const spinner = ora({ text: 'subiendo reglas...', interval: 80 });
       spinner.start();
-      let reglas = require('../../reglas.json');
+      let reglas = require('../../reglas-latest.json');
       reglas.forEach(regla => {
         regla = this.toRegla(regla, spinner);
         axios
