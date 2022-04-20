@@ -1,0 +1,31 @@
+{
+  "<%= seccion.props.dashCase%>": {
+    "title": "<%= seccion.props.label%>",
+    "subtitle": "<%= seccion.props.label%>",
+    <%_ let subseccionComa = -1; _%>
+    <%_ for (const mayBeSubseccion in seccion) { _%>
+      <%_ if (mayBeSubseccion != 'props') { ++subseccionComa;_%>
+        <%_ if (subseccionComa > 0) { _%>
+    ,<% } %>
+    "<%= seccion[mayBeSubseccion].props.dashCase %>": {
+      "title": "<%= seccion[mayBeSubseccion].props.label %>",
+      "subtitle": "<%= seccion[mayBeSubseccion].props.label %>",
+      "fields": {
+      <%_ seccion[mayBeSubseccion].campos.forEach((campo, index) => { _%>
+        "<%= campo.dashCase%>": {
+          "label": "<%= campo.label%>",
+          "description": "<%= campo.description%>",
+          "validations": {
+            "required": "El campo <%= campo.label%> es requerido",
+            "minMessage": "El número de caracteres debe ser de al menos {min}",
+            "maxMessage": "El número de caracteres debe ser máximo de {max}",
+            "regexMessage": "Formato de <%= campo.label%> inválido"
+          }
+        }<% if ((seccion[mayBeSubseccion].campos.length -1) !== index ) { %>,<% } %>
+      <%_ }) _%>
+      }
+    }
+      <%_ } _%>
+    <%_ } _%>
+  }
+}

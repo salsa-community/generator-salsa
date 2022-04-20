@@ -18,9 +18,11 @@ module.exports = class guiService {
       let subseccion = String.toCamelCase(campo.subseccion);
       if (!secciones[seccion]) {
         secciones[seccion] = this.defaultSeccion(campo.seccion);
+        secciones[seccion].props.labelEn = campo.seccionEn;
       }
       if (!secciones[seccion][subseccion]) {
         secciones[seccion][subseccion] = this.defaultSubseccion(campo.subseccion);
+        secciones[seccion][subseccion].props.labelEn = campo.subseccionEn;
       }
       secciones[seccion][subseccion].campos.push(this.formatCampo(campo));
     });
@@ -61,12 +63,18 @@ module.exports = class guiService {
 
   static formatCampo(campo) {
     campo.label = campo.campo;
+    campo.labelEn = campo.campoEn;
     campo.pascalCase = String.toPascalCase(campo.campo);
     campo.lowerCase = String.toCamelCase(campo.campo);
     campo.snakeCase = String.toSnakeCase(campo.campo);
     campo.dashCase = String.toDashCase(campo.campo);
+    campo.constantCase = String.toConstantCase(campo.campo);
     campo.clientType = this.resolveClientType(campo.tipoUi);
     campo.clientDefaultValue = this.resolveDefaultValue(campo.tipoUi);
+    campo.description = campo.descripcion;
+    campo.descriptionEn = campo.descripcionEn;
+    campo.validations = this.resolveValidations(campo);
+    campo.props = this.resolveProps(campo);
     return campo;
   }
 
@@ -122,5 +130,36 @@ module.exports = class guiService {
       return 'false';
     }
     return "''";
+  }
+
+  static resolveValidations(campo) {
+    const validations = {};
+    validations.required = campo.requerido;
+    validations.requiredValue = campo.requerido;
+    if (campo.min) {
+      validations.min = campo.min;
+    }
+    if (campo.max) {
+      validations.max = campo.max;
+    }
+    if (campo.regex) {
+      validations.regex = campo.regex;
+    }
+    return validations;
+  }
+
+  static resolveProps(campo) {
+    const props = {};
+    if (campo.tipoUi === 'TextArea') {
+      props.maxCaracteres = campo.maxCaracteres;
+    }
+    if (campo.tipoUi === 'Date') {
+      props.minDate = campo.minDate;
+      props.maxDate = campo.maxDate;
+    }
+    if (campo.tipoUi === 'MultiSelect' || campo.tipoUi === 'selectMultiple') {
+      props.minimosRequeridos = campo.minimosRequeridos ? campo.minimosRequeridos : 1;
+    }
+    return props;
   }
 };
