@@ -34,6 +34,9 @@
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
         :readonly="false"
         :required="<%= campo.validations.required %>"
         :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
@@ -62,6 +65,9 @@
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
         :readonly="false"
         :required="<%= campo.validations.required %>"
         :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
@@ -101,6 +107,9 @@
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
         :placeholder="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         :readonly="false"
         :required="<%= campo.validations.required %>"
@@ -122,6 +131,9 @@
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
         :options="<%= campo.camelCase%>Options"
         :readonly="false"
         :required="<%= campo.validations.required %>"
@@ -139,6 +151,9 @@
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
         :options="<%= campo.camelCase%>Options"
         :markedSelections="selected<%= campo.pascalCase%>"
         :readonly="false"
