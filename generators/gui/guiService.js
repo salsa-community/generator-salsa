@@ -64,6 +64,7 @@ module.exports = class guiService {
   static formatCampo(campo) {
     campo.label = campo.campo;
     campo.labelEn = campo.campoEn;
+    campo.camelCase = String.toCamelCase(campo.campo);
     campo.pascalCase = String.toPascalCase(campo.campo);
     campo.lowerCase = String.toCamelCase(campo.campo);
     campo.snakeCase = String.toSnakeCase(campo.campo);
