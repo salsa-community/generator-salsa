@@ -98,6 +98,9 @@
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
         v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
         :readonly="false"
         :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
       />
