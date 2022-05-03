@@ -25,7 +25,7 @@ const validations: any = {
   <%_ for (const mayBeSubseccion in seccion) { _%>
     <%_ if (mayBeSubseccion != 'props') { _%>
   <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
-    <%= campo.camelCase%>: {
+    <%= campo.tipoUi === 'cardsList'? campo.camelCase + 'Items' :campo.camelCase%>: {
       <%_ if (campo.validations.required) { _%>
       required,
       <%_ }_%>
@@ -59,6 +59,9 @@ export default class <%= seccion.props.pascalCase%>Component extends Vue {
   <%_ for (const mayBeSubseccion in seccion) { _%>
     <%_ if (mayBeSubseccion != 'props') { _%>
         <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+          <%_ if (campo.tipoUi === 'cardsList') { _%>
+  public <%= campo.camelCase%>Items: Array<any> = [];
+          <%_ } _%>
           <%_ if (campo.tipoUi === 'Date') { _%>
             <%_ if (campo.props) { _%>
   public minDate<%= campo.pascalCase%> = new Date('<%=campo.props.minDate%>');

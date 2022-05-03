@@ -103,6 +103,11 @@ module.exports = class guiService {
     if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
       return 'boolean';
     }
+
+    if (tipoUi === 'cardsList') {
+      return '[]';
+    }
+
     return 'string';
   }
 
@@ -129,6 +134,10 @@ module.exports = class guiService {
 
     if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
       return 'false';
+    }
+
+    if (tipoUi === 'cardsList') {
+      return '[]';
     }
     return "''";
   }
