@@ -19,6 +19,7 @@ module.exports = class guiService {
       if (!secciones[seccion]) {
         secciones[seccion] = this.defaultSeccion(campo.seccion);
         secciones[seccion].props.labelEn = campo.seccionEn;
+        secciones[seccion].props.modelParent = campo.modelo.split('.')[0];
       }
       if (!secciones[seccion][subseccion]) {
         secciones[seccion][subseccion] = this.defaultSubseccion(campo.subseccion);
@@ -76,7 +77,30 @@ module.exports = class guiService {
     campo.descriptionEn = campo.descripcionEn;
     campo.validations = this.resolveValidations(campo);
     campo.props = this.resolveProps(campo);
+    campo.model = `${campo.modelo}.${campo.nombre}`;
+    ///campo.modelThree = this.resolveModelDesc(campo);
+    campo.name = campo.nombre;
     return campo;
+  }
+
+  //TODO test hasta 3 niveles
+  static resolveModelDesc(campo) {
+    let three = {};
+    let temp = campo.model.split('.');
+    three.parent = temp[0];
+    if (temp.length <= 2) {
+      three.child = {};
+      three.child.name = temp[1];
+      three.child.validations = {};
+      three.child.validations = this.resolveValidations(campo);
+    } else {
+      three.child = {};
+      three.child.child = {};
+      three.child.child.name = temp[2];
+      three.child.child.validations = {};
+      three.child.child.validations = this.resolveValidations(campo);
+    }
+    return three;
   }
 
   static resolveClientType(tipoUi) {

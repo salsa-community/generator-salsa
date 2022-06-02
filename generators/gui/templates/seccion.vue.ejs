@@ -31,7 +31,7 @@
      <%_ if (campo.tipoUi === 'text') { _%>
       <input-text
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        v-model="$v.<%= campo.model%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
@@ -62,7 +62,7 @@
       <%_ } else if (campo.tipoUi === 'TextArea') { _%>
       <input-text-area
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        v-model="$v.<%= campo.model%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
@@ -96,7 +96,7 @@
       <%_ } else if (campo.tipoUi === 'Radio Button') { _%>
       <input-boolean
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        v-model="$v.<%= campo.model%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         <%_ if (campo.tooltip) { _%>
         :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
@@ -107,7 +107,7 @@
       <%_ } else if (campo.tipoUi === 'Date') { _%>
       <input-date
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        v-model="$v.<%= campo.model%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
@@ -131,7 +131,7 @@
       <%_ } else if (campo.tipoUi === 'selectOne') { _%>
       <input-select-one
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        v-model="$v.<%= campo.model%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
@@ -151,7 +151,7 @@
       <%_ } else if (campo.tipoUi === 'selectMultiple') { _%>
       <input-select-many
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
-        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        v-model="$v.<%= campo.model%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
