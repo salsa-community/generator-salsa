@@ -171,6 +171,11 @@
           <%_ } _%>
         }"
       />
+      <%_ } else if (campo.tipoUi === 'cardsList') { _%>
+        <cards-list
+          id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+          :items="<%= campo.camelCase%>Items"
+          :title="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"/>
       <%_ } _%>
     <%_ }); _%>
     </b-col>
