@@ -104,6 +104,18 @@
         :readonly="false"
         :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
       />
+      <%_ } else if (campo.tipoUi === 'inputImage') { _%>
+        <input-image
+          id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+          v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+          :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+          :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+          <%_ if (campo.tooltip) { _%>
+          :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+          <%_ } _%>
+          :readonly="false"
+          :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+        />
       <%_ } else if (campo.tipoUi === 'Date') { _%>
       <input-date
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
@@ -148,6 +160,26 @@
           <%_ } _%>
         }"
       />
+      <%_ } else if (campo.tipoUi === 'selectRadio') { _%>
+        <input-select-radio
+          id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+          v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+          :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+          :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+          <%_ if (campo.tooltip) { _%>
+          :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+          <%_ } _%>
+          :options="<%= campo.camelCase%>Options"
+          :readonly="false"
+          :required="<%= campo.validations.required %>"
+          :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+          :validationsCommons="{
+            <%_ if (campo.validations.required) { _%>
+            requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+            requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
+            <%_ } _%>
+          }"
+        />
       <%_ } else if (campo.tipoUi === 'selectMultiple') { _%>
       <input-select-many
         id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
