@@ -14,6 +14,19 @@ module.exports = class Strings {
     return '';
   }
 
+  static normalizeId(string) {
+    if (string) {
+      return string
+        .normalize('NFD') // remove diatrics
+        .replace(/\s+/g, '')
+        .replace(/[\u0300-\u036f]/g, '') // remove spaces
+        .replace(/ *\([^)]*\) */g, '') // remove parentheses and its content
+        .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '')
+        .trim();
+    }
+    return '';
+  }
+
   static toLowerCase(string) {
     return changeCase.camelCase(this.normalize(string));
   }

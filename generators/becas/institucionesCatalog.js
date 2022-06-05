@@ -10230,5 +10230,23 @@ module.exports = {
     2134234240: {
       CVE_TIPO: 'Pub',
     },
+    1252134140: {
+      CVE_TIPO: 'Pub',
+    },
+    4234134180: {
+      CVE_TIPO: 'Pub',
+    },
+    1102834190: {
+      CVE_TIPO: 'Pub',
+    },
+    1182134250: {
+      CVE_TIPO: 'Pub',
+    },
+    1362234310: {
+      CVE_TIPO: 'Pub',
+    },
+    1693434420: {
+      CVE_TIPO: 'Pub',
+    },
   },
 };

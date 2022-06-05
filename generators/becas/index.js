@@ -20,18 +20,31 @@ const csv = require('csv-parser');
 const Logger = require('../util/logger');
 const String = require('../util/strings');
 const Catalogos = require('../util/distribucion/constants');
+const { CATALOG } = require('./institucionesCatalog');
+const SalsaLogin = require('../util/SalsaLogin');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     this.option('programas');
     this.option('reglas');
+    this.option('proyectos');
+    this.option('prod');
+    this.option('qa');
   }
-  writing() {
-    if (this.options.programas) {
-      BecasService.loadProgramas();
-    } else if (this.options.reglas) {
-      BecasService.loadReglas();
+
+  async writing() {
+    let context = this.config.get('becasConfig')['DEV'].context;
+    if (this.options.qa) {
+      context = this.config.get('becasConfig')['QA'].context;
+    } else if (this.options.prod) {
+      context = this.config.get('becasConfig')['PROD'].context;
     }
+
+    if (this.options.qa || this.options.prod) {
+      context.config = await SalsaLogin.login(context);
+    }
+
+    console.log(context);
   }
 };

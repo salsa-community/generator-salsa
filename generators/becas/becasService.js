@@ -51,7 +51,8 @@ module.exports = class guiService {
     programa.campo = this.resolveCampo(m.DESCRIPCION_1, spinner);
     programa.disciplina = this.resolveDisciplina(m.DESCRIPCION_2, spinner);
     programa.entidad = this.resolveEntidad(m.NOM_ENT);
-    programa.tipoInstitucion = this.resolveTipoInstitucion(m.CVE_INSTITUCION);
+    programa.claveInstitucion = m.CVE_INSTITUCION;
+    programa.tipoInstitucion = this.resolveTipoInstitucion(m.CVE_INSTITUCION, programa.id);
     programa.nombreInstitucion = m.NOMBRE;
     programa.estado = String.normalize(m.DESC_ESTADO_SOLICITUD_EVALUACN);
     programa.dictamen = '';
@@ -63,14 +64,27 @@ module.exports = class guiService {
     programa.numeroBecasCanceladas = '';
     programa.inicioEstancia = this.formatDate(m.INICIO_ESTUDIOS);
     programa.finEstancia = this.formatDate(m.FIN_ESTUDIOS);
-    //programa.inicioBeca = this.formatDate(m.INICIO_BECA);
-    //programa.finBeca = this.formatDate(m.FIN_BECA);
     programa.montoMensual = this.resolveMontoMensual(m.ABREV_GRADO);
     programa.orden = 214748364;
     programa.grupo = 'Z_NO_EVALUADO';
     programa.estadoSolicitud = String.normalize(m.DESC_ESTADO_SOLICITUD);
     this.verifyFechas(programa);
     return programa;
+  }
+
+  static toProyecto(p, spinner) {
+    let proyecto = {};
+    proyecto.id = String.normalizeId(p.convocatoria_o_programa) + '-' + p.clave_de_proyecto;
+    proyecto.convocatoria = p.convocatoria_o_programa;
+    proyecto.titulo = p.titulo_proyecto;
+    proyecto.anno = p.ano_reportado;
+    proyecto.clave = this.resolveInteger(p.clave_de_proyecto);
+    proyecto.fondo = String.normalize(p.fondo);
+    proyecto.sujetoApoyo = String.normalize(p.sujeto_de_apoyo);
+    proyecto.montoAutorizado = this.resolveDouble(p.monto_autorizado);
+    proyecto.estatus = String.normalize(p.estatus);
+    proyecto.etapa = String.normalize(p.etapa);
+    return proyecto;
   }
 
   static verifyFechas(programa) {
@@ -92,7 +106,6 @@ module.exports = class guiService {
   // to en-GB 'dd/MM/YYYY';
   static formatDate(date) {
     let result = moment(date, 'MM/DD/YYYY').format('DD/MM/YYYY');
-    this.log.info(date + ' to ' + result);
     return result;
   }
 
@@ -100,7 +113,6 @@ module.exports = class guiService {
   // to en-GB 'dd/MM/YYYY';
   static formatBecaDate(date) {
     let result = moment(date, 'DD/MM/YYYY').format('DD/MM/YYYY');
-    this.log.info(date + ' to ' + result);
     return result;
   }
 
@@ -124,6 +136,10 @@ module.exports = class guiService {
 
   static resolveInteger(value) {
     return parseInt(value);
+  }
+
+  static resolveDouble(value) {
+    return parseFloat(value);
   }
   static resolveMontoMensual(grado) {
     if (grado) {
@@ -158,6 +174,13 @@ module.exports = class guiService {
     reglas.acreditadoSnp = this.resolveBoolean(reglas.acreditadoSnp);
     reglas.activo = true;
     return reglas;
+  }
+
+  static toInstituciones(i, spinner) {
+    let institucion = {};
+    institucion.id = i.clave;
+    institucion.tipo = i.tipo;
+    return institucion;
   }
 
   static resolveCamposForRules(id, string, spinner, validate, modulo) {
@@ -234,11 +257,12 @@ module.exports = class guiService {
       return false;
     }
   }
-  static resolveTipoInstitucion(clave) {
+  static resolveTipoInstitucion(clave, id) {
     let inst = Instituciones.CATALOG[clave];
     if (inst) {
       return inst.CVE_TIPO;
     } else {
+      this.log.info(',' + id + ',INSTITUCION NO ENCONTRADA' + clave);
       return 'NO ENCONTRADA';
     }
   }
@@ -259,55 +283,88 @@ module.exports = class guiService {
     } while (currentDate - date < milliseconds);
   }
 
-  static loadProgramas() {
+  static loadProgramas(context) {
+    fs.readdir('cargas/matricula/', (err, files) => {
+      try {
+        const spinner = ora({ text: 'subiendo matricula...', interval: 80 });
+        spinner.start();
+        spinner.info(chalk.green.bold('Running on [' + context.enviroment + ']'));
+        let that = this;
+        for (let index = 0, j = 0; index < files.length - 2; index++, j++) {
+          let part = index.toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          });
+
+          setTimeout(() => {
+            spinner.succeed(chalk.green.bold('PARTE - ') + chalk.green(part));
+            fs.createReadStream('cargas/matricula/sh_part_' + part)
+              .pipe(csv())
+              .on('data', function (m) {
+                let programa = that.toPrograma(m, spinner);
+                axios
+                  .patch(context.serviceUrl + '/api/programas/' + programa.id, programa, context.config)
+                  .then(response => {
+                    spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
+                  })
+                  .catch(error => {
+                    axios
+                      .post(context.serviceUrl + '/api/programas', programa, context.config)
+                      .then(response => {
+                        spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
+                      })
+                      .catch(errorCreated => {
+                        spinner.fail(chalk.green.bold('ups - ') + chalk.green(errorCreated));
+                      });
+                  });
+              })
+              .on('end', function () {
+                spinner.succeed('finalización');
+              });
+          }, 20000 * j);
+        }
+      } catch (error) {
+        warn(error);
+      }
+    });
+  }
+
+  static loadInstituciones(context) {
     try {
-      let token =
-        'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZU3I1M3VYWTdQazZOaEVzZWVUczJxb0RwcF9FYzJrc3NhdllHQ2lZcmRFIn0.eyJqdGkiOiJkZmQzNTc5Zi1mM2E5LTQyMjgtYjA3My0zZTI0ZDcwODM4NjAiLCJleHAiOjE2NTA0MDQ3MjcsIm5iZiI6MCwiaWF0IjoxNjUwMzg2NzI3LCJpc3MiOiJodHRwczovL3FhLmlkbS5jb25hY3l0Lm14L2F1dGgvcmVhbG1zL0NvbmFjeXQtUUEiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZDZjZGIxNmItMmE3OC00ZjA2LTlhMDAtYTEwMmE1MWM0YzQ4IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibWlpY191c2VycyIsImF1dGhfdGltZSI6MCwic2Vzc2lvbl9zdGF0ZSI6ImJjNjdlMzA3LWQ1MmYtNDNmZC1hMzgyLWU0ZjAxMDVlMzY5MiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly8xNzIuMjMuKiIsImh0dHA6Ly9sb2NhbGhvc3QqIiwiaHR0cHM6Ly9xYS5mb3JtYWxpemFjaW9uLmNvbmFjeXQubXgqIiwiaHR0cHM6Ly92b3RhY2lvbmVzLmNvbmFjeXQubXgiLCJodHRwOi8vcWEucG9zZG9jdG9yYWRvLmNvbmFjeXQubXgqIiwiaHR0cHM6Ly9qaGlwc3Rlci1yZWdpc3RyeSoiLCJodHRwOi8vdm90YWNpb25lcy5jb25hY3l0Lm14IiwiaHR0cDovL3FhLmZvcm1hbGl6YWNpb24uY29uYWN5dC5teCoiLCJodHRwczovL21pY3Jvc2VydmljaW9zLmNyaXAtazhzLmNvbmFjeXQubXgiLCJodHRwczovL3FhLnNlZ3VpbWllbnRvLmNvbmFjeXQubXgqIiwiaHR0cDovL3JlZ2lzdHJ5LmFwcHMuY29uYWN5dC5teCIsImh0dHBzOi8vcWEuc2FsdWQtY29tdW5pdGFyaWEuY29uYWN5dC5teCIsImh0dHA6Ly9sb2NhbGhvc3Q6ODA4MCIsImh0dHBzOi8vY2llbmNpYS5jcmlwLWs4cy5jb25hY3l0Lm14IiwiaHR0cHM6Ly9xYS5jaWVuY2lhZGVkYXRvcy5jb25hY3l0Lm14KiIsImh0dHA6Ly9xYS5jb252b2NhdG9yaWFzLmNvbmFjeXQubXgiLCJodHRwczovL3FhLnNhbHVkLWNvbXVuaXRhcmlhLmNvbmFjeXQubXgqIiwiaHR0cDovL3FhLnZvdGFjaW9uZXMuY29uYWN5dC5teCoiLCJodHRwOi8vbWljcm9zZXJ2aWNpb3MuY3JpcC1rOHMuY29uYWN5dC5teCIsImh0dHBzOi8vMTcyLjI1LioiLCJodHRwczovLzE3Mi4yNi4qIiwiaHR0cHM6Ly8xMC4qIiwiaHR0cDovL3FhLmNpZW5jaWFkZWRhdG9zLmNvbmFjeXQubXgqIiwiaHR0cHM6Ly9xYS5jaWVuY2lhLmNvbmFjeXQubXgqIiwiaHR0cDovL2NpZW5jaWEuYXBwcy5jb25hY3l0Lm14IiwiaHR0cDovL3FhLnNhbHVkbWVudGFsLmNvbmFjeXQubXgiLCJodHRwczovL3FhLmNvbnZvY2F0b3JpYXMuY29uYWN5dC5teCIsImh0dHA6Ly8xNzIuMjMuKiIsImh0dHBzOi8vcmVnaXN0cnkuYXBwcy5jb25hY3l0Lm14IiwiaHR0cHM6Ly9xYS52b3RhY2lvbmVzLmNvbmFjeXQubXgqIiwiaHR0cDovLzE3Mi4yNS4qIiwiaHR0cDovL3FhLnNhbHVkLWNvbXVuaXRhcmlhLmNvbmFjeXQubXgiLCJodHRwOi8vMTcyLjI2LioiLCJodHRwOi8vMTAuKiIsImh0dHBzOi8vcWEuc2FsdWRtZW50YWwuY29uYWN5dC5teCoiLCJodHRwczovL3FhLnBvc2RvY3RvcmFkby5jb25hY3l0Lm14KiIsImh0dHBzOi8vY2llbmNpYS5hcHBzLmNvbmFjeXQubXgqIiwiaHR0cDovL3FhLmNpZW5jaWEuY29uYWN5dC5teCoiLCJodHRwOi8vcWEuc2VndWltaWVudG8uY29uYWN5dC5teCoiLCJodHRwczovL2xvY2FsaG9zdCoiLCJodHRwOi8vamhpcHN0ZXItcmVnaXN0cnkqIiwiaHR0cDovL2NpZW5jaWEuY3JpcC1rOHMuY29uYWN5dC5teCoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwiUk9MRV9BRE1JTiIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsIlJPTEVfQURNSU4iLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJuYW1lIjoic3lzdGVtIG1hbmFnZXIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzeXN0ZW0ubWFuYWdlciIsImxvY2FsZSI6ImVzIiwiZ2l2ZW5fbmFtZSI6InN5c3RlbSIsImZhbWlseV9uYW1lIjoibWFuYWdlciIsImVtYWlsIjoic3lzdGVtQGFvay5jb20ifQ.iZ487eXZ__hxSGGCl83a2itVTy6LDONZkbVMuqG-cWUy0eRGwU7P6k9gvtOLFNB0h4LuKZAe8SuZVQ1BI10aSX0q_cYS8yMje1pF2cQfhsTAOmxyS9gimWf8p_IhW_r0wKZze8d0yvowO-dyap2iDqqTvXbrSX7N-BLTWjNQFNrefUF9uwTL7gO9GM1me7_D0UAzu_jwTOfm-jWnpEw_BrlAbAQTyGdtXl8Gigaik02uwMPeQP-XX_t2kbZRxuG9z8g7pLuZH0qEOj4h6r5xOV8ncoTVrAynKKgWxBKUSImW4dFywx1JPDUZMvIRD1n1dn5z9SxsotBX-1RYtYC6hg';
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-      const spinner = ora({ text: 'subiendo matricula...', interval: 80 });
+      const spinner = ora({ text: 'subiendo instituciones...', interval: 80 });
       spinner.start();
       let that = this;
-      for (let index = 60, j = 0; index < 78; index++, j++) {
-        let part = index.toLocaleString('en-US', {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
-        });
 
-        setTimeout(() => {
-          spinner.succeed(chalk.green.bold('PARTE - ') + chalk.green(part));
-          fs.createReadStream('matricula/sh_part_' + part)
-            .pipe(csv())
-            .on('data', function (m) {
-              let programa = that.toPrograma(m, spinner);
-              axios
-                .patch('https://qa.cienciadedatos.conacyt.mx/services/distribucionms/api/programas/' + programa.id, programa, config)
-                .then(response => {
-                  spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
-                })
-                .catch(error => {
-                  axios
-                    .post('https://qa.cienciadedatos.conacyt.mx/services/distribucionms/api/programas', programa, config)
-                    .then(response => {
-                      spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
-                    })
-                    .catch(errorCreated => {
-                      spinner.fail(chalk.green.bold('ups - ') + chalk.green(errorCreated));
-                    });
-                });
+      spinner.succeed(chalk.green.bold('Instituciones: '));
+      fs.createReadStream('cargas/instituciones/catalogo.csv')
+        .pipe(csv())
+        .on('data', function (m) {
+          let institucion = that.toInstituciones(m, spinner);
+          axios
+            .patch(context.serviceUrl + '/api/institucions/' + institucion.id, institucion, context.config)
+            .then(response => {
+              spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
             })
-            .on('end', function () {
-              spinner.succeed('finalización');
+            .catch(error => {
+              axios
+                .post(context.serviceUrl + '/api/institucions', institucion, context.config)
+                .then(response => {
+                  spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
+                })
+                .catch(errorCreated => {
+                  spinner.fail(chalk.green.bold('ups - ') + chalk.green(errorCreated));
+                });
             });
-        }, 20000 * j);
-      }
+        })
+        .on('end', function () {
+          spinner.succeed('finalización');
+        });
     } catch (error) {
       warn(error);
     }
   }
 
-  static loadReglas() {
+  static loadReglas(context) {
     try {
       const spinner = ora({ text: 'subiendo reglas...', interval: 80 });
       spinner.start();
@@ -333,5 +390,51 @@ module.exports = class guiService {
     } catch (error) {
       warn(error);
     }
+  }
+
+  static loadProyectos(context) {
+    fs.readdir('cargas/proyectos/partes', (err, files) => {
+      try {
+        const spinner = ora({ text: 'subiendo proyectos...', interval: 80 });
+        spinner.start();
+        spinner.info(chalk.green.bold('Running on [' + context.enviroment + ']'));
+        let that = this;
+        for (let index = 89, j = 0; index < files.length - 2; index++, j++) {
+          let part = index.toLocaleString('en-US', {
+            minimumIntegerDigits: 4,
+            useGrouping: false,
+          });
+
+          setTimeout(() => {
+            spinner.succeed(chalk.green.bold('PARTE - ') + chalk.green(part));
+            fs.createReadStream('cargas/proyectos/partes/sh_part_' + part)
+              .pipe(csv())
+              .on('data', function (m) {
+                let proyecto = that.toProyecto(m, spinner);
+                axios
+                  .patch(context.serviceUrl + '/api/proyectos/' + proyecto.id, proyecto, context.config)
+                  .then(response => {
+                    spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
+                  })
+                  .catch(error => {
+                    axios
+                      .post(context.serviceUrl + '/api/proyectos', proyecto, context.config)
+                      .then(response => {
+                        spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
+                      })
+                      .catch(errorCreated => {
+                        spinner.fail(chalk.green.bold('ups - ' + proyecto.id + ': ') + chalk.green(errorCreated));
+                      });
+                  });
+              })
+              .on('end', function () {
+                spinner.succeed('finalización');
+              });
+          }, 20000 * j);
+        }
+      } catch (error) {
+        warn(error);
+      }
+    });
   }
 };
