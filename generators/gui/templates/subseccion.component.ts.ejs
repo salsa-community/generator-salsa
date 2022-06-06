@@ -54,17 +54,31 @@ export default class <%= subSeccion.props.pascalCase%>Component extends Vue {
   public maxDate<%= campo.pascalCase%> = new Date('<%=campo.props.maxDate%>');
             <%_ } _%>
           <%_ } _%>
+          <%_ if (campo.tipoUi === 'inputImage') { _%>
+            <%_ if (campo.props) { _%>
+  public estadoInvalido<%= campo.pascalCase%> = false;
+            <%_ } _%>
+          <%_ } _%>
           <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
   public selected<%= campo.pascalCase%> = [];
           <%_ } _%>
-          <%_ if (campo.tipoUi === 'selectOne' || campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
-  public <%= campo.camelCase%>Options = [
+          <%_ if (campo.tipoUi === 'selectOne') { _%>
+  public <%= campo.name%>Options = [
     { value: null, text: 'Seleccione <%= campo.label%>', disabled: true },
-    { value: '<%= campo.camelCase%>1', text: '<%= campo.label%> 1' },
-    { value: '<%= campo.camelCase%>2', text: '<%= campo.label%> 2' },
-    { value: '<%= campo.camelCase%>3', text: '<%= campo.label%> 3' },
-    { value: '<%= campo.camelCase%>4', text: '<%= campo.label%> 4' },
-    { value: '<%= campo.camelCase%>5', text: '<%= campo.label%> 5' },
+    { value: '<%= campo.name%>1', text: '<%= campo.label%> 1' },
+    { value: '<%= campo.name%>2', text: '<%= campo.label%> 2' },
+    { value: '<%= campo.name%>3', text: '<%= campo.label%> 3' },
+    { value: '<%= campo.name%>4', text: '<%= campo.label%> 4' },
+    { value: '<%= campo.name%>5', text: '<%= campo.label%> 5' },
+  ];
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple' || campo.tipoUi === 'selectRadio') { _%>
+  public <%= campo.name%>Options = [
+    { value: '<%= campo.name%>1', text: '<%= campo.label%> 1' },
+    { value: '<%= campo.name%>2', text: '<%= campo.label%> 2' },
+    { value: '<%= campo.name%>3', text: '<%= campo.label%> 3' },
+    { value: '<%= campo.name%>4', text: '<%= campo.label%> 4' },
+    { value: '<%= campo.name%>5', text: '<%= campo.label%> 5' },
   ];
           <%_ } _%>
         <%_ }); _%>

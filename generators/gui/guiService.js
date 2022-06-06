@@ -140,6 +140,10 @@ module.exports = class guiService {
       return '[]';
     }
 
+    if (tipoUi === 'inputImage') {
+      return '{}';
+    }
+
     return 'string';
   }
 
@@ -201,6 +205,10 @@ module.exports = class guiService {
     }
     if (campo.tipoUi === 'MultiSelect' || campo.tipoUi === 'selectMultiple') {
       props.minimosRequeridos = campo.minimosRequeridos ? campo.minimosRequeridos : 1;
+    }
+    if (campo.tipoUi === 'inputImage') {
+      props.tiposMime = campo.tiposMime;
+      props.pesoMaximo = campo.pesoMaximo;
     }
     return props;
   }
