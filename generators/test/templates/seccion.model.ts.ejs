@@ -1,0 +1,29 @@
+export interface I<%=seccionPascalCase%> {
+    <%_ for (const mayBeSubseccion in seccion) { _%>
+      <%_ if (mayBeSubseccion != 'props') { _%>
+        <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+    <%= campo.camelCase%>?: <%= campo.clientType%> | null;
+        <%_ }); _%>
+      <%_ } _%>
+    <%_ } _%>
+}
+
+export class <%=seccionPascalCase%> implements I<%=seccionPascalCase%> {
+  constructor(
+    <%_ for (const mayBeSubseccion in seccion) { _%>
+      <%_ if (mayBeSubseccion != 'props') { _%>
+        <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+    public <%= campo.camelCase%>?: <%= campo.clientType%> | null,
+        <%_ }); _%>
+      <%_ } _%>
+    <%_ } _%>
+  ) {
+    <%_ for (const mayBeSubseccion in seccion) { _%>
+      <%_ if (mayBeSubseccion != 'props') { _%>
+        <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+    this.<%= campo.camelCase%> = this.<%= campo.camelCase%> ?? <%- campo.clientDefaultValue%>;
+        <%_ }); _%>
+      <%_ } _%>
+    <%_ } _%>
+  }
+}

@@ -290,7 +290,7 @@ module.exports = class guiService {
         spinner.start();
         spinner.info(chalk.green.bold('Running on [' + context.enviroment + ']'));
         let that = this;
-        for (let index = 0, j = 0; index < files.length - 2; index++, j++) {
+        for (let index = 89, j = 0; index < files.length - 2; index++, j++) {
           let part = index.toLocaleString('en-US', {
             minimumIntegerDigits: 2,
             useGrouping: false,

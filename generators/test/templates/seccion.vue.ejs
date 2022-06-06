@@ -1,0 +1,192 @@
+<template>
+  <b-row class="row mb-5">
+    <b-col md="12">
+      <header class="bx-header-title">
+        <h2 id="<%= seccion.props.dashCase %>-id" v-text="$t('<%= seccion.props.dashCase%>.title')">
+          <%= seccion.props.label%>
+          <small v-text="$t('<%= seccion.props.dashCase%>.subtitle')"><%= seccion.props.label%></small>
+        </h2>
+        <div class="header-title-line"></div>
+      </header>
+    </b-col>
+    <b-col md="12" class="mb-5">
+      <div class="alert alert-success">
+        <span>Alert basetemplate</span>
+      </div>
+    </b-col>
+<%_ for (const mayBeSubseccion in seccion) { _%>
+  <%_ if (mayBeSubseccion != 'props') { _%>
+    <%_ let pathSubseccion = seccion.props.dashCase + '.' + seccion[mayBeSubseccion].props.dashCase; _%>
+    <b-col md="12">
+      <header class="mt-5 bx-header-title">
+        <h3 id="<%= seccion[mayBeSubseccion].props.dashCase %>-id" v-text="$t('<%= pathSubseccion %>.title')">
+          <%= seccion[mayBeSubseccion].props.label %>
+          <small v-text="$t('<%= pathSubseccion %>.subtitle')"><%= seccion[mayBeSubseccion].props.label %></small>
+        </h3>
+        <div class="header-title-line"></div>
+      </header>
+    </b-col>
+    <b-col md="12">
+    <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+     <%_ if (campo.tipoUi === 'text') { _%>
+      <input-text
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        :validationsCommons="{
+          <%_ if (campo.validations.required) { _%>
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
+          <%_ } _%>
+          <%_ if (campo.validations.min) { _%>
+          minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
+          minMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.minMessage', { min: '<%=campo.validations.min%>' }),
+          <%_ } _%>
+          <%_ if (campo.validations.max) { _%>
+          maxValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.maxLength,
+          maxMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.maxMessage', { max: '<%=campo.validations.max%>' }),
+          <%_ } _%>
+          <%_ if (campo.validations.regex) { _%>
+          regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
+          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage'),
+          <%_ } _%>
+        }"
+      />
+      <%_ } else if (campo.tipoUi === 'TextArea') { _%>
+      <input-text-area
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        :validationsCommons="{
+          <%_ if (campo.validations.required) { _%>
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
+          <%_ } _%>
+          <%_ if (campo.validations.min) { _%>
+          minValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.minLength,
+          minMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.minMessage', { min: '<%=campo.validations.min%>' }),
+          <%_ } _%>
+          <%_ if (campo.validations.max) { _%>
+          maxValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.maxLength,
+          maxMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.maxMessage', { max: '<%=campo.validations.max%>' }),
+          <%_ } _%>
+          <%_ if (campo.validations.regex) { _%>
+          regexValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.<%= campo.constantCase%>,
+          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.regexMessage'),
+          <%_ } _%>
+        }"
+        <%_ if (campo.props) { _%>
+        :maxCaracteres="<%=campo.props.maxCaracteres%>"
+        <%_ } _%>
+      />
+      <%_ } else if (campo.tipoUi === 'Radio Button') { _%>
+      <input-boolean
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
+        :readonly="false"
+        :valid="!$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$invalid"
+      />
+      <%_ } else if (campo.tipoUi === 'Date') { _%>
+      <input-date
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
+        :placeholder="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        :validationsCommons="{
+          <%_ if (campo.validations.required) { _%>
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
+          <%_ } _%>
+        }"
+        <%_ if (campo.props) { _%>
+        :minDate="minDate<%= campo.pascalCase%>"
+        :maxDate="maxDate<%= campo.pascalCase%>"
+        <%_ } _%>
+      />
+      <%_ } else if (campo.tipoUi === 'selectOne') { _%>
+      <input-select-one
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
+        :options="<%= campo.camelCase%>Options"
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
+        :valid="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ? !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$error : null"
+        :validationsCommons="{
+          <%_ if (campo.validations.required) { _%>
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
+          <%_ } _%>
+        }"
+      />
+      <%_ } else if (campo.tipoUi === 'selectMultiple') { _%>
+      <input-select-many
+        id="<%= seccion.props.dashCase%>-<%= campo.dashCase%>-id"
+        v-model="$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.tooltip')"
+        <%_ } _%>
+        :options="<%= campo.camelCase%>Options"
+        :markedSelections="selected<%= campo.pascalCase%>"
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
+        :valid="$v.<%=seccion.props.camelCase%>.<%= campo.camelCase%>.$dirty ?
+          !$v.<%=seccion.props.camelCase%>.<%= campo.camelCase%>.$error && <%=seccion.props.camelCase%>.<%= campo.camelCase%>.length >= <%=campo.props.minimosRequeridos%> : 
+          null"
+        :validationsCommons="{
+          <%_ if (campo.validations.required) { _%>
+          requiredValue: !$v.<%= seccion.props.camelCase%>.<%= campo.camelCase%>.required,
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.dashCase%>.validations.required'),
+          <%_ } _%>
+        }"
+      />
+      <%_ } _%>
+    <%_ }); _%>
+    </b-col>
+  <%_ } _%>
+<%_ } _%>
+    <b-col class="mb-5">
+      <b-button variant="outline-primary" size="lg">
+        <font-awesome-icon icon="ban" class="mr-2"></font-awesome-icon>
+        <span>Cancelar</span>
+      </b-button>
+      <b-button @click="$v.<%= seccion.props.camelCase%>.$touch" variant="primary" size="lg">
+        <font-awesome-icon icon="save" class="mr-2"></font-awesome-icon>
+        <span>Guardar</span>
+      </b-button>
+    </b-col>
+  </b-row>
+</template>
+
+<script lang="ts" src="./<%= seccion.props.dashCase%>.component.ts"></script>

@@ -45,6 +45,12 @@ module.exports = class extends Generator {
       context.config = await SalsaLogin.login(context);
     }
 
-    console.log(context);
+    if (this.options.programas) {
+      BecasService.loadProgramas(context);
+    } else if (this.options.reglas) {
+      BecasService.loadReglas(context);
+    } else if (this.options.proyectos) {
+      BecasService.loadProyectos(context);
+    }
   }
 };
