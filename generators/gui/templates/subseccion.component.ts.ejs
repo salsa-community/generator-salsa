@@ -1,0 +1,109 @@
+import { Component, Vue, Inject } from 'vue-property-decorator';
+
+import AlertService from '@/shared/alert/alert.service';
+
+import { <%= subSeccion.props.modelParent.pascalCase%>, <%= subSeccion.props.modelParent.pascalCase%>Api } from '@/shared/perfil-usuario/api';
+import { required, minLength, maxLength, helpers } from 'vuelidate/lib/validators';
+
+    <%_ subSeccion.campos.forEach(campo => { _%>
+      <%_ if (campo.validations.regex) { _%>
+const <%= campo.constantCase%> = helpers.regex(
+  '<%=campo.lowerCase%>',
+  <%=campo.validations.regex%>
+);
+        <%_ } _%>
+    <%_ }); _%>
+
+const validations: any = {
+
+  <%= subSeccion.props.modelParent.camelCase%>: {
+  <%_ subSeccion.campos.forEach(campo => { _%>
+    <%= campo.name%>: {
+      <%_ if (campo.validations.required) { _%>
+      required,
+      <%_ }_%>
+      <%_ if (campo.validations.min) { _%>
+      minLength: minLength(<%= campo.validations.min%>),
+      <%_ } _%>
+      <%_ if (campo.validations.max) { _%>
+      maxLength: maxLength(<%= campo.validations.max%>),
+      <%_ } _%>
+      <%_ if (campo.validations.regex) { _%>
+      <%= campo.constantCase%>,
+      <%_ } _%>
+    },
+  <%_ }); _%>
+  },
+};
+
+@Component({
+  validations,
+})
+export default class <%= subSeccion.props.pascalCase%>Component extends Vue {
+  @Inject('alertService') private alertService: () => AlertService;
+  @Inject('<%= subSeccion.props.modelParent.camelCase%>Api') private <%= subSeccion.props.modelParent.camelCase%>Api: () => <%= subSeccion.props.modelParent.pascalCase%>Api;
+
+  public <%= subSeccion.props.modelParent.camelCase%>: <%= subSeccion.props.modelParent.pascalCase%> = {};
+  public isSaving = false;
+  public currentLanguage = '';
+
+        <%_ subSeccion.campos.forEach(campo => { _%>
+          <%_ if (campo.tipoUi === 'Date') { _%>
+            <%_ if (campo.props) { _%>
+  public minDate<%= campo.pascalCase%> = new Date('<%=campo.props.minDate%>');
+  public maxDate<%= campo.pascalCase%> = new Date('<%=campo.props.maxDate%>');
+            <%_ } _%>
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'inputImage') { _%>
+            <%_ if (campo.props) { _%>
+  public estadoInvalido<%= campo.pascalCase%> = false;
+            <%_ } _%>
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
+  public selected<%= campo.pascalCase%> = [];
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'selectOne') { _%>
+  public <%= campo.name%>Options = [
+    { value: null, text: 'Seleccione <%= campo.label%>', disabled: true },
+    { value: '<%= campo.name%>1', text: '<%= campo.label%> 1' },
+    { value: '<%= campo.name%>2', text: '<%= campo.label%> 2' },
+    { value: '<%= campo.name%>3', text: '<%= campo.label%> 3' },
+    { value: '<%= campo.name%>4', text: '<%= campo.label%> 4' },
+    { value: '<%= campo.name%>5', text: '<%= campo.label%> 5' },
+  ];
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple' || campo.tipoUi === 'selectRadio') { _%>
+  public <%= campo.name%>Options = [
+    { value: '<%= campo.name%>1', text: '<%= campo.label%> 1' },
+    { value: '<%= campo.name%>2', text: '<%= campo.label%> 2' },
+    { value: '<%= campo.name%>3', text: '<%= campo.label%> 3' },
+    { value: '<%= campo.name%>4', text: '<%= campo.label%> 4' },
+    { value: '<%= campo.name%>5', text: '<%= campo.label%> 5' },
+  ];
+          <%_ } _%>
+        <%_ }); _%>
+
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (to.params.campoId) {
+        vm.retrieveCampo(to.params.campoId);
+      }
+    });
+  }
+
+  created(): void {
+    this.currentLanguage = this.$store.getters.currentLanguage;
+    this.$store.watch(
+      () => this.$store.getters.currentLanguage,
+      () => {
+        this.currentLanguage = this.$store.getters.currentLanguage;
+      }
+    );
+  }
+
+  public previousState(): void {
+    this.$router.go(-1);
+  }
+
+  public initRelationships(): void {}
+}

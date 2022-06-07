@@ -8,6 +8,7 @@ const chalk = require('chalk');
 const readline = require('readline');
 const Logger = require('../util/logger');
 const Validator = require('./validator');
+const Defaults = require('./defaults');
 const ora = require('ora');
 
 module.exports = class extends Generator {
@@ -39,23 +40,23 @@ module.exports = class extends Generator {
 
   async dowloadCvu() {
     let cvuFile = 'cvu.csv';
+    let context = Defaults.values(this.config);
+    const log = Logger.getLogger();
+    context.dataFile = this.destinationPath(cvuFile);
+    context.outputdir = this.destinationPath('downloaded');
+    context.username = this.answers.username;
+    context.password = this.answers.password;
+
     try {
-      var start = new Date();
-      Validator.validate(this.config);
-      const log = Logger.getLogger();
-      const dataFile = this.destinationPath(cvuFile);
-      const outputdir = this.destinationPath('downloaded');
-      const username = this.answers.username;
-      const password = this.answers.password;
-      const loginUrl = this.config.get('login-url');
-      Files.createIfNotExist(dataFile);
-      Files.mkdirSync(outputdir);
-      var response = await Login.login(username, password, loginUrl);
+      let start = new Date();
+      Files.createIfNotExist(context.dataFile);
+      Files.mkdirSync(context.outputdir);
+      let response = await Login.login(context);
       if (response.failure) error(response.error + ': ' + response.message);
       const token = response.data.token;
       this.log('');
       this.log(chalk.bold.white('Reading: ' + cvuFile));
-      const fileStream = fs.createReadStream(dataFile);
+      const fileStream = fs.createReadStream(context.dataFile);
       const spinner = ora({ text: 'Dowloading...', interval: 80 });
       const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
 
@@ -64,20 +65,18 @@ module.exports = class extends Generator {
       for await (const cvuraw of rl) {
         if (!isNaN(cvuraw)) {
           spinner.start();
-          var context = {};
           context.cvu = Number(cvuraw);
-          context.reporteEjecutivoUrl = this.config.get('reporte-ejecutivo-url');
           context.token = token;
           spinner.text = 'Downloading ' + context.cvu;
           var archivo = await CvuService.consultar(context);
           if (archivo) {
             let buff = Buffer.from(archivo, 'base64');
             fs.writeFileSync(outputdir + '/' + context.cvu + '.pdf', buff);
-            spinner.succeed(chalk.green(outputdir + '/' + context.cvu + '.pdf'));
+            spinner.succeed(chalk.green(context.outputdir + '/' + context.cvu + '.pdf'));
             log.info(',' + context.cvu + ', success');
             success++;
           } else {
-            spinner.fail(chalk.red(outputdir + '/' + context.cvu + '.pdf'));
+            spinner.fail(chalk.red(context.outputdir + '/' + context.cvu + '.pdf'));
             log.error(',' + context.cvu + ', error');
             errors++;
           }

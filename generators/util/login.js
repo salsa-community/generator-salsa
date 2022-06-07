@@ -13,10 +13,10 @@ const request = {
 };
 
 module.exports = class Login {
-  static async login(username, password, loginUrl) {
-    request.username = username;
-    request.password = password;
-    var response = await axios.post(loginUrl, request, config).then(
+  static async login(context) {
+    request.username = context.username;
+    request.password = context.password;
+    var response = await axios.post(context.loginUrl, request, config).then(
       response => {
         if (!response.data.token) {
           response.failure = true;

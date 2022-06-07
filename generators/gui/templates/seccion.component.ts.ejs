@@ -1,0 +1,120 @@
+import { Component, Vue, Inject } from 'vue-property-decorator';
+
+import AlertService from '@/shared/alert/alert.service';
+
+import { I<%= seccion.props.pascalCase%>, <%= seccion.props.pascalCase%> } from '@/shared/model/msPerfil/<%= seccion.props.dashCase%>.model';
+import <%= seccion.props.pascalCase%>Service from './<%= seccion.props.dashCase%>.service';
+import { required, minLength, maxLength, helpers } from 'vuelidate/lib/validators';
+
+<%_ for (const mayBeSubseccion in seccion) { _%>
+  <%_ if (mayBeSubseccion != 'props') { _%>
+    <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+      <%_ if (campo.validations.regex) { _%>
+const <%= campo.constantCase%> = helpers.regex(
+  '<%=campo.lowerCase%>',
+  <%=campo.validations.regex%>
+);
+        <%_ } _%>
+    <%_ }); _%>
+  <%_ } _%>
+<%_ } _%>
+
+const validations: any = {
+
+  <%= seccion.props.modelParent%>: {
+  <%_ for (const mayBeSubseccion in seccion) { _%>
+    <%_ if (mayBeSubseccion != 'props') { _%>
+  <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+    <%= campo.tipoUi === 'cardsList'? campo.camelCase + 'Items' :campo.camelCase%>: {
+      <%_ if (campo.validations.required) { _%>
+      required,
+      <%_ }_%>
+      <%_ if (campo.validations.min) { _%>
+      minLength: minLength(<%= campo.validations.min%>),
+      <%_ } _%>
+      <%_ if (campo.validations.max) { _%>
+      maxLength: maxLength(<%= campo.validations.max%>),
+      <%_ } _%>
+      <%_ if (campo.validations.regex) { _%>
+      <%= campo.constantCase%>,
+      <%_ } _%>
+    },
+  <%_ }); _%>
+    <%_ } _%>
+  <%_ } _%>
+  },
+};
+
+@Component({
+  validations,
+})
+export default class <%= seccion.props.pascalCase%>Component extends Vue {
+  @Inject('<%= seccion.props.camelCase%>Service') private <%= seccion.props.camelCase%>Service: () => <%= seccion.props.pascalCase%>Service;
+  @Inject('alertService') private alertService: () => AlertService;
+
+  public <%= seccion.props.camelCase%>: I<%= seccion.props.pascalCase%> = new <%= seccion.props.pascalCase%>;
+  public isSaving = false;
+  public currentLanguage = '';
+
+  <%_ for (const mayBeSubseccion in seccion) { _%>
+    <%_ if (mayBeSubseccion != 'props') { _%>
+        <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+          <%_ if (campo.tipoUi === 'cardsList') { _%>
+  public <%= campo.camelCase%>Items: Array<any> = [];
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'Date') { _%>
+            <%_ if (campo.props) { _%>
+  public minDate<%= campo.pascalCase%> = new Date('<%=campo.props.minDate%>');
+  public maxDate<%= campo.pascalCase%> = new Date('<%=campo.props.maxDate%>');
+            <%_ } _%>
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple') { _%>
+  public selected<%= campo.pascalCase%> = [];
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'selectOne') { _%>
+  public <%= campo.camelCase%>Options = [
+    { value: null, text: 'Seleccione <%= campo.label%>', disabled: true },
+    { value: '<%= campo.camelCase%>1', text: '<%= campo.label%> 1' },
+    { value: '<%= campo.camelCase%>2', text: '<%= campo.label%> 2' },
+    { value: '<%= campo.camelCase%>3', text: '<%= campo.label%> 3' },
+    { value: '<%= campo.camelCase%>4', text: '<%= campo.label%> 4' },
+    { value: '<%= campo.camelCase%>5', text: '<%= campo.label%> 5' },
+  ];
+          <%_ } _%>
+          <%_ if (campo.tipoUi === 'selectMany' || campo.tipoUi === 'selectMultiple' || campo.tipoUi === 'selectRadio') { _%>
+  public <%= campo.camelCase%>Options = [
+    { value: '<%= campo.camelCase%>1', text: '<%= campo.label%> 1' },
+    { value: '<%= campo.camelCase%>2', text: '<%= campo.label%> 2' },
+    { value: '<%= campo.camelCase%>3', text: '<%= campo.label%> 3' },
+    { value: '<%= campo.camelCase%>4', text: '<%= campo.label%> 4' },
+    { value: '<%= campo.camelCase%>5', text: '<%= campo.label%> 5' },
+  ];
+                    <%_ } _%>
+        <%_ }); _%>
+    <%_ } _%>
+  <%_ } _%>
+
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (to.params.campoId) {
+        vm.retrieveCampo(to.params.campoId);
+      }
+    });
+  }
+
+  created(): void {
+    this.currentLanguage = this.$store.getters.currentLanguage;
+    this.$store.watch(
+      () => this.$store.getters.currentLanguage,
+      () => {
+        this.currentLanguage = this.$store.getters.currentLanguage;
+      }
+    );
+  }
+
+  public previousState(): void {
+    this.$router.go(-1);
+  }
+
+  public initRelationships(): void {}
+}

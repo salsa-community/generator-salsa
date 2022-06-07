@@ -1,37 +1,28 @@
-var Generator = require('yeoman-generator');
-
-const ora = require('ora');
-const chalk = require('chalk');
-const prompts = require('prompts');
+const SalsaBaseGenerator = require('../generator-base');
 const terminalLink = require('terminal-link');
 const { info, warn } = require('prettycli');
 
-const link = terminalLink('conacyt', 'https://conacyt-arquitectura.github.io/');
-
-// const spinner = ora(`Loading ${chalk.red('unicorns')}`).start();
-
-module.exports = class extends Generator {
+module.exports = class extends SalsaBaseGenerator {
+  constructor(args, opts) {
+    super(args, opts, null);
+  }
   prompting() {
     const prompts = [
       {
         type: 'list',
         name: 'appType',
-        message: 'Which type of application you want to generate?',
+        message: 'Welcome to SALSA CLI?',
         choices: [
           {
-            value: 'microservice',
-            name: 'SpringBoot MicroService',
+            value: 'cvu',
+            name: 'Download cvu',
           },
           {
-            value: 'config-server',
-            name: 'Spring Cloud Config Server',
-          },
-          {
-            value: 'service-registry',
-            name: 'Spring Cloud Eureka Server for Service Registry and Discovery',
+            value: 'rcea',
+            name: 'Match Evaluator for a Project',
           },
         ],
-        default: 'microservice',
+        default: 'info',
       },
     ];
     return this.prompt(prompts).then(answers => {
@@ -41,5 +32,26 @@ module.exports = class extends Generator {
 
   default() {
     this.composeWith(require.resolve('../' + this.appType));
+  }
+
+  get initializing() {
+    return this._initializing();
+  }
+
+  _initializing() {
+    return {
+      displayLogo() {
+        this.printLogo();
+      },
+      validateFromCli() {
+        this.checkInvocationFromCLI();
+      },
+      validateJava() {
+        this.checkJava();
+      },
+      validateNode() {
+        this.checkNode();
+      },
+    };
   }
 };

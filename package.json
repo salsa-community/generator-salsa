@@ -1,6 +1,6 @@
 {
   "name": "generator-salsa",
-  "version": "2.1.0",
+  "version": "2.2.1",
   "description": "Salsa generator is mainly used for the software architecture team",
   "author": "CONACYT",
   "license": "MIT",
@@ -19,7 +19,9 @@
   ],
   "dependencies": {
     "axios": "^0.21.4",
+    "camelcase": "^6.3.0",
     "chalk": "^4.1.2",
+    "change-case": "^4.1.2",
     "cheerio": "^1.0.0-rc.10",
     "csv-parser": "^3.0.0",
     "csv-string": "^4.0.1",
@@ -29,14 +31,16 @@
     "fast-xml-parser": "^3.20.0",
     "gulp-beautify": "^3.0.0",
     "node-rest-client": "^3.1.0",
-    "ora": "^3.4.0",
+    "ora": "^5.4.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "prettycli": "^1.4.3",
     "prompts": "^2.4.1",
     "sequelize": "^6.6.5",
     "simple-node-logger": "^21.8.12",
-    "terminal-link": "^3.0.0",
+    "snake-case": "^3.0.4",
+    "terminal-link": "^2.1.1",
+    "yeoman-environment": "^3.6.0",
     "yeoman-generator": "^5.4.2"
   },
   "devDependencies": {
@@ -47,5 +51,9 @@
     "eslint-plugin-import": "2.24.2",
     "eslint-plugin-prettier": "4.0.0",
     "prettier": "2.4.1"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0",
+    "npm": ">=6.14.4"
   }
 }
