@@ -17,11 +17,10 @@ const GuiService = require('./guiService');
 const Constants = require('./constants');
 
 module.exports = class extends Generator {
-  writing() {
+  async writing() {
     let context = {};
     context.csvCamposRizomaFilePath = this.destinationPath('campos-rizoma.csv');
-    let campos = GuiService.resolveCamposCvu(context.csvCamposRizomaFilePath);
-    //this.config.set('secciones', seccionesOpt);
-    //this.config.save();
+    let modelo = await GuiService.resolveCamposCvu(context.csvCamposRizomaFilePath);
+    console.log(JSON.stringify(modelo, null, 2));
   }
 };

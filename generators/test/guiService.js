@@ -6,6 +6,16 @@ const fsreader = require('fs');
 const csv = require('csv-parser');
 const SECCION_PROP = 'seccion';
 const jp = require('jsonpath');
+const pluralize = require('pluralize');
+const Inflector = require('inflected');
+
+Inflector.inflections('es', function (inflect) {
+  inflect.plural(/(o)$/i, '$1$2s');
+  inflect.singular(/(o)s/i, '$1');
+  inflect.plural(/(on)$/i, '$1es');
+  inflect.singular(/(on)es/i, '$1');
+});
+
 module.exports = class guiService {
   static destinationPath(seccion) {
     return context.destinationComponentPath + seccion.dashCase + '/' + seccion.dashCase + '.vue';
@@ -21,48 +31,49 @@ module.exports = class guiService {
   }
 
   static resolveCamposCvu(filePath) {
-    try {
-      const spinner = ora({ text: 'procesando csv...', interval: 80 });
-      spinner.start();
-      let modelo = { properties: {}, type: 'object' };
+    let modelo = { properties: {}, type: 'object' };
+    let context = {};
+    return new Promise(resolve => {
       fsreader
         .createReadStream(filePath)
         .pipe(csv({ mapHeaders: ({ header }) => String.toCamelCase(header) }))
         .on('data', row => {
           if (row.modelo) {
             let path = jp.parse('$.' + row.modelo);
-            console.log(path);
-            let currentReference = modelo;
-            let beforeReference = null;
-            let maxElements = path.length - 1;
+            context = this.contextFactory(modelo, path, row);
             path.forEach((el, idx) => {
-              if (el.expression.type === 'identifier') {
-                // es objeto
-                if (!currentReference['properties'][el.expression.value]) {
-                  let elementType = 'object';
-                  let isLeaf = false;
-                  if (idx == maxElements) {
-                    elementType = row.tipoDeCampo;
-                    isLeaf = true;
-                  }
-                  currentReference['properties'][el.expression.value] = { properties: {}, type: elementType, isLeaf: isLeaf };
-                }
-                beforeReference = currentReference;
-                currentReference = currentReference['properties'][el.expression.value];
-              } // si es array, le indicamos al elemento padre que es tipo array y no object
-              else if (el.expression.type === 'script_expression') {
-                beforeReference.type = 'array';
-              }
+              context.el = el;
+              context.idx = idx;
+              this.resolveTypeOfExpression(context);
             });
           }
         })
         .on('end', function () {
-          console.log('resultado!!!!');
-          console.log(JSON.stringify(modelo, null, 2));
-          spinner.succeed('finalización');
+          resolve(modelo);
         });
-    } catch (error) {
-      console.log(error);
+    });
+  }
+
+  static contextFactory(modelo, path, row) {
+    let context = {};
+    context.currentReference = modelo;
+    context.beforeReference = null;
+    context.maxElements = path.length - 1;
+    context.row = row;
+    return context;
+  }
+  static resolveTypeOfExpression(context) {
+    if (context.el.expression.type === 'identifier') {
+      // es objeto
+      if (!context.currentReference['properties'][context.el.expression.value]) {
+        context.currentReference['properties'][context.el.expression.value] = this.defaulProperty(context, context.el.expression.value);
+      }
+      context.beforeReference = context.currentReference;
+      context.beforeElValue = context.el.expression.value;
+      context.currentReference = context.currentReference['properties'][context.el.expression.value];
+    } // si es array, le indicamos al elemento padre que es tipo array y no object
+    else if (context.el.expression.type === 'script_expression') {
+      context.beforeReference['properties'][context.beforeElValue].type = 'array';
     }
   }
 
@@ -82,6 +93,27 @@ module.exports = class guiService {
       secciones[seccion][subseccion].campos.push(this.formatCampo(campo));
     });
     return secciones;
+  }
+
+  static defaulProperty(context, name) {
+    let isLeaf = false;
+    let elementType = 'object';
+    if (context.idx == context.maxElements) {
+      elementType = context.row.tipoDeCampo;
+      isLeaf = true;
+    }
+    return {
+      properties: {},
+      singular: Inflector.singularize(name, 'es'),
+      plural: Inflector.pluralize(name, 'es'),
+      description: context.row.campo,
+      pascalCase: String.toPascalCase(name),
+      camelCase: String.toCamelCase(name),
+      snakeCase: String.toSnakeCase(name),
+      dashCase: String.toDashCase(name),
+      type: elementType,
+      isLeaf: isLeaf,
+    };
   }
 
   static defaultSeccion(description) {

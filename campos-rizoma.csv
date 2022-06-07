@@ -1,34 +1,13 @@
 Orden,Modelo (Desarrollo),Campo,Tipo de Campo,Campo Pantalla,Campo_BD,Nombre de Tabla,Nombre Catálogo,Obligatoriedad,"Sección ",Subsección,Forma de llenado,Observaciones,Reglas Negocio,,,Fuente de Información
-1,acercaDeMi.otro.nuevo.campo.miPerfil.tipoPerfil,Tipo de perfil,PENDIENTE,Combo,PENDIENTE,PENDIENTE,PENDIENTE,True,Acerca de mi,Mi perfil,Manual,"Con las opciones (Perfil General, Perfil Becario, Perfil Investigador) ","R1.El campo Tipo de Perfil es de selección con las opciones (Perfil General,Perfil Becas, Perfil Investigador)
+1,acercaDeMi.miPerfil.tipoPerfil,Tipo de perfil,PENDIENTE,Combo,PENDIENTE,PENDIENTE,PENDIENTE,True,"Acerca de mi",Mi perfil,Manual,"Con las opciones (Perfil General, Perfil Becario, Perfil Investigador) ","R1.El campo Tipo de Perfil es de selección con las opciones (Perfil General,Perfil Becas, Perfil Investigador)
 R2.Si se selecciona Perfil General se habilitara la Sección Acerca de Mi, Subsecciones Mi Perfil y Datos Generales.
 R3.Si se selecciona Perfil Becario se habilitaran las secciones:
 Sección Acerca de Mi, Subsecciones Mi Perfil, Datos Generales, Dirección, Seccion Educación Subsección Trayectoria Academica 
 Sección Experiencia Subsección Trayectoria Profesional.
 R4.Si se selecciona Perfil Investigador se habilitarán todas las secciones.
 ",,,Equipo Restructuración
-2,acercaDeMi.miPerfil.fotografia,Fotografía,PENDIENTE,Imagen,PENDIENTE,PENDIENTE,PENDIENTE,False,Acerca de mi,Mi perfil,Manual,,"R1.Si el Usuario no adjunta su fotografía, se habilitará un icono de una persona.",,,Equipo Restructuración
-3,acercaDeMi.miPerfil.semblanza,Semblanza,PENDIENTE,Área de texto,PENDIENTE,PENDIENTE,PENDIENTE,True,Acerca de mi,Mi perfil,Manual,,"R1.Se deberá ingresar una sintesis que asiente los aspectos más destacados, asi como las cualidades académicas y profesionales.",,,Equipo Restructuración
-4,acercaDeMi.miPerfil.ubicacion,Ubicación,PENDIENTE,Campo de texto,PENDIENTE,PENDIENTE,PENDIENTE,True,Acerca de mi,Mi perfil,Manual/Asistido,Pendiente definir si sera un geolocalizador o bien un campo de texto (autocompletado),R1.Se deberá ingresar la ubicación de acuerdo a la Ciudad y el Estado donde radica.,,,Equipo Restructuración
-5,acercaDeMi.miPerfil.contactos[(@.Contacto)],"Medios de Contacto ",PENDIENTE,Campo de texto/Tarjeta,PENDIENTE,PENDIENTE,PENDIENTE,False,Acerca de mi,Mi perfil,Asistido,Antes era un Datagrid ahora será una tarjeta,"R1.Se mostrará la información de los campos Correo Electrónico, Teléfono, Tipo de Contacto y Medio de Contacto Principal.
+2,acercaDeMi.miPerfil.fotografia,Fotografía,PENDIENTE,Imagen,PENDIENTE,PENDIENTE,PENDIENTE,False,"Acerca de mi",Mi perfil,Manual,,"R1.Si el Usuario no adjunta su fotografía, se habilitará un icono de una persona.",,,Equipo Restructuración
+3,acercaDeMi.miPerfil.semblanza,Semblanza,PENDIENTE,Área de texto,PENDIENTE,PENDIENTE,PENDIENTE,True,"Acerca de mi",Mi perfil,Manual,,"R1.Se deberá ingresar una sintesis que asiente los aspectos más destacados, asi como las cualidades académicas y profesionales.",,,Equipo Restructuración
+4,acercaDeMi.miPerfil.ubicacion,Ubicación,PENDIENTE,Campo de texto,PENDIENTE,PENDIENTE,PENDIENTE,True,"Acerca de mi",Mi perfil,Manual/Asistido,Pendiente definir si sera un geolocalizador o bien un campo de texto (autocompletado),R1.Se deberá ingresar la ubicación de acuerdo a la Ciudad y el Estado donde radica.,,,Equipo Restructuración
+5,acercaDeMi.miPerfil.contactos[(@.Contacto)],"Medios de Contacto ",PENDIENTE,Campo de texto/Tarjeta,PENDIENTE,PENDIENTE,PENDIENTE,False,"Acerca de mi",Mi perfil,Asistido,Antes era un Datagrid ahora será una tarjeta,"R1.Se mostrará la información de los campos Correo Electrónico, Teléfono, Tipo de Contacto y Medio de Contacto Principal.
 R2.Se podrán agregar ""n"" medios de contacto, clasificados en Casa/Trabajo/Móvil",,,Diccionario de Datos/Equipo Restructuración
-6,acercaDeMi.miPerfil.contactos[*].correo,Correo electrónico,VARCHAR (256),Campo de texto,CONTACTO,CONTACTO,CAT_TIPO CONTACTO,True,Acerca de mi,Mi perfil,Manual,,"R1.Se deberá ingresar la dirección de correo electrónico en donde se puede tener contacto con el Usuario.
-R2.Se tomará en cuenta el correo electrónico que se se ingreso al momento de el alta de cuenta, con la opción de editarse.
-",,,Diccionario de Datos/Equipo Restructuración
-7,acercaDeMi.miPerfil.contactos[*].telefono,Teléfono,VARCHAR (256),Campo de texto,CONTACTO,CONTACTO,CAT_TIPO CONTACTO,True,Acerca de mi,Mi perfil,Manual,Campo de texto,R1.Se deberá ingresar el telefono en donde se puede tener contacto con el Usuario.,,,Diccionario de Datos/Equipo Restructuración
-8,acercaDeMi.miPerfil.contactos[*].tipoContacto,Tipo de Contacto,PENDIENTE,Combo,PENDIENTE,PENDIENTE,PENDIENTE,True,Acerca de mi,Mi perfil,Manual,Con las opciones Casa/Trabajo/Móvil,"R1.El campo Tipo de Contacto esta asociado al campo Télefono, se podrá especificar si el Télefono es de Casa, Trabajo o Móvil.
-R2.Se podrán agregar 3 diferentes teléfonos (Casa, Trabajo o Móvil)",,,Diccionario de Datos/Equipo Restructuración
-9,acercaDeMi.miPerfil.contactos[*].isPrincipal,Medio de contacto principal,PENDIENTE,Combo,PENDIENTE,PENDIENTE,PENDIENTE,True,Acerca de mi,Mi perfil,Manual,Con las opciones Teléfono Casa/Teléfono Móvil/Teléfono Trabajo/Correo Electrónico,".R1.El campo Medio de Contacto Principal, tendrá las opciones  Telefono Casa/Teléfono Móvil/Teléfono Trabajo/Correo Electrónico el cual indicará que medio será el principal para poder contactar al Usuario.
-R2.Solo se deberán mostrar las opciones ingresadas previamente en Tipo de Contacto.",,,Diccionario de Datos/Equipo Restructuración
-10,acercaDeMi.miPerfil.contactos[*].isCompartir,Compartir con mi red,PENDIENTE,Check,PENDIENTE,PENDIENTE,PENDIENTE,False,Acerca de mi,Mi perfil,Manual,,R1.El campo indica si se da la autorización para compartir su información con la red.,,,Equipo Restructuración
-11,acercaDeMi.miPerfil.idIOrcid,ORC ID,VARCHAR2 (8),Campo de texto,CVE_IDENTIFICA_AUTOR,AUTORID_DOCUMENTO,"PARTICIPANTE_ARTICULO
-PARTICIPANTE_CAPITULO
-PARTICIPANTE_LIBRO",False,Acerca de mi,Mi perfil,Manual,,"R1.El identificador ORCID estará asociado a la publicación de Libros, Articulos y Capitulos del Autor",,,Diccionario de Datos
-12,acercaDeMi.miPerfil.idThomson,Researcher ID Thomson,VARCHAR2 (8),Campo de texto,CVE_IDENTIFICA_AUTOR,AUTORID_DOCUMENTO,CAT_IDENTIFICA_AUTOR,False,Acerca de mi,Mi perfil,Manual,,,,,Diccionario de Datos
-13,acercaDeMi.miPerfil.idArXiv,arXiv Author ID,VARCHAR2 (8),Campo de texto,CVE_IDENTIFICA_AUTOR,AUTORID_DOCUMENTO,CAT_IDENTIFICA_AUTOR,False,Acerca de mi,Mi perfil,Manual,,,,,Diccionario de Datos
-14,acercaDeMi.dummy.semblanza,PubMed Author ID,VARCHAR2 (8),Campo de texto,CVE_IDENTIFICA_AUTOR,AUTORID_DOCUMENTO,CAT_IDENTIFICA_AUTOR,False,Acerca de mi,Mi perfil,Manual,,,,,Diccionario de Datos
-15,acercaDeMi.otro.semblanza,Open ID,VARCHAR2 (8),Campo de texto,CVE_IDENTIFICA_AUTOR,AUTORID_DOCUMENTO,CAT_IDENTIFICA_AUTOR,False,Acerca de mi,Mi perfil,Manual,,,,,Diccionario de Datos
-16,,ID RIZOMA,PENDIENTE,Texto,PENDIENTE,PENDIENTE,PENDIENTE,True,Acerca de mi,Mi perfil,Asistido,,R.1.El campo ID RIZOMA sera generado automaticamente (user name),,,Equipo Restructuración
-17,,"No. de CVU ",VARCHAR2 (11),Texto,NUMERO_CVU,PERSONA_FISICA,NA,True,Acerca de mi,Mi perfil,Asistido,,R1.El campo No. de CVU es un consecutivo que se generá automaticamente en Seguridad Aplicativa,,,Diccionario de Datos
-18,,CURP,VARCHAR2 (18),Deshabilitado,CURP,PERSONA_FISICA,NA,True,Acerca de mi,Datos Generales,Asistido,,"R1.El campo CURP es de 18 posiciones
-R2.El campo CURP se generá automáticamente de acuerdo a Seguridad Aplicativa, el cual valida la CURP con RENAPO",,,Diccionario de Datos
-19,,Nombre,VARCHAR2 (256),Deshabilitado,NOMBRE,PERSONA_FISICA,NA,True,Acerca de mi,Datos Generales,Asistido,,"R1.El campo Nombre se habilitá automaticamente de acuerdo a la CURP validada previamente en RENAPO ",,,Diccionario de Datos
