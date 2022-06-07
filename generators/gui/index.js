@@ -37,69 +37,68 @@ module.exports = class extends Generator {
       let seccion = secciones[seccionKey];
       let destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.vue';
 
-      if (!seccionesOpt.includes(seccion.props.dashCase)) {
-        seccionesOpt.push(seccion.props.dashCase);
-        // write in entities.ts
-        this.fs.copy(context.mainPath, context.mainPath, {
-          process: function (content) {
-            let regEx = new RegExp(Constants.SERVICE_IMPORT, 'g');
-            let importService = `import ${seccion.props.pascalCase}Service from '@/entities/msPerfil/${seccion.props.dashCase}/${seccion.props.dashCase}.service';`;
-            let newContent = content.toString().replace(regEx, importService + '\n' + Constants.SERVICE_IMPORT);
-            regEx = new RegExp(Constants.SERVICE_INITIALIZATION, 'g');
-            let declarationService = `${seccion.props.camelCase}Service: () => new ${seccion.props.pascalCase}Service(),`;
-            newContent = newContent.toString().replace(regEx, declarationService + '\n' + Constants.SERVICE_INITIALIZATION);
-            return newContent;
-          },
-        });
-        // write in main.ts
-        this.fs.copy(context.entitiesPath, context.entitiesPath, {
-          process: function (content) {
-            let regEx = new RegExp(Constants.ENTITY_ROUTER_IMPORT, 'g');
-            let entityRouterImport = `
-            // prettier-ignore
-            const ${seccion.props.pascalCase} = () => import('@/entities/msPerfil/${seccion.props.dashCase}/${seccion.props.dashCase}.vue');
-            ${Constants.ENTITY_ROUTER_IMPORT}
-            `;
-            let newContent = content.toString().replace(regEx, entityRouterImport);
-            regEx = new RegExp(Constants.ENTITY_TO_ROUTER, 'g');
-            let entityToRouter = `
-            {
-              path: '/${seccion.props.dashCase}',
-              name: '${seccion.props.pascalCase}',
-              component: ${seccion.props.pascalCase},
-            },
-            ${Constants.ENTITY_TO_ROUTER}
-            `;
-            newContent = newContent.toString().replace(regEx, entityToRouter);
-            return newContent;
-          },
-        });
-        // write in entities-menu.vue
-        this.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
-          process: function (content) {
-            let regEx = new RegExp(Constants.ENTITY_TO_MENU, 'g');
-            let entityToMenu = `
-    <b-dropdown-item to="/${seccion.props.dashCase}" active-class="active">
-      <span v-text="$t('${seccion.props.dashCase}.title')">${seccion.props.label}</span>
+      for (const mayBeSubseccion in seccion) {
+        if (mayBeSubseccion != 'props') {
+          let subtemplateVariables = GuiService.defaultSubVariables(secciones, seccionKey, mayBeSubseccion);
+          let subseccion = secciones[seccionKey][mayBeSubseccion];
+
+          if (!seccionesOpt.includes(subseccion.props.dashCase)) {
+            seccionesOpt.push(subseccion.props.dashCase);
+            // write in entities.ts
+            this.fs.copy(context.entitiesPath, context.entitiesPath, {
+              process: function (content) {
+                let regEx = new RegExp(Constants.ENTITY_ROUTER_IMPORT, 'g');
+                let entityRouterImport = `
+                // prettier-ignore
+                const ${subseccion.props.pascalCase} = () => import('@/entities/msPerfil/${seccion.props.dashCase}/${subseccion.props.dashCase}/${subseccion.props.dashCase}.vue');
+                ${Constants.ENTITY_ROUTER_IMPORT}
+                `;
+                let newContent = content.toString().replace(regEx, entityRouterImport);
+                regEx = new RegExp(Constants.ENTITY_TO_ROUTER, 'g');
+                let entityToRouter = `
+                {
+                  path: '/${seccion.props.dashCase}/${subseccion.props.dashCase}',
+                  name: '${subseccion.props.pascalCase}',
+                  component: ${subseccion.props.pascalCase},
+                },
+                ${Constants.ENTITY_TO_ROUTER}
+                `;
+                newContent = newContent.toString().replace(regEx, entityToRouter);
+                return newContent;
+              },
+            });
+            // write in entities-menu.vue
+            this.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
+              process: function (content) {
+                let regEx = new RegExp(Constants.ENTITY_TO_MENU, 'g');
+                let entityToMenu = `
+    <b-dropdown-item to="/${seccion.props.dashCase}/${subseccion.props.dashCase}" active-class="active">
+      <span v-text="$t('${seccion.props.dashCase}.${subseccion.props.dashCase}.title')">${subseccion.props.label}</span>
     </b-dropdown-item>
     ${Constants.ENTITY_TO_MENU}
     `;
-            let newContent = content.toString().replace(regEx, entityToMenu);
-            return newContent;
-          },
-        });
+                let newContent = content.toString().replace(regEx, entityToMenu);
+                return newContent;
+              },
+            });
+          }
+
+          destination = context.destinationPath + seccion.props.dashCase + '/' + subtemplateVariables.subSeccion.props.dashCase + '/' + subtemplateVariables.subSeccion.props.dashCase + '.vue';
+          this.fs.copyTpl(this.templatePath('subseccion.vue.ejs'), this.destinationPath(destination), subtemplateVariables);
+
+          destination = context.destinationPath + seccion.props.dashCase + '/' + subtemplateVariables.subSeccion.props.dashCase + '/' + subtemplateVariables.subSeccion.props.dashCase + '.component.ts';
+          this.fs.copyTpl(this.templatePath('subseccion.component.ts.ejs'), this.destinationPath(destination), subtemplateVariables);
+        }
       }
 
-      this.fs.copyTpl(this.templatePath('seccion.vue.ejs'), this.destinationPath(destination), templateVariables);
+      // destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.component.ts';
+      // this.fs.copyTpl(this.templatePath('seccion.component.ts.ejs'), this.destinationPath(destination), templateVariables);
 
-      destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.component.ts';
-      this.fs.copyTpl(this.templatePath('seccion.component.ts.ejs'), this.destinationPath(destination), templateVariables);
+      // destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.service.ts';
+      // this.fs.copyTpl(this.templatePath('seccion.service.ts.ejs'), this.destinationPath(destination), templateVariables);
 
-      destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.service.ts';
-      this.fs.copyTpl(this.templatePath('seccion.service.ts.ejs'), this.destinationPath(destination), templateVariables);
-
-      destination = context.modelDestinationPath + seccion.props.dashCase + '.model.ts';
-      this.fs.copyTpl(this.templatePath('seccion.model.ts.ejs'), this.destinationPath(destination), templateVariables);
+      // destination = context.modelDestinationPath + seccion.props.dashCase + '.model.ts';
+      // this.fs.copyTpl(this.templatePath('seccion.model.ts.ejs'), this.destinationPath(destination), templateVariables);
 
       destination = context.i18nPath + '/es/' + seccion.props.dashCase + '.json';
       this.fs.copyTpl(this.templatePath('seccion-es.json.ejs'), this.destinationPath(destination), templateVariables);

@@ -23,6 +23,7 @@ module.exports = class guiService {
       if (!secciones[seccion][subseccion]) {
         secciones[seccion][subseccion] = this.defaultSubseccion(campo.subseccion);
         secciones[seccion][subseccion].props.labelEn = campo.subseccionEn;
+        secciones[seccion][subseccion].props.modelParent = this.defaultModelName(campo.modelo);
       }
       secciones[seccion][subseccion].campos.push(this.formatCampo(campo));
     });
@@ -50,6 +51,18 @@ module.exports = class guiService {
     };
   }
 
+  static defaultSubVariables(secciones, seccion, subseccion) {
+    return {
+      seccion: secciones[seccion],
+      subSeccion: secciones[seccion][subseccion],
+      subSeccionLabel: secciones[seccion][subseccion].props.label,
+      subSeccionPascalCase: secciones[seccion][subseccion].props.pascalCase,
+      subSeccionCamelCase: secciones[seccion][subseccion].props.camelCase,
+      subSeccionSnakeCase: secciones[seccion][subseccion].props.snakeCase,
+      subSeccionDashCase: secciones[seccion][subseccion].props.dashCase,
+    };
+  }
+
   static defaultSubseccion(description) {
     let subseccion = { props: {} };
     subseccion.props.label = description;
@@ -62,21 +75,40 @@ module.exports = class guiService {
   }
 
   static formatCampo(campo) {
+    campo.name = campo.nombre;
     campo.label = campo.campo;
     campo.labelEn = campo.campoEn;
-    campo.camelCase = String.toCamelCase(campo.campo);
-    campo.pascalCase = String.toPascalCase(campo.campo);
-    campo.lowerCase = String.toCamelCase(campo.campo);
-    campo.snakeCase = String.toSnakeCase(campo.campo);
-    campo.dashCase = String.toDashCase(campo.campo);
-    campo.constantCase = String.toConstantCase(campo.campo);
+    campo.camelCase = String.toCamelCase(campo.nombre);
+    campo.pascalCase = String.toPascalCase(campo.nombre);
+    campo.lowerCase = String.toCamelCase(campo.nombre);
+    campo.snakeCase = String.toSnakeCase(campo.nombre);
+    campo.dashCase = String.toDashCase(campo.nombre);
+    campo.constantCase = String.toConstantCase(campo.nombre);
     campo.clientType = this.resolveClientType(campo.tipoUi);
     campo.clientDefaultValue = this.resolveDefaultValue(campo.tipoUi);
     campo.description = campo.descripcion;
     campo.descriptionEn = campo.descripcionEn;
     campo.validations = this.resolveValidations(campo);
     campo.props = this.resolveProps(campo);
+    campo.model = this.formatModel(campo.modelo, campo.nombre);
     return campo;
+  }
+
+  static defaultModelName(model) {
+    return {
+      camelCase: String.toCamelCase(model.split('.')[0]),
+      pascalCase: String.toPascalCase(model.split('.')[0]),
+      dashCase: String.toDashCase(model.split('.')[0]),
+    };
+  }
+
+  static formatModel(modelo, name) {
+    let formatted = [];
+    modelo.split('.').forEach(val => {
+      formatted.push(String.toCamelCase(val));
+    });
+    formatted.push(String.toCamelCase(name));
+    return formatted.join('.');
   }
 
   static resolveClientType(tipoUi) {
@@ -103,6 +135,15 @@ module.exports = class guiService {
     if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
       return 'boolean';
     }
+
+    if (tipoUi === 'cardsList') {
+      return '[]';
+    }
+
+    if (tipoUi === 'inputImage') {
+      return '{}';
+    }
+
     return 'string';
   }
 
@@ -129,6 +170,10 @@ module.exports = class guiService {
 
     if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
       return 'false';
+    }
+
+    if (tipoUi === 'cardsList') {
+      return '[]';
     }
     return "''";
   }
@@ -160,6 +205,10 @@ module.exports = class guiService {
     }
     if (campo.tipoUi === 'MultiSelect' || campo.tipoUi === 'selectMultiple') {
       props.minimosRequeridos = campo.minimosRequeridos ? campo.minimosRequeridos : 1;
+    }
+    if (campo.tipoUi === 'inputImage') {
+      props.tiposMime = campo.tiposMime;
+      props.pesoMaximo = campo.pesoMaximo;
     }
     return props;
   }
