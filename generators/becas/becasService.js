@@ -284,21 +284,22 @@ module.exports = class guiService {
   }
 
   static loadProgramas(context) {
-    fs.readdir('cargas/matricula/', (err, files) => {
+    fs.readdir('cargas/matricula/partes', (err, files) => {
       try {
         const spinner = ora({ text: 'subiendo matricula...', interval: 80 });
         spinner.start();
         spinner.info(chalk.green.bold('Running on [' + context.enviroment + ']'));
+        spinner.info(chalk.green.bold('Files.length [' + files.length + ']'));
         let that = this;
-        for (let index = 89, j = 0; index < files.length - 2; index++, j++) {
+        for (let index = 0, j = 0; index < files.length; index++, j++) {
           let part = index.toLocaleString('en-US', {
-            minimumIntegerDigits: 2,
+            minimumIntegerDigits: 4,
             useGrouping: false,
           });
 
           setTimeout(() => {
             spinner.succeed(chalk.green.bold('PARTE - ') + chalk.green(part));
-            fs.createReadStream('cargas/matricula/sh_part_' + part)
+            fs.createReadStream('cargas/matricula/partes/sh_part_' + part)
               .pipe(csv())
               .on('data', function (m) {
                 let programa = that.toPrograma(m, spinner);
