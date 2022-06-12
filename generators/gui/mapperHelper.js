@@ -4,7 +4,7 @@ const String = require('../util/strings');
 
 const fsreader = require('fs');
 const SECCION_PROP = 'seccion';
-module.exports = class guiService {
+module.exports = class mapperHelper {
   static destinationPath(seccion) {
     return context.destinationComponentPath + seccion.dashCase + '/' + seccion.dashCase + '.vue';
   }
