@@ -17,24 +17,23 @@ const GuiService = require('./guiService');
 const Constants = require('./constants');
 
 module.exports = class generatorService {
-  static doProcess(context, generator) {
-    let secciones = context.secciones;
-    let seccionesOpt = context.seccionesOpt;
-
-    for (const seccionKey in secciones) {
-      let templateVariables = GuiService.defaultVariables(secciones, seccionKey);
-      let seccion = secciones[seccionKey];
+  static processField(context) {}
+  static processObject() {}
+  static doProcess(context) {
+    for (const seccionKey in context.secciones) {
+      let templateVariables = GuiService.defaultVariables(context.secciones, seccionKey);
+      let seccion = context.secciones[seccionKey];
       let destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.vue';
 
       for (const mayBeSubseccion in seccion) {
         if (mayBeSubseccion != 'props') {
-          let subtemplateVariables = GuiService.defaultSubVariables(secciones, seccionKey, mayBeSubseccion);
-          let subseccion = secciones[seccionKey][mayBeSubseccion];
+          let subtemplateVariables = GuiService.defaultSubVariables(context.secciones, seccionKey, mayBeSubseccion);
+          let subseccion = context.secciones[seccionKey][mayBeSubseccion];
 
-          if (!seccionesOpt.includes(subseccion.props.dashCase)) {
-            seccionesOpt.push(subseccion.props.dashCase);
+          if (!context.seccionesOpt.includes(subseccion.props.dashCase)) {
+            context.seccionesOpt.push(subseccion.props.dashCase);
             // write in entities.ts
-            generator.fs.copy(context.entitiesPath, context.entitiesPath, {
+            context.generator.fs.copy(context.entitiesPath, context.entitiesPath, {
               process: function (content) {
                 let regEx = new RegExp(Constants.ENTITY_ROUTER_IMPORT, 'g');
                 let entityRouterImport = `
@@ -57,7 +56,7 @@ module.exports = class generatorService {
               },
             });
             // write in entities-menu.vue
-            generator.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
+            context.generator.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
               process: function (content) {
                 let regEx = new RegExp(Constants.ENTITY_TO_MENU, 'g');
                 let entityToMenu = `
@@ -80,7 +79,11 @@ module.exports = class generatorService {
             '/' +
             subtemplateVariables.subSeccion.props.dashCase +
             '.vue';
-          generator.fs.copyTpl(generator.templatePath('subseccion.vue.ejs'), generator.destinationPath(destination), subtemplateVariables);
+          context.generator.fs.copyTpl(
+            context.generator.templatePath('subseccion.vue.ejs'),
+            context.generator.destinationPath(destination),
+            subtemplateVariables
+          );
 
           destination =
             context.destinationPath +
@@ -90,28 +93,38 @@ module.exports = class generatorService {
             '/' +
             subtemplateVariables.subSeccion.props.dashCase +
             '.component.ts';
-          generator.fs.copyTpl(
-            generator.templatePath('subseccion.component.ts.ejs'),
-            generator.destinationPath(destination),
+          context.generator.fs.copyTpl(
+            context.generator.templatePath('subseccion.component.ts.ejs'),
+            context.generator.destinationPath(destination),
             subtemplateVariables
           );
         }
       }
 
       // destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.component.ts';
-      // generator.fs.copyTpl(generator.templatePath('seccion.component.ts.ejs'), generator.destinationPath(destination), templateVariables);
+      // context.generator.fs.copyTpl(context.generator.templatePath('seccion.component.ts.ejs'), context.generator.destinationPath(destination), templateVariables);
 
       // destination = context.destinationPath + seccion.props.dashCase + '/' + seccion.props.dashCase + '.service.ts';
-      // generator.fs.copyTpl(generator.templatePath('seccion.service.ts.ejs'), generator.destinationPath(destination), templateVariables);
+      // context.generator.fs.copyTpl(context.generator.templatePath('seccion.service.ts.ejs'), context.generator.destinationPath(destination), templateVariables);
 
       // destination = context.modelDestinationPath + seccion.props.dashCase + '.model.ts';
-      // generator.fs.copyTpl(generator.templatePath('seccion.model.ts.ejs'), generator.destinationPath(destination), templateVariables);
+      // context.generator.fs.copyTpl(context.generator.templatePath('seccion.model.ts.ejs'), context.generator.destinationPath(destination), templateVariables);
 
       destination = context.i18nPath + '/es/' + seccion.props.dashCase + '.json';
-      generator.fs.copyTpl(generator.templatePath('seccion-es.json.ejs'), generator.destinationPath(destination), templateVariables);
+      context.generator.fs.copyTpl(
+        context.generator.templatePath('seccion-es.json.ejs'),
+        context.generator.destinationPath(destination),
+        templateVariables
+      );
 
       destination = context.i18nPath + '/en/' + seccion.props.dashCase + '.json';
-      generator.fs.copyTpl(generator.templatePath('seccion-en.json.ejs'), generator.destinationPath(destination), templateVariables);
+      context.generator.fs.copyTpl(
+        context.generator.templatePath('seccion-en.json.ejs'),
+        context.generator.destinationPath(destination),
+        templateVariables
+      );
     }
+    context.generator.config.set('secciones', context.seccionesOpt);
+    context.generator.config.save();
   }
 };

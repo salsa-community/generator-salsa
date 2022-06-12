@@ -30,11 +30,10 @@ module.exports = class extends Generator {
     context.campos = GuiService.resolveJson(context);
     context.secciones = GuiService.resolveSecciones(context.campos);
     context.seccionesOpt = this.config.get('secciones');
+    context.generator = this;
     if (!context.seccionesOpt) {
       context.seccionesOpt = [];
     }
-    GeneratorService.doProcess(context, this);
-    this.config.set('secciones', context.seccionesOpt);
-    this.config.save();
+    GeneratorService.doProcess(context);
   }
 };
