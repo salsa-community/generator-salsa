@@ -54,6 +54,24 @@ module.exports = class guiService {
     });
   }
 
+  static testing(filePath) {
+    let modelo = { properties: {}, type: 'object' };
+    let context = {};
+    return new Promise(resolve => {
+      fsreader
+        .createReadStream(filePath)
+        .pipe(csv({ mapHeaders: ({ header }) => String.toCamelCase(header) }))
+        .on('data', row => {
+          let nombre = String.toCamelCase(row.etiqueta);
+
+          console.log(nombre);
+        })
+        .on('end', function () {
+          resolve(modelo);
+        });
+    });
+  }
+
   static contextFactory(modelo, path, row) {
     let context = {};
     context.currentReference = modelo;
