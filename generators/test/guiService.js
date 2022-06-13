@@ -30,30 +30,6 @@ module.exports = class guiService {
     return campo;
   }
 
-  static resolveCamposCvu(filePath) {
-    let modelo = { properties: {}, type: 'object' };
-    let context = {};
-    return new Promise(resolve => {
-      fsreader
-        .createReadStream(filePath)
-        .pipe(csv({ mapHeaders: ({ header }) => String.toCamelCase(header) }))
-        .on('data', row => {
-          if (row.modelo) {
-            let path = jp.parse('$.' + row.modelo);
-            context = this.contextFactory(modelo, path, row);
-            path.forEach((el, idx) => {
-              context.el = el;
-              context.idx = idx;
-              this.resolveTypeOfExpression(context);
-            });
-          }
-        })
-        .on('end', function () {
-          resolve(modelo);
-        });
-    });
-  }
-
   static testing(filePath) {
     let modelo = { properties: {}, type: 'object' };
     let context = {};
@@ -79,20 +55,6 @@ module.exports = class guiService {
     context.maxElements = path.length - 1;
     context.row = row;
     return context;
-  }
-  static resolveTypeOfExpression(context) {
-    if (context.el.expression.type === 'identifier') {
-      // es objeto
-      if (!context.currentReference['properties'][context.el.expression.value]) {
-        context.currentReference['properties'][context.el.expression.value] = this.defaulProperty(context, context.el.expression.value);
-      }
-      context.beforeReference = context.currentReference;
-      context.beforeElValue = context.el.expression.value;
-      context.currentReference = context.currentReference['properties'][context.el.expression.value];
-    } // si es array, le indicamos al elemento padre que es tipo array y no object
-    else if (context.el.expression.type === 'script_expression') {
-      context.beforeReference['properties'][context.beforeElValue].type = 'array';
-    }
   }
 
   static resolveSecciones(campos) {
