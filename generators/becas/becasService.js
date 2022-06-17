@@ -74,16 +74,21 @@ module.exports = class guiService {
 
   static toProyecto(p, spinner) {
     let proyecto = {};
-    proyecto.id = String.normalizeId(p.convocatoria_o_programa) + '-' + p.clave_de_proyecto;
-    proyecto.convocatoria = p.convocatoria_o_programa;
-    proyecto.titulo = p.titulo_proyecto;
-    proyecto.anno = p.ano_reportado;
-    proyecto.clave = this.resolveInteger(p.clave_de_proyecto);
+    proyecto.id = String.normalizeId(p.convocatoria) + '-' + p.clave;
+    proyecto.convocatoria = p.convocatoria;
+    proyecto.titulo = p.titulo;
+    proyecto.anno = p.anio;
+    proyecto.clave = this.resolveInteger(p.clave);
     proyecto.fondo = String.normalize(p.fondo);
-    proyecto.sujetoApoyo = String.normalize(p.sujeto_de_apoyo);
-    proyecto.montoAutorizado = this.resolveDouble(p.monto_autorizado);
-    proyecto.estatus = String.normalize(p.estatus);
-    proyecto.etapa = String.normalize(p.etapa);
+    proyecto.sujetoApoyo = String.normalize(p.sujeto);
+    proyecto.montoAutorizado = this.resolveDouble(p.monto);
+    proyecto.estatus = p.estatus;
+    proyecto.etapa = p.etapa;
+    proyecto.area = p.area;
+    proyecto.responsableTecnico = p.rt;
+    proyecto.responsableAdministrativo = p.ra;
+    proyecto.representanteLegal = p.rl;
+    proyecto.objetivo = p.objetivo;
     return proyecto;
   }
 
@@ -400,7 +405,7 @@ module.exports = class guiService {
         spinner.start();
         spinner.info(chalk.green.bold('Running on [' + context.enviroment + ']'));
         let that = this;
-        for (let index = 89, j = 0; index < files.length - 2; index++, j++) {
+        for (let index = 0, j = 0; index < files.length - 2; index++, j++) {
           let part = index.toLocaleString('en-US', {
             minimumIntegerDigits: 4,
             useGrouping: false,

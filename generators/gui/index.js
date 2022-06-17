@@ -3,6 +3,7 @@ var Generator = require('yeoman-generator');
 const MapperHelper = require('./mapperHelper');
 const GeneratorService = require('./generatorService');
 const ModelReader = require('./modelReader');
+const { prettyPrintJson } = require('pretty-print-json'); //deprecated -- use ES modules instead
 
 module.exports = class extends Generator {
   async writing() {
@@ -23,7 +24,7 @@ module.exports = class extends Generator {
       context.seccionesOpt = [];
     }
 
-    GeneratorService.doProcess(context);
-    console.log(JSON.stringify(context.model, null, 2));
+    GeneratorService.doGenerate(context);
+    //console.log(JSON.stringify(context.model, null, 2));
   }
 };

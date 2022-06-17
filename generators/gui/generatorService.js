@@ -1,6 +1,7 @@
 'use strict';
 const MapperHelper = require('./mapperHelper');
 const GeneratorHelper = require('./generatorHelper');
+const Visitor = require('./visitor/visitor');
 
 module.exports = class generatorService {
   static doProcess(context) {
@@ -22,5 +23,9 @@ module.exports = class generatorService {
     }
     context.generator.config.set('secciones', context.seccionesOpt);
     context.generator.config.save();
+  }
+
+  static doGenerate(context) {
+    Visitor.visit(context.model, 0);
   }
 };

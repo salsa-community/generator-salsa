@@ -14,7 +14,7 @@ Inflector.inflections('es', function (inflect) {
 });
 module.exports = class modelReader {
   static readModelFromCsv(filePath) {
-    let rootModel = { properties: {}, type: 'object' };
+    let rootModel = { title: 'Root', path: '', properties: {}, type: 'object' };
     return new Promise(resolve => {
       fsreader
         .createReadStream(filePath)
@@ -46,17 +46,14 @@ module.exports = class modelReader {
 
       if (currentContainer == 'properties') {
         if (!context.currentNode.properties[context.jpNode.expression.value]) {
-          context.currentNode.properties[context.jpNode.expression.value] = this.defaulProperty(context, context.jpNode.expression.value);
+          context.currentNode.properties[context.jpNode.expression.value] = this.createNode(context, context.jpNode.expression.value);
         }
         context.prevNode = context.currentNode;
         context.prevJpNodeValue = context.jpNode.expression.value;
         context.currentNode = context.currentNode.properties[context.jpNode.expression.value];
       } else {
         if (!context.currentNode.items.properties[context.jpNode.expression.value]) {
-          context.currentNode.items.properties[context.jpNode.expression.value] = this.defaulProperty(
-            context,
-            context.jpNode.expression.value
-          );
+          context.currentNode.items.properties[context.jpNode.expression.value] = this.createNode(context, context.jpNode.expression.value);
         }
         context.prevNode = context.currentNode;
         context.prevJpNodeValue = context.jpNode.expression.value;
@@ -87,11 +84,14 @@ module.exports = class modelReader {
     return false;
   }
 
-  static defaulProperty(context, name) {
+  static createNode(context, name) {
     let isLeaf = this.isLeaf(context);
     let objectType = this.resolveElementType(context, isLeaf);
     let uiType = this.resolveUiType(context, isLeaf);
+    let arraySymbol = this.isArray(context.jsonPathTree, context.jpNodeIdx) ? '[]' : '';
+    let currentPath = context.currentNode.path ? context.currentNode.path + '.' : '';
     let base = {
+      path: currentPath + String.toCamelCase(name) + arraySymbol,
       singular: Inflector.singularize(name, 'es'),
       plural: Inflector.pluralize(name, 'es'),
       description: context.row.etiqueta,
@@ -104,8 +104,6 @@ module.exports = class modelReader {
       uiType: uiType,
       isLeaf: isLeaf,
     };
-
-    this.isArray(context.jsonPathTree, context.jpNodeIdx);
     let complement = this.resolveContainerObject(context, objectType);
 
     return { ...base, ...complement };
@@ -148,10 +146,13 @@ module.exports = class modelReader {
   }
 
   static isLeaf(context) {
-    return context.jpNodeIdx == context.maxElements;
+    return context.jpNodeIdx == context.maxElements || this.isArray(context.jsonPathTree, context.jpNodeIdx);
   }
   static resolveElementType(context, isLeaf) {
     if (isLeaf) {
+      if (context.currentNode.type == 'object') {
+        context.currentNode.uiType = 'page';
+      }
       return context.row.tipoDeDato;
     }
     if (this.isArray(context.jsonPathTree, context.jpNodeIdx)) {
