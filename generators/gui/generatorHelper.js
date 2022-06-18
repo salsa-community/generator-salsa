@@ -36,7 +36,7 @@ module.exports = class generatorHelper {
   }
 
   static entityRouterDeclaration(page, basePath) {
-    return `    {
+    return `{
       path: '/${basePath}',
       name: '${page.name.pascalCase}',
       component: ${page.name.pascalCase},
@@ -61,11 +61,7 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
     let basePath = page.path.dashCase.replace(/\./g, '/');
     let vueFilePath = basePath + '/' + page.name.dashCase;
     let destination = context.destinationPath + vueFilePath + '.vue';
-    context.generator.fs.copyTpl(
-      context.generator.templatePath('subseccion.vue.ejs'),
-      context.generator.destinationPath(destination),
-      page
-    );
+    context.generator.fs.copyTpl(context.generator.templatePath('page.vue.ejs'), context.generator.destinationPath(destination), page);
   }
 
   static writeComponentTs(context, page) {
@@ -73,7 +69,7 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
     let componentFilePath = basePath + '/' + page.name.dashCase;
     let destination = context.destinationPath + componentFilePath + '.component.ts';
     context.generator.fs.copyTpl(
-      context.generator.templatePath('subseccion.component.ts.ejs'),
+      context.generator.templatePath('page.component.ts.ejs'),
       context.generator.destinationPath(destination),
       page
     );
