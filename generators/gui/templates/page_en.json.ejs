@@ -1,0 +1,23 @@
+{
+  "<%= name.dashCase%>": {
+    "title": "<%= name.titleEn%>",
+    "subtitle": "<%= name.titleEn%>",
+    "fields": {
+      <%_ let campos = Object.keys(properties); _%>
+      <%_ campos.forEach((key, idx) => { _%>
+        <%_ let campo = properties[key]; _%>
+      "<%= campo.name.dashCase%>": {
+        "label": "<%= campo.name.titleEn%>",
+        "description": "<%= campo.name.descriptionEn%>",
+        "tooltip": "<%= campo.name.tooltipEn%>",
+        "validations": {
+          "required": "The field <%= campo.name.titleEn%> is required",
+          "minMessage": "The number of characters must be at least of {min}",
+          "maxMessage": "The number of characters must be as much as {max}",
+          "regexMessage": "Invalid <%= campo.name.titleEn%> format"
+        }
+      }<% if (campos.length -1 !== idx ) { %>,<% } %>
+      <%_ }) _%>
+    }
+  }
+}

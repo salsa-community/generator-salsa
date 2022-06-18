@@ -75,19 +75,12 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
     );
   }
 
-  static writeI18nFiles(context, seccion, templateVariables) {
-    let destination = context.i18nPath + '/es/' + seccion.props.dashCase + '.json';
-    context.generator.fs.copyTpl(
-      context.generator.templatePath('seccion-es.json.ejs'),
-      context.generator.destinationPath(destination),
-      templateVariables
-    );
+  static writeI18nFiles(context, page) {
+    console.log(page.properties);
+    let destination = context.i18nPath + '/es/' + page.name.dashCase + '.json';
+    context.generator.fs.copyTpl(context.generator.templatePath('page_es.json.ejs'), context.generator.destinationPath(destination), page);
 
-    destination = context.i18nPath + '/en/' + seccion.props.dashCase + '.json';
-    context.generator.fs.copyTpl(
-      context.generator.templatePath('seccion-en.json.ejs'),
-      context.generator.destinationPath(destination),
-      templateVariables
-    );
+    destination = context.i18nPath + '/en/' + page.name.dashCase + '.json';
+    context.generator.fs.copyTpl(context.generator.templatePath('page_en.json.ejs'), context.generator.destinationPath(destination), page);
   }
 };
