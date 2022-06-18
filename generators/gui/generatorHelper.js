@@ -23,27 +23,30 @@ module.exports = class generatorHelper {
     let basePath = page.path.dashCase.replace(/\./g, '/');
     let vueFilePath = basePath + '/' + page.name.dashCase;
     context.generator.fs.copy(context.entitiesPath, context.entitiesPath, {
-      process: function (content) {
+      process: content => {
         let regEx = new RegExp(Constants.ENTITY_ROUTER_IMPORT, 'g');
-        let entityRouterImport = `
-        // prettier-ignore
-        const ${page.name.pascalCase} = () => import('@/entities/msPerfil/${vueFilePath}.vue');
-        ${Constants.ENTITY_ROUTER_IMPORT}
-        `;
+        let entityRouterImport = this.routerDeclaration(page, vueFilePath);
         let newContent = content.toString().replace(regEx, entityRouterImport);
         regEx = new RegExp(Constants.ENTITY_TO_ROUTER, 'g');
-        let entityToRouter = `
-        {
-          path: '/${basePath}',
-          name: '${page.name.pascalCase}',
-          component: ${page.name.pascalCase},
-        },
-        ${Constants.ENTITY_TO_ROUTER}
-        `;
+        let entityToRouter = this.entityRouterDeclaration(page, basePath);
         newContent = newContent.toString().replace(regEx, entityToRouter);
         return newContent;
       },
     });
+  }
+
+  static entityRouterDeclaration(page, basePath) {
+    return `    {
+      path: '/${basePath}',
+      name: '${page.name.pascalCase}',
+      component: ${page.name.pascalCase},
+    },
+    ${Constants.ENTITY_TO_ROUTER}`;
+  }
+
+  static routerDeclaration(page, vueFilePath) {
+    return `\n// prettier-ignore\nconst ${page.name.pascalCase} = () => import('@/entities/msPerfil/${vueFilePath}.vue');
+${Constants.ENTITY_ROUTER_IMPORT}`;
   }
 
   static writeEntitiesFiles(context, page) {
@@ -72,7 +75,7 @@ module.exports = class generatorHelper {
     context.generator.fs.copyTpl(
       context.generator.templatePath('subseccion.component.ts.ejs'),
       context.generator.destinationPath(destination),
-      subtemplateVariables
+      page
     );
   }
 
