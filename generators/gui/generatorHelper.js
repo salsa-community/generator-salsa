@@ -3,7 +3,7 @@
 const Constants = require('./constants');
 
 module.exports = class generatorHelper {
-  static writeEntitiesMenuVue(context, page) {
+  static updateEntitiesMenuVue(context, page) {
     let basePath = page.path.dashCase.replace(/\./g, '/');
     context.generator.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
       process: function (content) {
@@ -19,7 +19,7 @@ module.exports = class generatorHelper {
     });
   }
 
-  static writeEntitiesTs(context, page) {
+  static updateEntitiesTs(context, page) {
     let basePath = page.path.dashCase.replace(/\./g, '/');
     let vueFilePath = basePath + '/' + page.name.dashCase;
     context.generator.fs.copy(context.entitiesPath, context.entitiesPath, {
@@ -49,11 +49,11 @@ module.exports = class generatorHelper {
 ${Constants.ENTITY_ROUTER_IMPORT}`;
   }
 
-  static writeEntitiesFiles(context, page) {
+  static updateEntitiesFiles(context, page) {
     if (!context.seccionesOpt.includes(page.name.dashCase)) {
       context.seccionesOpt.push(page.name.dashCase);
-      this.writeEntitiesTs(context, page);
-      this.writeEntitiesMenuVue(context, page);
+      this.updateEntitiesTs(context, page);
+      this.updateEntitiesMenuVue(context, page);
     }
   }
 
@@ -76,7 +76,6 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
   }
 
   static writeI18nFiles(context, page) {
-    console.log(page.properties);
     let destination = context.i18nPath + '/es/' + page.name.dashCase + '.json';
     context.generator.fs.copyTpl(context.generator.templatePath('page_es.json.ejs'), context.generator.destinationPath(destination), page);
 

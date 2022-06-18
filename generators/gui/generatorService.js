@@ -27,5 +27,7 @@ module.exports = class generatorService {
 
   static doGenerate(context) {
     Visitor.visit(context, context.model);
+    context.generator.config.set('secciones', context.seccionesOpt);
+    context.generator.config.save();
   }
 };

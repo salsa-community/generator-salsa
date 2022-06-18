@@ -13,11 +13,9 @@ module.exports = class visitor {
   }
 
   static visitPage(context, page) {
-    GeneratorHelper.writeEntitiesFiles(context, page);
+    GeneratorHelper.updateEntitiesFiles(context, page);
     GeneratorHelper.writeUi(context, page);
     GeneratorHelper.writeComponentTs(context, page);
     GeneratorHelper.writeI18nFiles(context, page);
-    //context.generator.config.set('secciones', context.seccionesOpt);
-    //context.generator.config.save();
   }
 };
