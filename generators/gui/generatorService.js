@@ -26,6 +26,6 @@ module.exports = class generatorService {
   }
 
   static doGenerate(context) {
-    Visitor.visit(context.model, 0);
+    Visitor.visit(context, context.model, 0);
   }
 };

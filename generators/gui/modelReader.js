@@ -21,7 +21,7 @@ module.exports = class modelReader {
         .pipe(csv({ mapHeaders: ({ header }) => String.toCamelCase(header) }))
         .on('data', row => {
           if (row.modelo) {
-            this.processJsonPath(rootModel, row.modelo, row);
+            this.processRow(rootModel, row.modelo, row);
           }
         })
         .on('end', function () {
@@ -30,7 +30,7 @@ module.exports = class modelReader {
     });
   }
 
-  static processJsonPath(rootModel, jsonPathExpression, row) {
+  static processRow(rootModel, jsonPathExpression, row) {
     let jsonPathTree = jp.parse('$.' + jsonPathExpression);
     let context = this.contextFactory(rootModel, jsonPathTree, row);
     jsonPathTree.forEach((node, nodeIdx) => {
@@ -88,17 +88,31 @@ module.exports = class modelReader {
     let isLeaf = this.isLeaf(context);
     let objectType = this.resolveElementType(context, isLeaf);
     let uiType = this.resolveUiType(context, isLeaf);
-    let arraySymbol = this.isArray(context.jsonPathTree, context.jpNodeIdx) ? '[]' : '';
-    let currentPath = context.currentNode.path ? context.currentNode.path + '.' : '';
+    let currentPath = context.currentNode.path;
     let base = {
-      path: currentPath + String.toCamelCase(name) + arraySymbol,
-      singular: Inflector.singularize(name, 'es'),
-      plural: Inflector.pluralize(name, 'es'),
+      path: {
+        pascalCase: this.formatPath(currentPath, name, 'pascalCase'),
+        camelCase: this.formatPath(currentPath, name, 'camelCase'),
+        snakeCase: this.formatPath(currentPath, name, 'snakeCase'),
+        dashCase: this.formatPath(currentPath, name, 'dashCase'),
+      },
+      validations: {
+        required: context.row.requerido,
+        min: context.row.min,
+        max: context.row.max,
+        tiposMime: context.row.tiposMime,
+        regex: context.row.regex,
+      },
+      name: {
+        singular: Inflector.singularize(name, 'es'),
+        plural: Inflector.pluralize(name, 'es'),
+        pascalCase: String.toPascalCase(name),
+        camelCase: String.toCamelCase(name),
+        snakeCase: String.toSnakeCase(name),
+        dashCase: String.toDashCase(name),
+        constantCase: String.toConstantCase(name),
+      },
       description: context.row.etiqueta,
-      pascalCase: String.toPascalCase(name),
-      camelCase: String.toCamelCase(name),
-      snakeCase: String.toSnakeCase(name),
-      dashCase: String.toDashCase(name),
       title: String.toPascalCase(name),
       type: objectType,
       uiType: uiType,
@@ -107,6 +121,21 @@ module.exports = class modelReader {
     let complement = this.resolveContainerObject(context, objectType);
 
     return { ...base, ...complement };
+  }
+
+  static formatPath(path, name, type) {
+    let leftValue = path[type] ? path[type] + '.' : '';
+    let rightValue = '';
+    if (type == 'pascalCase') {
+      rightValue = String.toPascalCase(name);
+    } else if (type == 'camelCase') {
+      rightValue = String.toCamelCase(name);
+    } else if (type == 'snakeCase') {
+      rightValue = String.toSnakeCase(name);
+    } else if (type == 'dashCase') {
+      rightValue = String.toDashCase(name);
+    }
+    return leftValue + rightValue;
   }
 
   static resolveContainerObject(context, objectType) {

@@ -3,13 +3,14 @@
 const Constants = require('./constants');
 
 module.exports = class generatorHelper {
-  static writeEntitiesMenuVue(context, seccion, subseccion) {
+  static writeEntitiesMenuVue(context, page) {
+    let basePath = page.path.dashCase.replace(/\./g, '/');
     context.generator.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
       process: function (content) {
         let regEx = new RegExp(Constants.ENTITY_TO_MENU, 'g');
         let entityToMenu = `
-        <b-dropdown-item to="/${seccion.props.dashCase}/${subseccion.props.dashCase}" active-class="active">
-        <span v-text="$t('${seccion.props.dashCase}.${subseccion.props.dashCase}.title')">${subseccion.props.label}</span>
+        <b-dropdown-item to="/${basePath}" active-class="active">
+        <span v-text="$t('${page.path.dashCase}.title')">${page.title}</span>
         </b-dropdown-item>
         ${Constants.ENTITY_TO_MENU}
         `;
@@ -18,22 +19,24 @@ module.exports = class generatorHelper {
     });
   }
 
-  static writeEntitiesTs(context, seccion, subseccion) {
+  static writeEntitiesTs(context, page) {
+    let basePath = page.path.dashCase.replace(/\./g, '/');
+    let vueFilePath = basePath + '/' + page.name.dashCase;
     context.generator.fs.copy(context.entitiesPath, context.entitiesPath, {
       process: function (content) {
         let regEx = new RegExp(Constants.ENTITY_ROUTER_IMPORT, 'g');
         let entityRouterImport = `
         // prettier-ignore
-        const ${subseccion.props.pascalCase} = () => import('@/entities/msPerfil/${seccion.props.dashCase}/${subseccion.props.dashCase}/${subseccion.props.dashCase}.vue');
+        const ${page.name.pascalCase} = () => import('@/entities/msPerfil/${vueFilePath}.vue');
         ${Constants.ENTITY_ROUTER_IMPORT}
         `;
         let newContent = content.toString().replace(regEx, entityRouterImport);
         regEx = new RegExp(Constants.ENTITY_TO_ROUTER, 'g');
         let entityToRouter = `
         {
-          path: '/${seccion.props.dashCase}/${subseccion.props.dashCase}',
-          name: '${subseccion.props.pascalCase}',
-          component: ${subseccion.props.pascalCase},
+          path: '/${basePath}',
+          name: '${page.name.pascalCase}',
+          component: ${page.name.pascalCase},
         },
         ${Constants.ENTITY_TO_ROUTER}
         `;
@@ -43,39 +46,29 @@ module.exports = class generatorHelper {
     });
   }
 
-  static writeEntitiesFiles(context, seccion, subseccion) {
-    if (!context.seccionesOpt.includes(subseccion.props.dashCase)) {
-      context.seccionesOpt.push(subseccion.props.dashCase);
-      this.writeEntitiesTs(context, seccion, subseccion);
-      this.writeEntitiesMenuVue(context, seccion, subseccion);
+  static writeEntitiesFiles(context, page) {
+    if (!context.seccionesOpt.includes(page.name.dashCase)) {
+      context.seccionesOpt.push(page.name.dashCase);
+      this.writeEntitiesTs(context, page);
+      this.writeEntitiesMenuVue(context, page);
     }
   }
 
-  static writeUi(context, seccion, subtemplateVariables) {
-    let destination =
-      context.destinationPath +
-      seccion.props.dashCase +
-      '/' +
-      subtemplateVariables.subSeccion.props.dashCase +
-      '/' +
-      subtemplateVariables.subSeccion.props.dashCase +
-      '.vue';
+  static writeUi(context, page) {
+    let basePath = page.path.dashCase.replace(/\./g, '/');
+    let vueFilePath = basePath + '/' + page.name.dashCase;
+    let destination = context.destinationPath + vueFilePath + '.vue';
     context.generator.fs.copyTpl(
       context.generator.templatePath('subseccion.vue.ejs'),
       context.generator.destinationPath(destination),
-      subtemplateVariables
+      page
     );
   }
 
-  static writeComponentTs(context, seccion, subtemplateVariables) {
-    let destination =
-      context.destinationPath +
-      seccion.props.dashCase +
-      '/' +
-      subtemplateVariables.subSeccion.props.dashCase +
-      '/' +
-      subtemplateVariables.subSeccion.props.dashCase +
-      '.component.ts';
+  static writeComponentTs(context, page) {
+    let basePath = page.path.dashCase.replace(/\./g, '/');
+    let componentFilePath = basePath + '/' + page.name.dashCase;
+    let destination = context.destinationPath + componentFilePath + '.component.ts';
     context.generator.fs.copyTpl(
       context.generator.templatePath('subseccion.component.ts.ejs'),
       context.generator.destinationPath(destination),
