@@ -1,4 +1,9 @@
       <cards-list
-        id="<%= name.dashCase%>-<%= campo.name.dashCase%>-id"
-        :items="<%= campo.name.camelCase%>"
-        :title="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.label')"/>
+        id="<%= name.dashCase%>-<%= items.name.dashCase%>-id"
+        :items="<%= items.name.plural%>"
+        :title="$t('<%= pathSubseccion %>.fields.<%= items.name.dashCase%>.label')">
+        <%_ for (const idx in items.properties){ _%>
+          <%_ let campo = items.properties[idx]; _%>
+  <%- include('../page-fields', {name: name, campo: campo, pathSubseccion: pathSubseccion, context: items}); %>
+        <%_ }; _%>
+      </cards-list>

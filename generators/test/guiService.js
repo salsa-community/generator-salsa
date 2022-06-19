@@ -6,15 +6,7 @@ const fsreader = require('fs');
 const csv = require('csv-parser');
 const SECCION_PROP = 'seccion';
 const jp = require('jsonpath');
-const pluralize = require('pluralize');
-const Inflector = require('inflected');
-
-Inflector.inflections('es', function (inflect) {
-  inflect.plural(/(o)$/i, '$1$2s');
-  inflect.singular(/(o)s/i, '$1');
-  inflect.plural(/(on)$/i, '$1es');
-  inflect.singular(/(on)es/i, '$1');
-});
+const Inflector = require('../inflector');
 
 module.exports = class guiService {
   static destinationPath(seccion) {

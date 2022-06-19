@@ -15,29 +15,14 @@
       </header>
     </b-col>
     <b-col md="12">
-    <%_ let campos = type == 'array'? items.properties: properties; _%>
-    <%_ for (const idx in campos){ _%>
-    <%_ let campo = campos[idx]; _%>
-     <%_ if (campo.uiType === 'text') { _%>
-<%- include('fields/input-text', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'TextArea') { _%>
-<%- include('fields/input-text-area', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'Radio Button') { _%>
-<%- include('fields/input-boolean', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'inputImage') { _%>
-<%- include('fields/input-image', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'Date') { _%>
-<%- include('fields/input-date', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'selectOne') { _%>
-<%- include('fields/input-select-one', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'selectRadio') { _%>
-<%- include('fields/input-select-radio', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'selectMultiple') { _%>
-<%- include('fields/input-select-many', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } else if (campo.uiType === 'cardsList') { _%>
-<%- include('fields/cards-list', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
-      <%_ } _%>
-    <%_ }; _%>
+      <%_ for (const idx in properties){ _%>
+        <%_ let campo = properties[idx]; _%>
+        <%_ if (campo.type === 'array') { _%>
+<%- include('page-arrays', {name: name, array: campo, pathSubseccion: pathSubseccion}); %>
+        <%_ } else { _%>
+<%- include('page-fields', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+        <%_ } _%>
+      <%_ }; _%>
     </b-col>
     <b-col class="mb-5">
       <b-button variant="outline-primary" size="lg">

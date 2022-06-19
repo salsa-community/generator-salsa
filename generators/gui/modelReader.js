@@ -5,13 +5,7 @@ const String = require('../util/strings');
 const fsreader = require('fs');
 const csv = require('csv-parser');
 const jp = require('jsonpath');
-const Inflector = require('inflected');
-Inflector.inflections('es', function (inflect) {
-  inflect.plural(/(o)$/i, '$1s');
-  inflect.singular(/(o)s/i, '$1');
-  inflect.plural(/(on)$/i, '$1es');
-  inflect.singular(/(on)es/i, '$1');
-});
+const Inflector = require('../inflector');
 module.exports = class modelReader {
   static readModelFromCsv(filePath) {
     let rootModel = { title: 'Root', path: '', properties: {}, type: 'object' };
@@ -97,7 +91,7 @@ module.exports = class modelReader {
         dashCase: this.formatPath(currentPath, name, 'dashCase'),
       },
       validations: {
-        required: context.row.requerido,
+        required: context.row.requerido.toLowerCase() === 'true',
         min: context.row.min,
         max: context.row.max,
         tiposMime: context.row.tiposMime,
@@ -146,6 +140,15 @@ module.exports = class modelReader {
           properties: {},
           type: 'object',
           title: arrayType,
+          name: {
+            singular: Inflector.singularize(String.toCamelCase(arrayType), 'es'),
+            plural: Inflector.pluralize(String.toCamelCase(arrayType), 'es'),
+            pascalCase: String.toPascalCase(arrayType),
+            camelCase: String.toCamelCase(arrayType),
+            snakeCase: String.toSnakeCase(arrayType),
+            dashCase: String.toDashCase(arrayType),
+            constantCase: String.toConstantCase(arrayType),
+          },
         },
       };
     } else {
