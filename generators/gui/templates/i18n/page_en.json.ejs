@@ -1,10 +1,10 @@
 {
-  "<%= name.dashCase%>": {
-    "title": "<%= name.titleEn%>",
-    "subtitle": "<%= name.titleEn%>",
-    <%_ let campos = Object.keys(properties); _%>
+  "<%= page.name.dashCase%>": {
+    "title": "<%= page.name.titleEn%>",
+    "subtitle": "<%= page.name.titleEn%>",
+    <%_ let campos = Object.keys(page.properties); _%>
     <%_ campos.forEach((key, idx) => { _%>
-      <%_ let campo = properties[key]; _%>
+    <%_ let campo = page.properties[key]; _%>
     "<%= campo.name.dashCase%>": {
       "label": "<%= campo.name.titleEn%>",
       "description": "<%= campo.name.descriptionEn%>",
@@ -14,7 +14,24 @@
         "minMessage": "The number of characters must be at least of {min}",
         "maxMessage": "The number of characters must be as much as {max}",
         "regexMessage": "Invalid <%= campo.name.titleEn%> format"
-      }
+      }<%_ if (campo.type === 'array') { _%>,
+        <%_ let items = Object.keys(campo.items.properties); _%>
+        <%_ items.forEach((key, idx) => { _%>
+          <%_ let item = campo.items.properties[key]; _%>
+          "<%= item.name.dashCase%>": {
+            "label": "<%= item.name.titleEn%>",
+            "description": "<%= item.name.descriptionEn%>",
+            "tooltip": "<%= item.name.tooltipEn%>",
+            "validations": {
+              "required": "The field <%= item.name.titleEn%> is required",
+              "minMessage": "The number of characters must be at least of {min}",
+              "maxMessage": "The number of characters must be as much as {max}",
+              "regexMessage": "Invalid <%= item.name.titleEn%> format"
+            }
+          }<% if (items.length -1 !== idx ) { %>,<% } %>
+        <%_ }) _%>
+      <%_ } _%>
+
     }<% if (campos.length -1 !== idx ) { %>,<% } %>
     <%_ }) _%>
   }

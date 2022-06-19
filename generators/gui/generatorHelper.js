@@ -77,17 +77,13 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
 
   static writeI18nFiles(context, page) {
     let destination = context.i18nPath + '/es/' + page.name.dashCase + '.json';
-    context.generator.fs.copyTpl(
-      context.generator.templatePath('i18n/page_es.json.ejs'),
-      context.generator.destinationPath(destination),
-      page
-    );
+    context.generator.fs.copyTpl(context.generator.templatePath('i18n/page_es.json.ejs'), context.generator.destinationPath(destination), {
+      page: page,
+    });
 
     destination = context.i18nPath + '/en/' + page.name.dashCase + '.json';
-    context.generator.fs.copyTpl(
-      context.generator.templatePath('i18n/page_en.json.ejs'),
-      context.generator.destinationPath(destination),
-      page
-    );
+    context.generator.fs.copyTpl(context.generator.templatePath('i18n/page_en.json.ejs'), context.generator.destinationPath(destination), {
+      page: page,
+    });
   }
 };
