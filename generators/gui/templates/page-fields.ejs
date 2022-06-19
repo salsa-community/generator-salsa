@@ -1,17 +1,17 @@
 <%_ if (campo.uiType === 'text') { _%>
-<%- include('fields/input-text', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-text', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } else if (campo.uiType === 'TextArea') { _%>
-<%- include('fields/input-text-area', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-text-area', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } else if (campo.uiType === 'Radio Button') { _%>
-<%- include('fields/input-boolean', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-boolean', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } else if (campo.uiType === 'inputImage') { _%>
-<%- include('fields/input-image', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-image', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } else if (campo.uiType === 'Date') { _%>
-<%- include('fields/input-date', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-date', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } else if (campo.uiType === 'selectOne') { _%>
-<%- include('fields/input-select-one', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-select-one', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } else if (campo.uiType === 'selectRadio') { _%>
-<%- include('fields/input-select-radio', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-select-radio', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } else if (campo.uiType === 'selectMultiple') { _%>
-<%- include('fields/input-select-many', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('fields/input-select-many', {name: name, campo: campo, pathSubseccion: pathSubseccion, contexto: items}); %>
 <%_ } _%>
