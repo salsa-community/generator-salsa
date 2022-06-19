@@ -3,7 +3,6 @@ var Generator = require('yeoman-generator');
 const MapperHelper = require('./mapperHelper');
 const GeneratorService = require('./generatorService');
 const ModelReader = require('./modelReader');
-const { prettyPrintJson } = require('pretty-print-json'); //deprecated -- use ES modules instead
 
 module.exports = class extends Generator {
   async writing() {
