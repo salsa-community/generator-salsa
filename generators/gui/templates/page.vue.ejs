@@ -5,22 +5,22 @@
         <span>Alert basetemplate</span>
       </div>
     </b-col>
-    <%_ let pathSubseccion = name.dashCase; _%>
+    <%_ let pathSubseccion = page.name.dashCase; _%>
     <b-col md="12">
       <header class="mt-5 bx-header-title">
-        <h2 id="<%= name.dashCase %>-id" v-text="$t('<%= pathSubseccion %>.title')">
-          <%= name.pascalCase %>
-          <small v-text="$t('<%= pathSubseccion %>.subtitle')"><%= name.pascalCase %></small>
+        <h2 id="<%= page.name.dashCase %>-id" v-text="$t('<%= pathSubseccion %>.title')">
+          <%= page.name.pascalCase %>
+          <small v-text="$t('<%= pathSubseccion %>.subtitle')"><%= page.name.pascalCase %></small>
         </h2>
       </header>
     </b-col>
     <b-col md="12">
-      <%_ for (const idx in properties){ _%>
-        <%_ let campo = properties[idx]; _%>
+      <%_ for (const idx in page.properties){ _%>
+        <%_ let campo = page.properties[idx]; _%>
         <%_ if (campo.type === 'array') { _%>
-<%- include('page-arrays', {name: name, array: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('page-arrays', {page: page, array: campo, pathSubseccion: pathSubseccion}); %>
         <%_ } else { _%>
-<%- include('page-fields', {name: name, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%- include('page-fields', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
         <%_ } _%>
       <%_ }; _%>
     </b-col>
@@ -29,7 +29,7 @@
         <font-awesome-icon icon="ban" class="mr-2"></font-awesome-icon>
         <span>Cancelar</span>
       </b-button>
-      <b-button @click="$v.<%= name.camelCase%>.$touch" variant="primary" size="lg">
+      <b-button @click="$v.<%= page.name.camelCase%>.$touch" variant="primary" size="lg">
         <font-awesome-icon icon="save" class="mr-2"></font-awesome-icon>
         <span>Guardar</span>
       </b-button>
@@ -37,4 +37,4 @@
   </b-row>
 </template>
 
-<script lang="ts" src="./<%= name.dashCase%>.component.ts"></script>
+<script lang="ts" src="./<%= page.name.dashCase%>.component.ts"></script>

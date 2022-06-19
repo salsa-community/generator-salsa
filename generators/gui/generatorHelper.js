@@ -61,7 +61,9 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
     let basePath = page.path.dashCase.replace(/\./g, '/');
     let vueFilePath = basePath + '/' + page.name.dashCase;
     let destination = context.destinationPath + vueFilePath + '.vue';
-    context.generator.fs.copyTpl(context.generator.templatePath('page.vue.ejs'), context.generator.destinationPath(destination), page);
+    context.generator.fs.copyTpl(context.generator.templatePath('page.vue.ejs'), context.generator.destinationPath(destination), {
+      page: page,
+    });
   }
 
   static writeComponentTs(context, page) {

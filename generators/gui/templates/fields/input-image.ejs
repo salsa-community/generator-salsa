@@ -1,13 +1,13 @@
       <input-image
-        id="<%= name.dashCase%>-<%= campo.name.dashCase%>-id"
-        v-model="$v.<%= campo.name.camelCase%>.$model"
+        id="<%= page.name.dashCase%>-<%= campo.name.dashCase%>-id"
+        v-model="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
         :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.tooltip')"
         <%_ } _%>
         :readonly="false"
-        :valid="!$v.<%= campo.name.camelCase%>.$invalid"
+        :valid="!$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$invalid"
         <%_ if (campo.validations) { _%>
         tiposMime="<%=campo.validations.tiposMime%>"
         :pesoMaximo="<%=campo.validations.max%>"

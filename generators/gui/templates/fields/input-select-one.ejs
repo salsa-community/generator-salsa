@@ -1,6 +1,6 @@
       <input-select-one
-        id="<%= name.dashCase%>-<%= campo.name.dashCase%>-id"
-        v-model="$v.<%= campo.name.camelCase%>.$model"
+        id="<%= page.name.dashCase%>-<%= campo.name.dashCase%>-id"
+        v-model="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
@@ -9,10 +9,10 @@
         :options="<%= campo.name.camelCase%>Options"
         :readonly="false"
         :required="<%= campo.validations.required %>"
-        :valid="$v.<%= campo.name.camelCase%>.$dirty ? !$v.<%= campo.name.camelCase%>.$error : null"
+        :valid="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$dirty ? !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$error : null"
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
-          requiredValue: !$v.<%= campo.name.camelCase%>.required,
+          requiredValue: !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.required,
           requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.validations.required'),
           <%_ } _%>
         }"
