@@ -1,0 +1,10 @@
+      <input-boolean
+        id="<%= name.dashCase%>-<%= campo.name.dashCase%>-id"
+        v-model="$v.<%= campo.name.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.label')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.tooltip')"
+        <%_ } _%>
+        :readonly="false"
+        :valid="!$v.<%= campo.name.camelCase%>.$invalid"
+      />

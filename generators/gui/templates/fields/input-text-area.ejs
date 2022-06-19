@@ -1,0 +1,33 @@
+      <input-text-area
+        id="<%= name.dashCase%>-<%= campo.name.dashCase%>-id"
+        v-model="$v.<%= name.camelCase%>.<%= campo.name.camelCase%>.$model"
+        :label="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.description')"
+        <%_ if (campo.tooltip) { _%>
+        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.tooltip')"
+        <%_ } _%>
+        :readonly="false"
+        :required="<%= campo.validations.required %>"
+        :valid="$v.<%= campo.name.camelCase%>.$dirty ? !$v.<%= campo.name.camelCase%>.$error : null"
+        :validationsCommons="{
+          <%_ if (campo.validations.required) { _%>
+          requiredValue: !$v.<%= campo.name.camelCase%>.required,
+          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.validations.required'),
+          <%_ } _%>
+          <%_ if (campo.validations.min) { _%>
+          minValue: !$v.<%= campo.name.camelCase%>.minLength,
+          minMessage: $t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.validations.minMessage', { min: '<%=campo.validations.min%>' }),
+          <%_ } _%>
+          <%_ if (campo.validations.max) { _%>
+          maxValue: !$v.<%= campo.name.camelCase%>.maxLength,
+          maxMessage: $t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.validations.maxMessage', { max: '<%=campo.validations.max%>' }),
+          <%_ } _%>
+          <%_ if (campo.validations.regex) { _%>
+          regexValue: !$v.<%= campo.name.camelCase%>.<%= campo.constantCase%>,
+          regexMessage: $t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.validations.regexMessage'),
+          <%_ } _%>
+        }"
+        <%_ if (campo.validations.max) { _%>
+        :maxCaracteres="<%=campo.validations.max%>"
+        <%_ } _%>
+      />
