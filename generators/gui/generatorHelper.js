@@ -8,12 +8,10 @@ module.exports = class generatorHelper {
     context.generator.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
       process: function (content) {
         let regEx = new RegExp(Constants.ENTITY_TO_MENU, 'g');
-        let entityToMenu = `
-        <b-dropdown-item to="/${basePath}" active-class="active">
-        <span v-text="$t('${page.path.dashCase}.title')">${page.title}</span>
-        </b-dropdown-item>
-        ${Constants.ENTITY_TO_MENU}
-        `;
+        let entityToMenu = `<b-dropdown-item to="/${basePath}" active-class="active">
+      <span v-text="$t('${page.path.dashCase}.title')">${page.title}</span>
+    </b-dropdown-item>
+    ${Constants.ENTITY_TO_MENU}`;
         return content.toString().replace(regEx, entityToMenu);
       },
     });

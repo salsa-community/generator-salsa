@@ -1,17 +1,21 @@
-<%_ if (campo.uiType === 'text') { _%>
+<%_ if (campo.uiType === 'input-text') { _%>
 <%- include('fields/input-text', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
-<%_ } else if (campo.uiType === 'TextArea') { _%>
+<%_ } else if (campo.uiType === 'input-text-area') { _%>
 <%- include('fields/input-text-area', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
-<%_ } else if (campo.uiType === 'Radio Button') { _%>
+<%_ } else if (campo.uiType === 'input-boolean') { _%>
 <%- include('fields/input-boolean', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
-<%_ } else if (campo.uiType === 'inputImage') { _%>
+<%_ } else if (campo.uiType === 'input-image') { _%>
 <%- include('fields/input-image', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
-<%_ } else if (campo.uiType === 'Date') { _%>
+<%_ } else if (campo.uiType === 'input-date') { _%>
 <%- include('fields/input-date', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
-<%_ } else if (campo.uiType === 'selectOne') { _%>
+<%_ } else if (campo.uiType === 'input-select-one') { _%>
 <%- include('fields/input-select-one', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
-<%_ } else if (campo.uiType === 'selectRadio') { _%>
+<%_ } else if (campo.uiType === 'input-select-radio') { _%>
 <%- include('fields/input-select-radio', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
-<%_ } else if (campo.uiType === 'selectMultiple') { _%>
+<%_ } else if (campo.uiType === 'input-select-many') { _%>
 <%- include('fields/input-select-many', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (campo.uiType === 'telefono') { _%>
+<%- include('fields/input-text', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (campo.uiType === 'correo') { _%>
+<%- include('fields/input-text', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
 <%_ } _%>
