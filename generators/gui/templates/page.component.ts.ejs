@@ -3,11 +3,11 @@ import { Component, Vue, Inject } from 'vue-property-decorator';
 import CatalogoService from '@/shared/catalogo/catalogo.service';
 import AlertService from '@/shared/alert/alert.service';
 
-import { <%= name.pascalCase%>, <%= name.pascalCase%>Api } from '@/shared/perfil-usuario/api';
+import { <%= page.name.pascalCase%>, <%= page.name.pascalCase%>Api } from '@/shared/perfil-usuario/api';
 import { required, minLength, maxLength, helpers } from 'vuelidate/lib/validators';
 
-    <%_ for (const idx in properties) { _%>
-      <%_ let campo = properties[idx]; _%>
+    <%_ for (const idx in page.properties) { _%>
+      <%_ let campo = page.properties[idx]; _%>
       <%_ if (campo.validations.regex) { _%>
 const <%= campo.name.constantCase%> = helpers.regex(
   '<%=campo.name.camelCase%>',
@@ -18,9 +18,9 @@ const <%= campo.name.constantCase%> = helpers.regex(
 
 const validations: any = {
 
-  <%= name.camelCase%>: {
-  <%_ for (const idx in properties) { _%>
-    <%_ let campo = properties[idx]; _%>
+  <%= page.name.camelCase%>: {
+  <%_ for (const idx in page.properties) { _%>
+    <%_ let campo = page.properties[idx]; _%>
     <%= campo.name.camelCase%>: {
       <%_ if (campo.validations.required) { _%>
       required,
@@ -42,17 +42,17 @@ const validations: any = {
 @Component({
   validations,
 })
-export default class <%= name.pascalCase%>Component extends Vue {
+export default class <%= page.name.pascalCase%>Component extends Vue {
   @Inject('alertService') private alertService: () => AlertService;
-  @Inject('<%= name.camelCase%>Api') private <%= name.camelCase%>Api: () => <%= name.pascalCase%>Api;
+  @Inject('<%= page.name.camelCase%>Api') private <%= page.name.camelCase%>Api: () => <%= page.name.pascalCase%>Api;
   @Inject('catalogoService') private catalogoService: () => CatalogoService;
 
-  public <%= name.camelCase%>: <%= name.pascalCase%> = {};
+  public <%= page.name.camelCase%>: <%= page.name.pascalCase%> = {};
   public isSaving = false;
   public currentLanguage = '';
 
-        <%_ for (const idx in properties) { _%>
-          <%_ let campo = properties[idx]; _%>
+        <%_ for (const idx in page.properties) { _%>
+          <%_ let campo = page.properties[idx]; _%>
           <%_ if (campo.uiType === 'Date') { _%>
             <%_ if (campo.validations.min) { _%>
   public minDate<%= campo.name.pascalCase%> = new Date('<%=campo.validations.min%>');

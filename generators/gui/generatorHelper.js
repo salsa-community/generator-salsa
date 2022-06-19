@@ -70,11 +70,9 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
     let basePath = page.path.dashCase.replace(/\./g, '/');
     let componentFilePath = basePath + '/' + page.name.dashCase;
     let destination = context.destinationPath + componentFilePath + '.component.ts';
-    context.generator.fs.copyTpl(
-      context.generator.templatePath('page.component.ts.ejs'),
-      context.generator.destinationPath(destination),
-      page
-    );
+    context.generator.fs.copyTpl(context.generator.templatePath('page.component.ts.ejs'), context.generator.destinationPath(destination), {
+      page: page,
+    });
   }
 
   static writeI18nFiles(context, page) {
