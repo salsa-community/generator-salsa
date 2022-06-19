@@ -1,10 +1,10 @@
       <input-select-radio
         id="<%= page.name.dashCase%>-<%= campo.name.dashCase%>-id"
         v-model="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$model"
-        :label="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.label')"
-        :description="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.description')"
+        :label="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.label')"
+        :description="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
-        :tooltip="$t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.tooltip')"
+        :tooltip="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.tooltip')"
         <%_ } _%>
         :options="<%= campo.name.camelCase%>Options"
         :readonly="false"
@@ -13,7 +13,7 @@
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
           requiredValue: !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.required,
-          requiredMessage: $t('<%= pathSubseccion %>.fields.<%= campo.name.dashCase%>.validations.required'),
+          requiredMessage: $t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.validations.required'),
           <%_ } _%>
         }"
       />

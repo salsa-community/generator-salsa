@@ -4,6 +4,6 @@
         :title="$t('<%= pathSubseccion %>.fields.<%= items.name.dashCase%>.label')">
         <%_ for (const idx in items.properties){ _%>
           <%_ let campo = items.properties[idx]; _%>
-  <%- include('../page-fields', {page: page, campo: campo, pathSubseccion: pathSubseccion, context: items}); %>
+  <%- include('../page-fields', {page: items, campo: campo, pathSubseccion: pathSubseccion, context: items}); %>
         <%_ }; _%>
       </cards-list>
