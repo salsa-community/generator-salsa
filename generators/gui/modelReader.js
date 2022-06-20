@@ -15,6 +15,7 @@ module.exports = class modelReader {
         .pipe(csv({ mapHeaders: ({ header }) => String.toCamelCase(header) }))
         .on('data', row => {
           if (row.modelo) {
+            row.modelo = row.tipoDeDato == 'array' ? row.modelo : row.modelo + '.' + row.nombre;
             this.processRow(rootModel, row.modelo, row);
           }
         })
@@ -92,6 +93,7 @@ module.exports = class modelReader {
       },
       validations: {
         required: context.row.requerido.toLowerCase() === 'true',
+        readonly: context.row.soloLectura.toLowerCase() === 'true',
         min: context.row.min,
         max: context.row.max,
         tiposMime: context.row.tiposMime,
@@ -106,8 +108,12 @@ module.exports = class modelReader {
         dashCase: String.toDashCase(name),
         constantCase: String.toConstantCase(name),
       },
-      description: context.row.etiqueta,
+      tooltip: String.toPascalCase(name),
+      tooltipEn: String.toPascalCase(name),
+      description: String.toPascalCase(name),
+      descriptionEn: String.toPascalCase(name),
       title: String.toPascalCase(name),
+      titleEn: String.toPascalCase(name),
       type: objectType,
       uiType: uiType,
       isLeaf: isLeaf,
@@ -139,7 +145,12 @@ module.exports = class modelReader {
         items: {
           properties: {},
           type: 'object',
+          description: arrayType,
+          descriptionEn: arrayType,
+          tooltip: arrayType,
+          tooltipEn: arrayType,
           title: arrayType,
+          titleEn: arrayType,
           name: {
             singular: Inflector.singularize(String.toCamelCase(arrayType), 'es'),
             plural: Inflector.pluralize(String.toCamelCase(arrayType), 'es'),

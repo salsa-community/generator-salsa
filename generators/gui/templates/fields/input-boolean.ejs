@@ -5,6 +5,6 @@
         <%_ if (campo.tooltip) { _%>
         :tooltip="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.tooltip')"
         <%_ } _%>
-        :readonly="false"
+        :readonly="<%= campo.validations.readonly %>"
         :valid="!$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$invalid"
       />

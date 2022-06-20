@@ -1,37 +1,36 @@
 {
   "<%= page.name.dashCase%>": {
-    "title": "<%= page.name.title%>",
-    "subtitle": "<%= page.name.title%>",
+    "title": "<%= page.title%>",
+    "subtitle": "<%= page.title%>",
     <%_ let campos = Object.keys(page.properties); _%>
     <%_ campos.forEach((key, idx) => { _%>
     <%_ let campo = page.properties[key]; _%>
     "<%= campo.name.dashCase%>": {
-      "label": "<%= campo.name.title%>",
-      "description": "<%= campo.name.description%>",
-      "tooltip": "<%= campo.name.tooltip%>",
+      "label": "<%= campo.title%>",
+      "description": "<%= campo.description%>",
+      "tooltip": "<%= campo.tooltip%>",
       "validations": {
-        "required": "The field <%= campo.name.title%> is required",
+        "required": "The field <%= campo.title%> is required",
         "minMessage": "The number of characters must be at least of {min}",
         "maxMessage": "The number of characters must be as much as {max}",
-        "regexMessage": "Invalid <%= campo.name.title%> format"
+        "regexMessage": "Invalid <%= campo.title%> format"
       }<%_ if (campo.type === 'array') { _%>,
         <%_ let items = Object.keys(campo.items.properties); _%>
         <%_ items.forEach((key, idx) => { _%>
           <%_ let item = campo.items.properties[key]; _%>
-          "<%= item.name.dashCase%>": {
-            "label": "<%= item.name.titleEn%>",
-            "description": "<%= item.name.description%>",
-            "tooltip": "<%= item.name.tooltip%>",
-            "validations": {
-              "required": "El campo <%= campo.title%> es requerido",
-              "minMessage": "El número de caracteres debe ser de al menos {min}",
-              "maxMessage": "El número de caracteres debe ser máximo de {max}",
-              "regexMessage": "Formato de <%= campo.title%> inválido"
-            }
-          }<% if (items.length -1 !== idx ) { %>,<% } %>
+      "<%= item.name.dashCase%>": {
+        "label": "<%= item.title%>",
+        "description": "<%= item.description%>",
+        "tooltip": "<%= item.tooltip%>",
+        "validations": {
+          "required": "El campo <%= campo.title%> es requerido",
+          "minMessage": "El número de caracteres debe ser de al menos {min}",
+          "maxMessage": "El número de caracteres debe ser máximo de {max}",
+          "regexMessage": "Formato de <%= campo.title%> inválido"
+        }
+      }<% if (items.length -1 !== idx ) { %>,<% } %>
         <%_ }) _%>
       <%_ } _%>
-
     }<% if (campos.length -1 !== idx ) { %>,<% } %>
     <%_ }) _%>
   }

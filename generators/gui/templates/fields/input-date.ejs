@@ -7,7 +7,7 @@
         :tooltip="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.tooltip')"
         <%_ } _%>
         :placeholder="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.description')"
-        :readonly="false"
+        :readonly="<%= campo.validations.readonly %>"
         :required="<%= campo.validations.required %>"
         :valid="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$dirty ? !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$error : null"
         :validationsCommons="{

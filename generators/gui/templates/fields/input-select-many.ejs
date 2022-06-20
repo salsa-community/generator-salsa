@@ -8,7 +8,7 @@
         <%_ } _%>
         :options="<%= campo.name.camelCase%>Options"
         :markedSelections="selected<%= campo.name.pascalCase%>"
-        :readonly="false"
+        :readonly="<%= campo.validations.readonly %>"
         :required="<%= campo.validations.required %>"
         :valid="$v.<%= page.name.camelCase%>.<%=campo.name.camelCase%>.$dirty ?
           !$v.<%= page.name.camelCase%>.<%=campo.name.camelCase%>.$error && <%= page.name.camelCase%>.<%=campo.name.camelCase%>.length >= <%= page.name.camelCase%>.<%=campo.validations.min%> : 

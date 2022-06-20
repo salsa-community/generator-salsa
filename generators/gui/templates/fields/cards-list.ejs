@@ -1,9 +1,11 @@
       <cards-list
-        id="<%= page.name.dashCase%>-<%= items.name.dashCase%>-id"
-        :items="<%= items.name.plural%>"
-        :title="$t('<%= pathSubseccion %>.fields.<%= items.name.dashCase%>.label')">
-        <%_ for (const idx in items.properties){ _%>
-          <%_ let campo = items.properties[idx]; _%>
-  <%- include('../page-fields', {page: items, campo: campo, pathSubseccion: pathSubseccion, context: items}); %>
+        id="<%= page.name.dashCase%>-<%= array.name.dashCase%>-id"
+        :items="<%= array.name.plural%>"
+        :title="$t('<%= pathSubseccion %>.<%= array.name.dashCase%>.label')">
+        <%_ for (const idx in array.items.properties){ _%>
+          <%_ let campo = array.items.properties[idx]; _%>
+          <%_ array.items.name.dashCase = page.name.dashCase + '.' + array.name.dashCase; _%>
+          <%_ let subPath = pathSubseccion + '.' + array.name.dashCase; _%>
+  <%- include('../page-fields', {page: array.items, campo: campo, pathSubseccion: subPath, context: array.items}); %>
         <%_ }; _%>
       </cards-list>
