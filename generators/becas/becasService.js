@@ -320,6 +320,7 @@ module.exports = class guiService {
                         spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
                       })
                       .catch(errorCreated => {
+                        this.log.error(',' + programa.cvu + ',no se pudo guardar el registro,' + programa.id);
                         spinner.fail(chalk.green.bold('ups - ') + chalk.green(errorCreated));
                       });
                   });
