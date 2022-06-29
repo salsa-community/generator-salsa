@@ -1,0 +1,315 @@
+openapi: 3.0.1
+info:
+  title: msPerfil-rizoma
+  version: 1.0.1-beta
+  description: 'Versión desarrollo :: Perfil de usuario rizoma'
+servers:
+  - url: http://localhost:8102/api
+    description: Development server
+  - url: https://localhost:8102/api
+    description: Development server with TLS Profile
+paths:
+  /contactos:
+    get:
+      tags:
+        - contacto
+      responses:
+        '200':
+          $ref: '#/components/responses/ContactoResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: getContacto
+      description: Obtiene la información de Contacto de usuario
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacto'
+        required: true
+      tags:
+        - contacto
+      responses:
+        '201':
+          $ref: '#/components/responses/ContactoResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: saveContacto
+      description: Almacena información de Contacto de usuario
+  /miPerfil:
+    get:
+      tags:
+        - miPerfil
+      responses:
+        '200':
+          $ref: '#/components/responses/MiPerfilResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: getMiPerfil
+      description: Obtiene la información de MiPerfil de usuario
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MiPerfil'
+        required: true
+      tags:
+        - miPerfil
+      responses:
+        '201':
+          $ref: '#/components/responses/MiPerfilResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: saveMiPerfil
+      description: Almacena información de MiPerfil de usuario
+  /otros:
+    get:
+      tags:
+        - otro
+      responses:
+        '200':
+          $ref: '#/components/responses/OtroResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: getOtro
+      description: Obtiene la información de Otro de usuario
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Otro'
+        required: true
+      tags:
+        - otro
+      responses:
+        '201':
+          $ref: '#/components/responses/OtroResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: saveOtro
+      description: Almacena información de Otro de usuario
+  # entity-path-to-api
+components:
+  schemas:
+    BaseCatalogo:
+      description: Objeto que es utilizado por todo los catálogos en rizoma
+      type: object
+      properties:
+        id:
+          description: Identificador de país
+          type: string
+        nombre:
+          description: Nombre de país
+          type: string
+    File:
+      description: Objeto genérico para hacer referencia a archivos
+      type: object
+      properties:
+        nombre:
+          description: Nombre de archivo, ej. foto.jpg
+          type: string
+        contentType:
+          description: MIME types de los documentos
+          type: string
+        uri:
+          description: Ubicación del documento
+          type: string
+    Contacto:
+      description: Contacto
+      properties:
+        correoElectronico:
+          description: correoElectronico
+          type: string
+        telefono:
+          description: telefono
+          type: string
+        tipoDeContacto:
+          description: tipoDeContacto
+          type: object
+    MiPerfil:
+      description: MiPerfil
+      properties:
+        tipoPerfil:
+          description: tipoPerfil
+          allOf:
+            - $ref: '#/components/schemas/BaseCatalogo'
+        fotografia:
+          description: fotografia
+          allOf:
+            - $ref: '#/components/schemas/File'
+        semblanza:
+          description: semblanza
+          type: string
+          items:
+            $ref: '#/components/schemas/Contacto'
+    Otro:
+      description: Otro
+      properties:
+        ubicacion:
+          description: ubicacion
+          type: string
+    # entity-schema-to-api
+  responses:
+    NumberResponse:
+      content:
+        application/json:
+          schema:
+            format: int64
+            minimum: 0
+            type: number
+        text/plain:
+          schema:
+            format: int64
+            minimum: 0
+            type: number
+      description: Cantidad de elementos afectados
+    NotFound:
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
+      description: The specified resource was not found
+    BadRequest:
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
+      description: BadRequest
+    Unauthorized:
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
+      description: Unauthorized
+    Forbidden:
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
+      description: Forbidden
+    TooManyRequests:
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
+      description: Too Many Requests
+    UnexpectedError:
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
+      description: Unexpected error
+    ContactoResponse:
+      content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contacto'
+      description: Contacto
+    MiPerfilResponse:
+      content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MiPerfil'
+      description: MiPerfil
+    OtroResponse:
+      content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Otro'
+      description: Otro
+    # entity-responses-to-api
+  securitySchemes:
+    oauth:
+      flows:
+        authorizationCode:
+          authorizationUrl: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/auth
+          tokenUrl: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/token
+          scopes:
+            jhipster: Jhipster specific claims
+            email: Email claims
+            profile: Profile claims
+      type: oauth2
+      description: OAuth2 authentication with KeyCloak
+    openId:
+      openIdConnectUrl: http://localhost:9080/auth/realms/jhipster/.well-known/openid-configuration
+      type: openIdConnect
+      description: OpenID Connect authentication with KeyCloak
+security:
+  - oauth:
+      - jhipster
+      - email
+      - profile
+  - openId:
+      - jhipster
+      - email
+      - profile
+tags:
+  - name: contacto
+    description: Contacto
+  - name: miPerfil
+    description: MiPerfil
+  - name: otro
+    description: Otro
+  # entity-tags-to-api

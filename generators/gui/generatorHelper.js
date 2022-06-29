@@ -4,7 +4,7 @@ const Constants = require('./constants');
 
 module.exports = class generatorHelper {
   static createDefaultFiles(context) {
-    let destination = context.apiPath + '/api.yml';
+    let destination = context.apiPath;
     context.generator.fs.copyTpl(context.generator.templatePath('api/api.yml.ejs'), context.generator.destinationPath(destination), {});
   }
 
