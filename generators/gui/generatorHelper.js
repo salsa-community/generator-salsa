@@ -90,25 +90,36 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
     });
   }
 
-  static updateApi(context, page) {
+  static updateApi(context, page, exclude) {
     let properties = this.resolveProperties(context, page);
     context.generator.fs.copy(context.apiPath, context.apiPath, {
       process: content => {
-        let regEx = new RegExp(Constants.API_PATHS, 'g');
-        let pathDeclaration = this.pathDeclaration(page);
-        content = content.toString().replace(regEx, pathDeclaration);
+        let regEx = '';
+        if (!(exclude && exclude.paths)) {
+          regEx = new RegExp(Constants.API_PATHS, 'g');
+          let pathDeclaration = this.pathDeclaration(page);
+          content = content.toString().replace(regEx, pathDeclaration);
+        }
 
-        regEx = new RegExp(Constants.API_SCHEMA, 'g');
-        let schemaDeclaration = this.schemaDeclaration(page, properties);
-        content = content.toString().replace(regEx, schemaDeclaration);
+        if (!(exclude && exclude.schemas)) {
+          regEx = new RegExp(Constants.API_SCHEMA, 'g');
+          let schemaDeclaration = this.schemaDeclaration(page, properties);
+          content = content.toString().replace(regEx, schemaDeclaration);
+        }
 
-        regEx = new RegExp(Constants.API_TAGS, 'g');
-        let tagsDeclaration = this.tagsDeclaration(page, properties);
-        content = content.toString().replace(regEx, tagsDeclaration);
+        if (!(exclude && exclude.tags)) {
+          regEx = new RegExp(Constants.API_TAGS, 'g');
+          let tagsDeclaration = this.tagsDeclaration(page, properties);
+          content = content.toString().replace(regEx, tagsDeclaration);
+        }
 
-        regEx = new RegExp(Constants.API_RESPONSES, 'g');
-        let responsesDeclaration = this.responsesDeclaration(page);
-        return content.toString().replace(regEx, responsesDeclaration);
+        if (!(exclude && exclude.responses)) {
+          regEx = new RegExp(Constants.API_RESPONSES, 'g');
+          let responsesDeclaration = this.responsesDeclaration(page);
+          content = content.toString().replace(regEx, responsesDeclaration);
+        }
+
+        return content;
       },
     });
   }
@@ -154,7 +165,8 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
             $ref: '#/components/schemas/${properties[key].items.name.pascalCase}'`;
 
         if (!context.model.entities[properties[key].items.name.camelCase]) {
-          this.updateApi(context, properties[key].items);
+          let exclude = { responses: true, paths: true };
+          this.updateApi(context, properties[key].items, exclude);
           context.model.entities[properties[key].items.name.camelCase] = true;
         }
       } else if (properties[key].type == 'image') {
