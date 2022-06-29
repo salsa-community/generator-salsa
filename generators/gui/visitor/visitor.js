@@ -17,5 +17,7 @@ module.exports = class visitor {
     GeneratorHelper.writeUi(context, page);
     GeneratorHelper.writeComponentTs(context, page);
     GeneratorHelper.writeI18nFiles(context, page);
+    GeneratorHelper.updateApi(context, page);
+    context.model.entities[page.name.camelCase] = true;
   }
 };

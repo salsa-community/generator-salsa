@@ -3,6 +3,11 @@
 const Constants = require('./constants');
 
 module.exports = class generatorHelper {
+  static createDefaultFiles(context) {
+    let destination = context.apiPath + '/api.yml';
+    context.generator.fs.copyTpl(context.generator.templatePath('api/api.yml.ejs'), context.generator.destinationPath(destination), {});
+  }
+
   static updateEntitiesMenuVue(context, page) {
     let basePath = page.path.dashCase.replace(/\./g, '/');
     context.generator.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {
@@ -83,5 +88,148 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
     context.generator.fs.copyTpl(context.generator.templatePath('i18n/page_en.json.ejs'), context.generator.destinationPath(destination), {
       page: page,
     });
+  }
+
+  static updateApi(context, page) {
+    let properties = this.resolveProperties(context, page);
+    context.generator.fs.copy(context.apiPath, context.apiPath, {
+      process: content => {
+        let regEx = new RegExp(Constants.API_PATHS, 'g');
+        let pathDeclaration = this.pathDeclaration(page);
+        content = content.toString().replace(regEx, pathDeclaration);
+
+        regEx = new RegExp(Constants.API_SCHEMA, 'g');
+        let schemaDeclaration = this.schemaDeclaration(page, properties);
+        content = content.toString().replace(regEx, schemaDeclaration);
+
+        regEx = new RegExp(Constants.API_TAGS, 'g');
+        let tagsDeclaration = this.tagsDeclaration(page, properties);
+        content = content.toString().replace(regEx, tagsDeclaration);
+
+        regEx = new RegExp(Constants.API_RESPONSES, 'g');
+        let responsesDeclaration = this.responsesDeclaration(page);
+        return content.toString().replace(regEx, responsesDeclaration);
+      },
+    });
+  }
+
+  static responsesDeclaration(page) {
+    return `${page.name.pascalCase}Response:
+      content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/${page.name.pascalCase}'
+      description: ${page.name.pascalCase}
+    ${Constants.API_RESPONSES}`;
+  }
+
+  static tagsDeclaration(page) {
+    return `- name: ${page.name.camelCase}
+    description: ${page.name.pascalCase}
+  ${Constants.API_TAGS}`;
+  }
+
+  static resolveProperties(context, page) {
+    let prop = `${page.name.pascalCase}:
+      description: ${page.name.pascalCase}
+      properties:`;
+    return this.iterateProperties(context, prop, page.properties);
+  }
+
+  static iterateProperties(context, prop, properties) {
+    for (const key in properties) {
+      if (properties[key].type == 'catalog') {
+        prop =
+          prop +
+          `
+        ${properties[key].name.camelCase}:
+          description: ${properties[key].name.camelCase}
+          allOf:
+            - $ref: '#/components/schemas/BaseCatalogo'`;
+      } else if (properties[key].type == 'array') {
+        prop =
+          prop +
+          `
+          items:
+            $ref: '#/components/schemas/${properties[key].items.name.pascalCase}'`;
+
+        if (!context.model.entities[properties[key].items.name.camelCase]) {
+          this.updateApi(context, properties[key].items);
+          context.model.entities[properties[key].items.name.camelCase] = true;
+        }
+      } else if (properties[key].type == 'image') {
+        prop =
+          prop +
+          `
+        ${properties[key].name.camelCase}:
+          description: ${properties[key].name.camelCase}
+          allOf:
+            - $ref: '#/components/schemas/File'`;
+      } else {
+        prop =
+          prop +
+          `
+        ${properties[key].name.camelCase}:
+          description: ${properties[key].name.camelCase}
+          type: ${properties[key].type}`;
+      }
+    }
+    return prop;
+  }
+
+  static schemaDeclaration(page, properties) {
+    return `${properties}
+    ${Constants.API_SCHEMA}`;
+  }
+
+  static pathDeclaration(page) {
+    return `/${page.name.plural}:
+    get:
+      tags:
+        - ${page.name.camelCase}
+      responses:
+        '200':
+          $ref: '#/components/responses/${page.name.pascalCase}Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: get${page.name.pascalCase}
+      description: Obtiene la información de ${page.name.pascalCase} de usuario
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/${page.name.pascalCase}'
+        required: true
+      tags:
+        - ${page.name.camelCase}
+      responses:
+        '201':
+          $ref: '#/components/responses/${page.name.pascalCase}Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+      operationId: save${page.name.pascalCase}
+      description: Almacena información de ${page.name.pascalCase} de usuario
+  ${Constants.API_PATHS}`;
   }
 };
