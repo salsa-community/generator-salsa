@@ -195,10 +195,12 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
   }
 
   static pathDeclaration(page) {
-    return `/${page.name.plural}:
+    return `/${page.name.dashCase}:
     get:
       tags:
         - ${page.name.camelCase}
+      operationId: get${page.name.pascalCase}
+      description: Obtiene la información de ${page.name.pascalCase} de usuario
       responses:
         '200':
           $ref: '#/components/responses/${page.name.pascalCase}Response'
@@ -214,17 +216,17 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
           $ref: '#/components/responses/TooManyRequests'
         default:
           $ref: '#/components/responses/UnexpectedError'
-      operationId: get${page.name.pascalCase}
-      description: Obtiene la información de ${page.name.pascalCase} de usuario
     post:
+      tags:
+        - ${page.name.camelCase}
+      operationId: save${page.name.pascalCase}
+      description: Almacena información de ${page.name.pascalCase} de usuario
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/${page.name.pascalCase}'
         required: true
-      tags:
-        - ${page.name.camelCase}
       responses:
         '201':
           $ref: '#/components/responses/${page.name.pascalCase}Response'
@@ -240,8 +242,69 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
           $ref: '#/components/responses/TooManyRequests'
         default:
           $ref: '#/components/responses/UnexpectedError'
-      operationId: save${page.name.pascalCase}
-      description: Almacena información de ${page.name.pascalCase} de usuario
+  /${page.name.dashCase}/{id}:
+      get:
+        tags:
+          - ${page.name.camelCase}
+        operationId: get${page.name.pascalCase}ById
+        description: Obtiene la información de ${page.name.pascalCase}
+        parameters:
+        - name: id
+          in: path
+          description: id del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+        responses:
+          '200':
+            $ref: '#/components/responses/${page.name.pascalCase}Response'
+          '400':
+            $ref: '#/components/responses/BadRequest'
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '403':
+            $ref: '#/components/responses/Forbidden'
+          '404':
+            $ref: '#/components/responses/NotFound'
+          '429':
+            $ref: '#/components/responses/TooManyRequests'
+          default:
+            $ref: '#/components/responses/UnexpectedError'
+      put:
+        tags:
+          - ${page.name.camelCase}
+        operationId: update${page.name.pascalCase}ById
+        description: Obtiene la información de ${page.name.pascalCase}
+        parameters:
+        - name: id
+          in: path
+          description: id del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/${page.name.pascalCase}'
+          required: true
+        responses:
+          '200':
+            $ref: '#/components/responses/${page.name.pascalCase}Response'
+          '400':
+            $ref: '#/components/responses/BadRequest'
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '403':
+            $ref: '#/components/responses/Forbidden'
+          '404':
+            $ref: '#/components/responses/NotFound'
+          '429':
+            $ref: '#/components/responses/TooManyRequests'
+          default:
+            $ref: '#/components/responses/UnexpectedError'
   ${Constants.API_PATHS}`;
   }
 };

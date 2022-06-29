@@ -86,7 +86,34 @@ components:
           schema:
             $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
       description: Unexpected error
+    Conflict:
+      description: Indicates a request conflict with current state of the target resource.
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
     # entity-responses-to-api
+  parameters:
+    pageQuery:
+      in: query
+      name: page
+      description: Page number
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 1
+        maximum: 100
+    sizeQuery:
+      in: query
+      name: size
+      description: Page size
+      schema:
+        type: integer
+        format: int32
+        minimum: 5
+        default: 25
+        maximum: 100
   securitySchemes:
     oauth:
       flows:

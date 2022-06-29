@@ -9,10 +9,12 @@ servers:
   - url: https://localhost:8102/api
     description: Development server with TLS Profile
 paths:
-  /miPerfil:
+  /mi-perfil:
     get:
       tags:
         - miPerfil
+      operationId: getMiPerfil
+      description: Obtiene la información de MiPerfil de usuario
       responses:
         '200':
           $ref: '#/components/responses/MiPerfilResponse'
@@ -28,17 +30,17 @@ paths:
           $ref: '#/components/responses/TooManyRequests'
         default:
           $ref: '#/components/responses/UnexpectedError'
-      operationId: getMiPerfil
-      description: Obtiene la información de MiPerfil de usuario
     post:
+      tags:
+        - miPerfil
+      operationId: saveMiPerfil
+      description: Almacena información de MiPerfil de usuario
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/MiPerfil'
         required: true
-      tags:
-        - miPerfil
       responses:
         '201':
           $ref: '#/components/responses/MiPerfilResponse'
@@ -54,12 +56,75 @@ paths:
           $ref: '#/components/responses/TooManyRequests'
         default:
           $ref: '#/components/responses/UnexpectedError'
-      operationId: saveMiPerfil
-      description: Almacena información de MiPerfil de usuario
-  /otros:
+  /mi-perfil/{id}:
+      get:
+        tags:
+          - miPerfil
+        operationId: getMiPerfilById
+        description: Obtiene la información de MiPerfil
+        parameters:
+        - name: id
+          in: path
+          description: id del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+        responses:
+          '200':
+            $ref: '#/components/responses/MiPerfilResponse'
+          '400':
+            $ref: '#/components/responses/BadRequest'
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '403':
+            $ref: '#/components/responses/Forbidden'
+          '404':
+            $ref: '#/components/responses/NotFound'
+          '429':
+            $ref: '#/components/responses/TooManyRequests'
+          default:
+            $ref: '#/components/responses/UnexpectedError'
+      put:
+        tags:
+          - miPerfil
+        operationId: updateMiPerfilById
+        description: Obtiene la información de MiPerfil
+        parameters:
+        - name: id
+          in: path
+          description: id del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MiPerfil'
+          required: true
+        responses:
+          '200':
+            $ref: '#/components/responses/MiPerfilResponse'
+          '400':
+            $ref: '#/components/responses/BadRequest'
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '403':
+            $ref: '#/components/responses/Forbidden'
+          '404':
+            $ref: '#/components/responses/NotFound'
+          '429':
+            $ref: '#/components/responses/TooManyRequests'
+          default:
+            $ref: '#/components/responses/UnexpectedError'
+  /otro:
     get:
       tags:
         - otro
+      operationId: getOtro
+      description: Obtiene la información de Otro de usuario
       responses:
         '200':
           $ref: '#/components/responses/OtroResponse'
@@ -75,17 +140,17 @@ paths:
           $ref: '#/components/responses/TooManyRequests'
         default:
           $ref: '#/components/responses/UnexpectedError'
-      operationId: getOtro
-      description: Obtiene la información de Otro de usuario
     post:
+      tags:
+        - otro
+      operationId: saveOtro
+      description: Almacena información de Otro de usuario
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Otro'
         required: true
-      tags:
-        - otro
       responses:
         '201':
           $ref: '#/components/responses/OtroResponse'
@@ -101,8 +166,69 @@ paths:
           $ref: '#/components/responses/TooManyRequests'
         default:
           $ref: '#/components/responses/UnexpectedError'
-      operationId: saveOtro
-      description: Almacena información de Otro de usuario
+  /otro/{id}:
+      get:
+        tags:
+          - otro
+        operationId: getOtroById
+        description: Obtiene la información de Otro
+        parameters:
+        - name: id
+          in: path
+          description: id del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+        responses:
+          '200':
+            $ref: '#/components/responses/OtroResponse'
+          '400':
+            $ref: '#/components/responses/BadRequest'
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '403':
+            $ref: '#/components/responses/Forbidden'
+          '404':
+            $ref: '#/components/responses/NotFound'
+          '429':
+            $ref: '#/components/responses/TooManyRequests'
+          default:
+            $ref: '#/components/responses/UnexpectedError'
+      put:
+        tags:
+          - otro
+        operationId: updateOtroById
+        description: Obtiene la información de Otro
+        parameters:
+        - name: id
+          in: path
+          description: id del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Otro'
+          required: true
+        responses:
+          '200':
+            $ref: '#/components/responses/OtroResponse'
+          '400':
+            $ref: '#/components/responses/BadRequest'
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '403':
+            $ref: '#/components/responses/Forbidden'
+          '404':
+            $ref: '#/components/responses/NotFound'
+          '429':
+            $ref: '#/components/responses/TooManyRequests'
+          default:
+            $ref: '#/components/responses/UnexpectedError'
   # entity-path-to-api
 components:
   schemas:
@@ -214,6 +340,12 @@ components:
           schema:
             $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
       description: Unexpected error
+    Conflict:
+      description: Indicates a request conflict with current state of the target resource.
+      content:
+        application/problem+json:
+          schema:
+            $ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
     MiPerfilResponse:
       content:
           application/json:
@@ -227,6 +359,27 @@ components:
               $ref: '#/components/schemas/Otro'
       description: Otro
     # entity-responses-to-api
+  parameters:
+    pageQuery:
+      in: query
+      name: page
+      description: Page number
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 1
+        maximum: 100
+    sizeQuery:
+      in: query
+      name: size
+      description: Page size
+      schema:
+        type: integer
+        format: int32
+        minimum: 5
+        default: 25
+        maximum: 100
   securitySchemes:
     oauth:
       flows:
