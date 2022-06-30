@@ -163,6 +163,7 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
           `
         ${properties[key].name.camelCase}:
           description: ${properties[key].name.camelCase}
+          type: array
           items:
             $ref: '#/components/schemas/${properties[key].items.name.pascalCase}'`;
 
