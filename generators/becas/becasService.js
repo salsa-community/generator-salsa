@@ -38,7 +38,7 @@ module.exports = class guiService {
     programa.cvu = m.CVU_INTEGRANTE;
     programa.clave = m.REFERENCIA_PROGRAMA;
     programa.claveTipoPrograma = m.CVE_TIPO_PROGRAMA;
-    programa.promedioRecuperado = m.PROMEDIO_RECUPERADO;
+    programa.promedioRecuperado = m.PROMEDIO_RECUPERADO ? parseFloat(m.PROMEDIO_RECUPERADO) : m.PROMEDIO_RECUPERADO;
     programa.periodoLectivo = String.normalize(m.DESC_PERIODO_LECTIVO);
     programa.nombre = String.normalize(m.NOMBRE_PROGRAMA);
     programa.nombreAspirante = String.normalize(m.NOMBRE_INTEGRANTE);
@@ -306,7 +306,7 @@ module.exports = class guiService {
             spinner.succeed(chalk.green.bold('PARTE - ') + chalk.green(part));
             fs.createReadStream('cargas/matricula/partes/sh_part_' + part)
               .pipe(csv())
-              .on('data', function (m) {
+              .on('data', m => {
                 let programa = that.toPrograma(m, spinner);
                 axios
                   .patch(context.serviceUrl + '/api/programas/' + programa.id, programa, context.config)
@@ -320,12 +320,12 @@ module.exports = class guiService {
                         spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
                       })
                       .catch(errorCreated => {
-                        this.log.error(',' + programa.cvu + ',no se pudo guardar el registro,' + programa.id);
-                        spinner.fail(chalk.green.bold('ups - ') + chalk.green(errorCreated));
+                        this.log.error(',' + programa.cvu + `,archivo ${index},` + programa.id);
+                        spinner.fail(chalk.green.bold('ups - ') + chalk.green(programa.cvu));
                       });
                   });
               })
-              .on('end', function () {
+              .on('end', () => {
                 spinner.succeed('finalización');
               });
           }, 20000 * j);
