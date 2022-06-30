@@ -180,6 +180,15 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
           description: ${properties[key].name.camelCase}
           allOf:
             - $ref: '#/components/schemas/File'`;
+      }
+      if (properties[key].type == 'date') {
+        prop =
+          prop +
+          `
+        ${properties[key].name.camelCase}:
+          description: ${properties[key].name.camelCase}
+          format: date
+          type: string`;
       } else {
         prop =
           prop +
