@@ -266,7 +266,8 @@ components:
           type: string
         tipoDeContacto:
           description: tipoDeContacto
-          type: object
+          allOf:
+            - $ref: '#/components/schemas/BaseCatalogo'
     MiPerfil:
       description: MiPerfil
       properties:
@@ -281,6 +282,9 @@ components:
         semblanza:
           description: semblanza
           type: string
+        mediosContacto:
+          description: mediosContacto
+          type: array
           items:
             $ref: '#/components/schemas/Contacto'
     Otro:

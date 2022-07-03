@@ -15,7 +15,7 @@ module.exports = class modelReader {
         .pipe(csv({ mapHeaders: ({ header }) => String.toCamelCase(header) }))
         .on('data', row => {
           if (row.modelo) {
-            row.modelo = row.tipoDeDato == 'array' ? row.modelo : row.modelo + '.' + row.nombre;
+            row.modelo = row.tipoDeDato == 'array' || row.tipoDeDato == 'object' ? row.modelo : row.modelo + '.' + row.nombre;
             this.processRow(rootModel, row.modelo, row);
           }
         })
@@ -31,29 +31,21 @@ module.exports = class modelReader {
     jsonPathTree.forEach((node, nodeIdx) => {
       context.jpNode = node;
       context.jpNodeIdx = nodeIdx;
-      this.visitJpNode(context);
+      this.visitJpExpressionNode(context);
     });
   }
 
-  static visitJpNode(context) {
+  static visitJpExpressionNode(context) {
     if (context.jpNode.expression.type === 'identifier') {
-      let currentContainer = context.currentNode.type == 'array' ? 'items' : 'properties';
+      let properties = context.currentNode.type == 'array' ? context.currentNode.items.properties : context.currentNode.properties;
 
-      if (currentContainer == 'properties') {
-        if (!context.currentNode.properties[context.jpNode.expression.value]) {
-          context.currentNode.properties[context.jpNode.expression.value] = this.createNode(context, context.jpNode.expression.value);
-        }
-        context.prevNode = context.currentNode;
-        context.prevJpNodeValue = context.jpNode.expression.value;
-        context.currentNode = context.currentNode.properties[context.jpNode.expression.value];
-      } else {
-        if (!context.currentNode.items.properties[context.jpNode.expression.value]) {
-          context.currentNode.items.properties[context.jpNode.expression.value] = this.createNode(context, context.jpNode.expression.value);
-        }
-        context.prevNode = context.currentNode;
-        context.prevJpNodeValue = context.jpNode.expression.value;
-        context.currentNode = context.currentNode.items.properties[context.jpNode.expression.value];
+      if (!properties[context.jpNode.expression.value]) {
+        properties[context.jpNode.expression.value] = this.createProperty(context, context.jpNode.expression.value);
       }
+
+      context.prevNode = context.currentNode;
+      context.prevJpNodeValue = context.jpNode.expression.value;
+      context.currentNode = properties[context.jpNode.expression.value];
     }
   }
 
@@ -71,7 +63,7 @@ module.exports = class modelReader {
   static isNodeIntoArray(context) {
     return context.prevNode && context.prevNode.type == 'array';
   }
-  static isArray(jsonPathTree, idx) {
+  static isNextScriptExpression(jsonPathTree, idx) {
     let nexNode = jsonPathTree[idx + 1];
     if (nexNode) {
       return nexNode.expression.type === 'script_expression';
@@ -79,9 +71,9 @@ module.exports = class modelReader {
     return false;
   }
 
-  static createNode(context, name) {
+  static createProperty(context, name) {
     let isLeaf = this.isLeaf(context);
-    let objectType = this.resolveElementType(context, isLeaf);
+    let objectType = this.resolveNodeType(context, isLeaf);
     let uiType = this.resolveUiType(context, isLeaf);
     let currentPath = context.currentNode.path;
     let base = {
@@ -118,9 +110,9 @@ module.exports = class modelReader {
       uiType: uiType,
       isLeaf: isLeaf,
     };
-    let complement = this.resolveContainerObject(context, objectType);
 
-    return { ...base, ...complement };
+    let propertyBody = this.createBody(context, objectType, isLeaf);
+    return { ...base, ...propertyBody };
   }
 
   static formatPath(path, name, type) {
@@ -138,9 +130,70 @@ module.exports = class modelReader {
     return leftValue + rightValue;
   }
 
+  static createBody(context, objectType, isLeaf) {
+    if (objectType == 'array') {
+      return this.createArrayBody(context);
+    } else if (objectType == 'object' && isLeaf) {
+      return this.createObjectBody(context);
+    } else {
+      return this.createDefaultBody();
+    }
+  }
+
+  static createArrayBody(context) {
+    let arrayType = this.resolveObjectType(context);
+    return {
+      items: {
+        properties: {},
+        type: 'object',
+        description: arrayType,
+        descriptionEn: arrayType,
+        tooltip: arrayType,
+        tooltipEn: arrayType,
+        title: arrayType,
+        titleEn: arrayType,
+        name: {
+          singular: Inflector.singularize(String.toCamelCase(arrayType), 'es'),
+          plural: Inflector.pluralize(String.toCamelCase(arrayType), 'es'),
+          pascalCase: String.toPascalCase(arrayType),
+          camelCase: String.toCamelCase(arrayType),
+          snakeCase: String.toSnakeCase(arrayType),
+          dashCase: String.toDashCase(arrayType),
+          constantCase: String.toConstantCase(arrayType),
+        },
+      },
+    };
+  }
+  static createObjectBody(context) {
+    let objectType = this.resolveObjectType(context);
+    return {
+      properties: {},
+      type: 'object',
+      description: objectType,
+      descriptionEn: objectType,
+      tooltip: objectType,
+      tooltipEn: objectType,
+      title: objectType,
+      titleEn: objectType,
+      name: {
+        singular: Inflector.singularize(String.toCamelCase(objectType), 'es'),
+        plural: Inflector.pluralize(String.toCamelCase(objectType), 'es'),
+        pascalCase: String.toPascalCase(objectType),
+        camelCase: String.toCamelCase(objectType),
+        snakeCase: String.toSnakeCase(objectType),
+        dashCase: String.toDashCase(objectType),
+        constantCase: String.toConstantCase(objectType),
+      },
+    };
+  }
+
+  static createDefaultBody() {
+    return { properties: {} };
+  }
+
   static resolveContainerObject(context, objectType) {
     if (objectType == 'array') {
-      let arrayType = this.resolveArrayType(context);
+      let arrayType = this.resolveObjectType(context);
       return {
         items: {
           properties: {},
@@ -167,7 +220,7 @@ module.exports = class modelReader {
     }
   }
 
-  static resolveArrayType(context) {
+  static resolveObjectType(context) {
     let jsonPathTree = context.jsonPathTree;
     let idx = context.jpNodeIdx;
 
@@ -182,23 +235,23 @@ module.exports = class modelReader {
     if (isLeaf) {
       return context.row.tipoUi;
     }
-    if (this.isArray(context.jsonPathTree, context.jpNodeIdx)) {
+    if (this.isNextScriptExpression(context.jsonPathTree, context.jpNodeIdx)) {
       return context.row.tipoUi;
     }
     return 'section';
   }
 
   static isLeaf(context) {
-    return context.jpNodeIdx == context.maxElements || this.isArray(context.jsonPathTree, context.jpNodeIdx);
+    return context.jpNodeIdx == context.maxElements || this.isNextScriptExpression(context.jsonPathTree, context.jpNodeIdx);
   }
-  static resolveElementType(context, isLeaf) {
-    if (isLeaf) {
+  static resolveNodeType(context, isChildLeaf) {
+    if (isChildLeaf) {
       if (context.currentNode.type == 'object') {
         context.currentNode.uiType = 'page';
       }
       return context.row.tipoDeDato;
     }
-    if (this.isArray(context.jsonPathTree, context.jpNodeIdx)) {
+    if (this.isNextScriptExpression(context.jsonPathTree, context.jpNodeIdx)) {
       return 'array';
     }
     return 'object';

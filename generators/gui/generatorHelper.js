@@ -8,6 +8,12 @@ module.exports = class generatorHelper {
     context.generator.fs.copyTpl(context.generator.templatePath('api/api.yml.ejs'), context.generator.destinationPath(destination), {});
   }
 
+  static printJson(context) {
+    context.generator.fs.copyTpl(context.generator.templatePath('default.json.ejs'), context.generator.destinationPath('model.json'), {
+      model: JSON.stringify(context.model, null, 2),
+    });
+  }
+
   static updateEntitiesMenuVue(context, page) {
     let basePath = page.path.dashCase.replace(/\./g, '/');
     context.generator.fs.copy(context.entitiesMenuPath, context.entitiesMenuPath, {

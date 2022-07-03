@@ -27,6 +27,6 @@ module.exports = class extends Generator {
     }
     GeneratorHelper.createDefaultFiles(context);
     GeneratorService.doGenerate(context);
-    // console.log(JSON.stringify(context.model, null, 2));
+    GeneratorHelper.printJson(context);
   }
 };
