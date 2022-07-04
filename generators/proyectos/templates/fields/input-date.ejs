@@ -1,0 +1,13 @@
+          <b-form-group id="form-group-<%= property.dashCase%>-id" label="<%= property.title%>" label-for="input-<%= property.dashCase%>-id">
+            <div class="d-flex">
+              <input
+                id="input-<%= property.dashCase%>-id"
+                data-cy="<%= property.dashCase%>"
+                type="datetime-local"
+                class="form-control"
+                name="<%= property.dashCase%>"
+                :value="convertDateTimeFromServer(<%= entity.name.camelCase%>.<%= property.camelCase%>)"
+                @change="updateInstantField('<%= property.camelCase%>', $event)"
+              />
+            </div>
+          </b-form-group>

@@ -1,0 +1,9 @@
+<%_ if (property.multiplicidad === 'many') { _%>
+<%- include('fields/list-edit', {entity: entity, property: property}); %>
+<%_ } else if (property.frontEndType === 'Date') { _%>
+<%- include('fields/input-date', {entity: entity, property: property}); %>
+<%_ } else if (property.frontEndType === 'number') { _%>
+<%- include('fields/input-number', {entity: entity, property: property}); %>
+<%_ } else if (property.frontEndType === 'string') { _%>
+<%- include('fields/input-text', {entity: entity, property: property}); %>
+<%_ } _%>
