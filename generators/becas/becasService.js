@@ -74,21 +74,53 @@ module.exports = class guiService {
 
   static toProyecto(p, spinner) {
     let proyecto = {};
-    proyecto.id = String.normalizeId(p.convocatoria) + '-' + p.clave;
-    proyecto.convocatoria = p.convocatoria;
-    proyecto.titulo = p.titulo;
-    proyecto.anno = p.anio;
-    proyecto.clave = this.resolveInteger(p.clave);
-    proyecto.fondo = String.normalize(p.fondo);
-    proyecto.sujetoApoyo = String.normalize(p.sujeto);
-    proyecto.montoAutorizado = this.resolveDouble(p.monto);
-    proyecto.estatus = p.estatus;
-    proyecto.etapa = p.etapa;
-    proyecto.area = p.area;
-    proyecto.responsableTecnico = p.rt;
-    proyecto.responsableAdministrativo = p.ra;
-    proyecto.representanteLegal = p.rl;
-    proyecto.objetivo = p.objetivo;
+    proyecto.id = String.normalizeId(p.cve_convocatoria) + '-' + p.cve_proyecto;
+    proyecto.cveFondoOrigen = p.cve_fondo_origen;
+    proyecto.fondoOrigen = p.fondo_origen;
+    proyecto.partidaPresupuestal = p.partida_presupuestal;
+    proyecto.cveProyecto = p.cve_proyecto;
+    proyecto.tituloProyecto = p.titulo_proyecto;
+    proyecto.fondoConvocatoria = p.fondo_convocatoria;
+    proyecto.dirAdjuntaUnidad = p.dir_adjunta_unidad;
+    proyecto.dirAreaRespConvocatoria = p.dir_area_resp_convocatoria;
+    proyecto.cveConvocatoria = p.cve_convocatoria;
+    proyecto.nombreConvocatoria = p.nombre_convocatoria;
+    proyecto.numSolicitud = p.num_solicitud;
+    proyecto.nombreRespAdministrativo = p.nombre_resp_administrativo;
+    proyecto.nombreRespTecnico = p.nombre_resp_tecnico;
+    proyecto.nombreRespLegal = p.nombre_resp_legal;
+    proyecto.entFederativaBeneficiario = p.ent_federativa_beneficiario;
+    proyecto.entFederativaProyoecto = p.ent_federativa_proyoecto;
+    proyecto.rfc = p.rfc;
+    proyecto.modalidad = p.modalidad;
+    proyecto.tipoBeneficiario = p.tipo_beneficiario;
+    proyecto.areaConocimiento = p.area_conocimiento;
+    proyecto.ejeRector = p.eje_rector;
+    proyecto.descProyecto = p.desc_proyecto;
+    proyecto.institucionesParticipantes = p.instituciones_participantes;
+    proyecto.secretariaTecnicaResp = p.secretaria_tecnica_resp;
+    proyecto.reniecytSolicitud = p.reniecyt_solicitud;
+    proyecto.cvuSolicitante = p.cvu_solicitante;
+    proyecto.nombreSolicitante = p.nombre_solicitante;
+    proyecto.nombreEvaluador = p.nombre_evaluador;
+    proyecto.dictamenEvaluacion = p.dictamen_evaluacion;
+    proyecto.dictamenFinal = p.dictamen_final;
+    proyecto.montoTotalSolicitado = this.resolveDouble(p.monto_total_solicitado);
+    proyecto.montoTotalPresentado = this.resolveDouble(p.monto_total_presentado);
+    proyecto.montoTotalAprueba = this.resolveDouble(p.monto_total_aprueba);
+    proyecto.duracionProyecto = p.duracion_proyecto;
+    proyecto.numEtapas = p.num_etapas;
+    proyecto.numAcuerdoAprobacion = p.num_acuerdo_aprobacion;
+    proyecto.numAcuerdoCtaCantelacion = p.num_acuerdo_cta_cantelacion;
+    proyecto.numCar = p.num_car;
+    proyecto.tipoCar = p.tipo_car;
+    proyecto.falloInformeTecnico = p.fallo_informe_tecnico;
+    proyecto.falloInformeFinanciero = p.fallo_informe_financiero;
+    proyecto.tipoConclusion = p.tipo_conclusion;
+    proyecto.solicitudReintegro = p.solicitud_reintegro;
+    proyecto.montoReintegro = this.resolveDouble(p.monto_reintegro);
+    proyecto.numAcuerdoCtaTerminacionAnt = p.num_acuerdo_cta_terminacion_ant;
+    proyecto.numCausaRescision = p.num_causa_rescision;
     return proyecto;
   }
 
@@ -419,21 +451,23 @@ module.exports = class guiService {
               .pipe(csv())
               .on('data', function (m) {
                 let proyecto = that.toProyecto(m, spinner);
-                axios
-                  .patch(context.serviceUrl + '/api/proyectos/' + proyecto.id, proyecto, context.config)
-                  .then(response => {
-                    spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
-                  })
-                  .catch(error => {
-                    axios
-                      .post(context.serviceUrl + '/api/proyectos', proyecto, context.config)
-                      .then(response => {
-                        spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
-                      })
-                      .catch(errorCreated => {
-                        spinner.fail(chalk.green.bold('ups - ' + proyecto.id + ': ') + chalk.green(errorCreated));
-                      });
-                  });
+                if (m.cve_convocatoria && m.cve_proyecto) {
+                  axios
+                    .patch(context.serviceUrl + '/api/proyectos/' + proyecto.id, proyecto, context.config)
+                    .then(response => {
+                      spinner.succeed(chalk.green.bold('updated - ') + chalk.green(response.data.id));
+                    })
+                    .catch(error => {
+                      axios
+                        .post(context.serviceUrl + '/api/proyectos', proyecto, context.config)
+                        .then(response => {
+                          spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
+                        })
+                        .catch(errorCreated => {
+                          spinner.fail(chalk.green.bold('ups - ' + proyecto.id + ': ') + chalk.green(errorCreated));
+                        });
+                    });
+                }
               })
               .on('end', function () {
                 spinner.succeed('finalización');

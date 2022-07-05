@@ -60,5 +60,9 @@ module.exports = class extends Generator {
     this.fs.copyTpl(this.templatePath('util.ts.ejs'), this.destinationPath('demo/util.ts'), {
       entity: model,
     });
+
+    this.fs.copyTpl(this.templatePath('proyecto.mapper.ts.ejs'), this.destinationPath('demo/proyecto.mapper.ts'), {
+      entity: model,
+    });
   }
 };
