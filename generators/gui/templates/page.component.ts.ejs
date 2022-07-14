@@ -53,7 +53,7 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
 
         <%_ for (const idx in page.properties) { _%>
           <%_ let campo = page.properties[idx]; _%>
-          <%_ if (campo.uiType === 'Date') { _%>
+          <%_ if (campo.uiType === 'input-date') { _%>
             <%_ if (campo.validations.min) { _%>
   public minDate<%= campo.name.pascalCase%> = new Date('<%=campo.validations.min%>');
             <%_ } _%>
@@ -61,32 +61,16 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
   public maxDate<%= campo.name.pascalCase%> = new Date('<%=campo.validations.max%>');
             <%_ } _%>
           <%_ } _%>
-          <%_ if (campo.uiType === 'inputImage') { _%>
+          <%_ if (campo.uiType === 'input-image') { _%>
             <%_ if (campo.validations) { _%>
   public estadoInvalido<%= campo.name.pascalCase%> = false;
             <%_ } _%>
           <%_ } _%>
-          <%_ if (campo.uiType === 'selectMany' || campo.uiType === 'selectMultiple') { _%>
+          <%_ if (campo.uiType === 'input-select-many') { _%>
   public selected<%= campo.name.pascalCase%> = [];
           <%_ } _%>
-          <%_ if (campo.uiType === 'selectOne') { _%>
-  public <%= campo.name.camelCase%>Options = [
-    { value: null, text: 'Seleccione <%= campo.label%>', disabled: true },
-    { value: '<%= campo.name.camelCase%>1', text: '<%= campo.title%> 1' },
-    { value: '<%= campo.name.camelCase%>2', text: '<%= campo.title%> 2' },
-    { value: '<%= campo.name.camelCase%>3', text: '<%= campo.title%> 3' },
-    { value: '<%= campo.name.camelCase%>4', text: '<%= campo.title%> 4' },
-    { value: '<%= campo.name.camelCase%>5', text: '<%= campo.title%> 5' },
-  ];
-          <%_ } _%>
-          <%_ if (campo.uiType === 'selectMany' || campo.uiType === 'selectMultiple' || campo.uiType === 'selectRadio') { _%>
-  public <%= campo.name.camelCase%>Options = [
-    { value: '<%= campo.name.camelCase%>1', text: '<%= campo.title%> 1' },
-    { value: '<%= campo.name.camelCase%>2', text: '<%= campo.title%> 2' },
-    { value: '<%= campo.name.camelCase%>3', text: '<%= campo.title%> 3' },
-    { value: '<%= campo.name.camelCase%>4', text: '<%= campo.title%> 4' },
-    { value: '<%= campo.name.camelCase%>5', text: '<%= campo.title%> 5' },
-  ];
+          <%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
+  public <%= campo.name.camelCase%>Options: Array<any> = [];
           <%_ } _%>
         <%_ }; _%>
 
@@ -106,6 +90,23 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
         this.currentLanguage = this.$store.getters.currentLanguage;
       }
     );
+  }
+
+  mounted(): void {
+    this.initCatalogos();
+  }
+
+  public initCatalogos(): void {
+    <%_ for (const idx in page.properties) { _%>
+      <%_ let campo = page.properties[idx]; _%>
+      <%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
+    this.catalogoService()
+      .get('<%= campo.name.camelCase%>', false)
+      .then(result => {
+        this.<%= campo.name.camelCase%>Options = result;
+      });
+      <%_ } _%>
+    <%_ }; _%>    
   }
 
   public previousState(): void {
