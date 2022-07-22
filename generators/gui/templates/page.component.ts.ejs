@@ -101,7 +101,7 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
       <%_ let campo = page.properties[idx]; _%>
       <%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
     this.catalogoService()
-      .get('<%= campo.name.camelCase%>', false)
+      .get('<%= campo.catalog%>')
       .then(result => {
         this.<%= campo.name.camelCase%>Options = result;
       });
