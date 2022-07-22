@@ -194,6 +194,16 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
           description: ${properties[key].name.camelCase}
           format: date
           type: string`;
+      } else if (properties[key].type == 'object') {
+        prop =
+          prop +
+          `
+        ${properties[key].name.camelCase}:
+          description: ${properties[key].name.camelCase}
+          $ref: '#/components/schemas/${properties[key].name.pascalCase}'`;
+
+          let exclude = { responses: true, paths: true };
+          this.updateApi(context, properties[key], exclude);
       } else {
         prop =
           prop +
