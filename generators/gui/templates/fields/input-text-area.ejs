@@ -6,6 +6,9 @@
         <%_ if (campo.tooltip) { _%>
         :tooltip="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.tooltip')"
         <%_ } _%>
+        <%_ if (campo.placeHolder) { _%>
+        :placeholder="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.placeHolder')"
+        <%_ } _%>
         :readonly="<%= campo.validations.readonly %>"
         :required="<%= campo.validations.required %>"
         :valid="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$dirty ? !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$error : null"
