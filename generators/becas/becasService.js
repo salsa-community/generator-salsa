@@ -47,7 +47,7 @@ module.exports = class guiService {
     programa.orientacion = m.ABREV_ORIENTACION;
     programa.nivel = '';
     programa.correo = m.CONTACTO_PRINCIPAL;
-    programa.area = this.resolveInteger(m.CVE_AREA);
+    // programa.area = this.resolveArea(m.CVE_AREA);
     programa.campo = this.resolveCampo(m.DESCRIPCION_1, spinner);
     programa.disciplina = this.resolveDisciplina(m.DESCRIPCION_2, spinner);
     programa.entidad = this.resolveEntidad(m.NOM_ENT);
@@ -78,14 +78,17 @@ module.exports = class guiService {
     proyecto.cveFondoOrigen = p.cve_fondo_origen;
     proyecto.fondoOrigen = p.fondo_origen;
     proyecto.partidaPresupuestal = p.partida_presupuestal;
+    proyecto.fondoConvocatoria = p.fondo_convocatoria;
+    proyecto.modalidadApoyo = p.modalidad_apoyo;
+    proyecto.objetivoConvocatoria = p.objetivo_convocatoria;
+    proyecto.numSolicitud = p.num_solicitud;
     proyecto.cveProyecto = p.cve_proyecto;
     proyecto.tituloProyecto = p.titulo_proyecto;
-    proyecto.fondoConvocatoria = p.fondo_convocatoria;
+    proyecto.objetivoProgramaDondeIncide = p.objetivo_programa_donde_incide;
+    proyecto.objetivoProyecto = p.objetivo_proyecto;
     proyecto.dirAdjuntaUnidad = p.dir_adjunta_unidad;
     proyecto.dirAreaRespConvocatoria = p.dir_area_resp_convocatoria;
-    proyecto.cveConvocatoria = p.cve_convocatoria;
-    proyecto.nombreConvocatoria = p.nombre_convocatoria;
-    proyecto.numSolicitud = p.num_solicitud;
+    proyecto.nombreBeneficiario = p.nombre_beneficiario;
     proyecto.nombreRespAdministrativo = p.nombre_resp_administrativo;
     proyecto.nombreRespTecnico = p.nombre_resp_tecnico;
     proyecto.nombreRespLegal = p.nombre_resp_legal;
@@ -99,28 +102,104 @@ module.exports = class guiService {
     proyecto.descProyecto = p.desc_proyecto;
     proyecto.institucionesParticipantes = p.instituciones_participantes;
     proyecto.secretariaTecnicaResp = p.secretaria_tecnica_resp;
+    proyecto.cveConvocatoria = p.cve_convocatoria;
+    proyecto.nombreConvocatoria = p.nombre_convocatoria;
+    proyecto.fechaAprobacionJuridica = this.resolveDate(p.fecha_aprobacion_juridica);
+    proyecto.fechaAprobacionCta = this.resolveDate(p.fecha_aprobacion_cta);
+    proyecto.fechaPublicacion = this.resolveDate(p.fecha_publicacion);
+    proyecto.numSesionCtaConvocatoria = this.resolveInteger(p.num_sesion_cta_convocatoria);
+    proyecto.fechaApertura = this.resolveDate(p.fecha_apertura);
+    proyecto.fechaCierreConvocatoria = this.resolveDate(p.fecha_cierre_convocatoria);
     proyecto.reniecytSolicitud = p.reniecyt_solicitud;
     proyecto.cvuSolicitante = p.cvu_solicitante;
     proyecto.nombreSolicitante = p.nombre_solicitante;
+    proyecto.fechaCartaAutorizacion = this.resolveDate(p.fecha_carta_autorizacion);
+    proyecto.fechaEntregaSolicitud = this.resolveDate(p.fecha_entrega_solicitud);
+    proyecto.fechaRevision = this.resolveDate(p.fecha_revision);
+    proyecto.fechaEnvioNotificacion = this.resolveDate(p.fecha_envio_notificacion);
+    proyecto.fechaResolucion = this.resolveDate(p.fecha_resolucion);
     proyecto.nombreEvaluador = p.nombre_evaluador;
+    proyecto.fechaNotificacionEvaluador = this.resolveDate(p.fecha_notificacion_evaluador);
+    proyecto.fechaEnvioComentarios = this.resolveDate(p.fecha_envio_comentarios);
+    proyecto.fechaAtencionComentarios = this.resolveDate(p.fecha_atencion_comentarios);
+    proyecto.fechaRevisionFinanciera = this.resolveDate(p.fecha_revision_financiera);
+    proyecto.fechaAtencionAjustesFinancieros = this.resolveDate(p.fecha_atencion_ajustes_financieros);
     proyecto.dictamenEvaluacion = p.dictamen_evaluacion;
+    proyecto.fechaDictamenEvaluacion = this.resolveDate(p.fecha_dictamen_evaluacion);
+    proyecto.fechaRegistroEvaluacion = this.resolveDate(p.fecha_registro_evaluacion);
     proyecto.dictamenFinal = p.dictamen_final;
+    proyecto.fechaEmisionDictamen = this.resolveDate(p.fecha_emision_dictamen);
+    proyecto.fechaLiberacionActa = this.resolveDate(p.fecha_liberacion_acta);
+    proyecto.fechaEnvioDocumentos = this.resolveDate(p.fecha_envio_documentos);
     proyecto.montoTotalSolicitado = this.resolveDouble(p.monto_total_solicitado);
     proyecto.montoTotalPresentado = this.resolveDouble(p.monto_total_presentado);
     proyecto.montoTotalAprueba = this.resolveDouble(p.monto_total_aprueba);
-    proyecto.duracionProyecto = p.duracion_proyecto;
-    proyecto.numEtapas = p.num_etapas;
+    proyecto.duracionProyecto = this.resolveInteger(p.duracion_proyecto);
+    proyecto.tipoProyecto = p.tipo_proyecto;
+    proyecto.numEtapas = this.resolveInteger(p.num_etapas);
     proyecto.numAcuerdoAprobacion = p.num_acuerdo_aprobacion;
+    proyecto.numSesionCtaAprobacion = this.resolveInteger(p.num_sesion_cta_aprobacion);
+    proyecto.fechaAcuerdoAprobacion = this.resolveDate(p.fecha_acuerdo_aprobacion);
+    proyecto.fechaPublicacionResultados = this.resolveDate(p.fecha_publicacion_resultados);
+    proyecto.fechaSancionCar = this.resolveDate(p.fecha_sancion_car);
     proyecto.numAcuerdoCtaCantelacion = p.num_acuerdo_cta_cantelacion;
+    proyecto.fechaAcuerdoCtaCancelacion = this.resolveDate(p.fecha_acuerdo_cta_cancelacion);
+    proyecto.fechaNotificacionBeneficiarioCan = this.resolveDate(p.fecha_notificacion_beneficiario_can);
+    proyecto.fechaAsignacionCar = this.resolveDate(p.fecha_asignacion_car);
     proyecto.numCar = p.num_car;
+    proyecto.fechaLiberacion = this.resolveDate(p.fecha_liberacion);
     proyecto.tipoCar = p.tipo_car;
+    proyecto.fechaVoboAuj = this.resolveDate(p.fecha_vobo_auj);
+    proyecto.fechaVoboSolicitante = this.resolveDate(p.fecha_vobo_solicitante);
+    proyecto.fechaFirmaRepLegal = this.resolveDate(p.fecha_firma_rep_legal);
+    proyecto.fechaFirmaRespAdministrativo = this.resolveDate(p.fecha_firma_resp_administrativo);
+    proyecto.fechaFirmaRespTecnico = this.resolveDate(p.fecha_firma_resp_tecnico);
+    proyecto.fechaFrrmaSecAdministrativo = this.resolveDate(p.fecha_frrma_sec_administrativo);
+    proyecto.fechaFirmaSecTecnico = this.resolveDate(p.fecha_firma_sec_tecnico);
+    proyecto.fechaInicioProyCar = this.resolveDate(p.fecha_inicio_proy_car);
+    proyecto.fechaTerminoProyCar = this.resolveDate(p.fecha_termino_proy_car);
+    proyecto.fechaEnvioNotifFinSt = this.resolveDate(p.fecha_envio_notif_fin_st);
+    proyecto.fechaEnvioNotifFinSa = this.resolveDate(p.fecha_envio_notif_fin_sa);
+    proyecto.fechaRecepInfTecnico = this.resolveDate(p.fecha_recep_inf_tecnico);
+    proyecto.fechaEnvioEvalInfTecnico = this.resolveDate(p.fecha_envio_eval_inf_tecnico);
+    proyecto.fechaNotificacionInfTecnico = this.resolveDate(p.fecha_notificacion_inf_tecnico);
+    proyecto.fechaAtencionAjustesInfTecnico = this.resolveDate(p.fecha_atencion_ajustes_inf_tecnico);
+    proyecto.fechaRecepDictamenInfTecnico = this.resolveDate(p.fecha_recep_dictamen_inf_tecnico);
     proyecto.falloInformeTecnico = p.fallo_informe_tecnico;
+    proyecto.fechaRecepcionInfFinancieroFinal = this.resolveDate(p.fecha_recepcion_inf_financiero_final);
+    proyecto.fechaEnvioNotificacionAjuste = p.fecha_envio_notificacion_ajuste;
+    proyecto.fechaAtencionAjustes = p.fecha_atencion_ajustes;
+    proyecto.montoReintegro = p.monto_reintegro;
+    proyecto.fechaSolicitudReintegro = this.resolveDate(p.fecha_solicitud_reintegro);
+    proyecto.fechaReintegro = this.resolveDate(p.fecha_reintegro);
+    proyecto.fechaRecepcionDictamen = this.resolveDate(p.fecha_recepcion_dictamen);
     proyecto.falloInformeFinanciero = p.fallo_informe_financiero;
     proyecto.tipoConclusion = p.tipo_conclusion;
-    proyecto.solicitudReintegro = p.solicitud_reintegro;
-    proyecto.montoReintegro = this.resolveDouble(p.monto_reintegro);
+    proyecto.fechaDictamenAprobatorioInfFinanciero = this.resolveDate(p.fecha_dictamen_aprobatorio_inf_financiero);
+    proyecto.fechaDictamenAprobatorioInfTecnico = this.resolveDate(p.fecha_dictamen_aprobatorio_inf_tecnico);
+    proyecto.fechaConstanciaConclusion = this.resolveDate(p.fecha_constancia_conclusion);
+    proyecto.fechaEnvioAcuse = this.resolveDate(p.fecha_envio_acuse);
+    proyecto.numSesionCtaConclusion = this.resolveInteger(p.num_sesion_cta_conclusion);
+    proyecto.fechaConocimientoEmisionConstancia = this.resolveDate(p.fecha_conocimiento_emision_constancia);
+    proyecto.numAcuerdoCtaConclusion = p.num_acuerdo_cta_conclusion;
+    proyecto.indicarEsTerminacionAnt = p.indicar_es_terminacion_ant;
+    proyecto.fechaRecepcionInfTecnicoAnt = this.resolveDate(p.fecha_recepcion_inf_tecnico_ant);
+    proyecto.fechaAcuerdoCtaTerminacionAnt = this.resolveDate(p.fecha_acuerdo_cta_terminacion_ant);
+    proyecto.fechaOpinionJuridicaTerminacionAnt = this.resolveDate(p.fecha_opinion_juridica_terminacion_ant);
+    proyecto.numSesionCtaTerminacion = this.resolveInteger(p.num_sesion_cta_terminacion);
+    proyecto.fechaNotificBenefTerminacionAnt = this.resolveDate(p.fecha_notific_benef_terminacion_ant);
     proyecto.numAcuerdoCtaTerminacionAnt = p.num_acuerdo_cta_terminacion_ant;
+    proyecto.fechaOpinionJuridicaRescision = this.resolveDate(p.fecha_opinion_juridica_rescision);
+    proyecto.numSesionCtaRescision = this.resolveInteger(p.num_sesion_cta_rescision);
+    proyecto.fechaAcuerdoCtaRescision = this.resolveDate(p.fecha_acuerdo_cta_rescision);
+    proyecto.numAcuerdoCtaRescision = p.num_acuerdo_cta_rescision;
     proyecto.numCausaRescision = p.num_causa_rescision;
+    proyecto.fechaNotificacionAcuerdoConclusion = this.resolveDate(p.fecha_notificacion_acuerdo_conclusion);
+    proyecto.etapa = p.etapa;
+    proyecto.estatus = p.estatus;
+    proyecto.ministraciones = [];
+    proyecto.comentarios = [];
+    proyecto.aprobaciones = [];
     return proyecto;
   }
 
@@ -172,11 +251,29 @@ module.exports = class guiService {
   }
 
   static resolveInteger(value) {
-    return parseInt(value);
+    let result = parseInt(value);
+    if (result == 'NaN') {
+      return null;
+    } else {
+      return result;
+    }
   }
 
   static resolveDouble(value) {
-    return parseFloat(value);
+    let result = parseFloat(value);
+    if (result == 'NaN') {
+      return null;
+    } else {
+      return result;
+    }
+  }
+  static resolveDate(value) {
+    let result = parseFloat(value);
+    if (result == 'NaN') {
+      return null;
+    } else {
+      return result;
+    }
   }
   static resolveMontoMensual(grado) {
     if (grado) {
@@ -350,6 +447,7 @@ module.exports = class guiService {
                     axios
                       .post(context.serviceUrl + '/api/programas', programa, context.config)
                       .then(response => {
+                        this.log.info(',CREATED,' + programa.cvu + `,archivo ${index},` + programa.id);
                         spinner.succeed(chalk.green.bold('created - ') + chalk.green(response.data.id));
                       })
                       .catch(errorCreated => {
@@ -472,7 +570,7 @@ module.exports = class guiService {
               .on('end', function () {
                 spinner.succeed('finalización');
               });
-          }, 20000 * j);
+          }, 10000 * j);
         }
       } catch (error) {
         warn(error);

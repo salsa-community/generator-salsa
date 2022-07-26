@@ -27,6 +27,7 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     this.option('programas');
+    this.option('permisos');
     this.option('reglas');
     this.option('proyectos');
     this.option('prod');
@@ -51,6 +52,8 @@ module.exports = class extends Generator {
       BecasService.loadReglas(context);
     } else if (this.options.proyectos) {
       BecasService.loadProyectos(context);
+    } else if (this.options.permisos) {
+      BecasService.loadPermisos(context);
     }
   }
 };

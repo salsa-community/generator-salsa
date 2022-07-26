@@ -24,12 +24,22 @@ const { CATALOG } = require('./institucionesCatalog');
 const SalsaLogin = require('../util/SalsaLogin');
 
 module.exports = class extends Generator {
+  async prompting() {
+    this.answers = await this.prompt([
+      {
+        type: 'input',
+        name: 'username',
+        message: 'username: ',
+      },
+      {
+        type: 'input',
+        name: 'areas',
+        message: 'areas separados por coma: ',
+      },
+    ]);
+  }
   constructor(args, opts) {
     super(args, opts);
-    this.option('programas');
-    this.option('permisos');
-    this.option('reglas');
-    this.option('proyectos');
     this.option('prod');
     this.option('qa');
   }
@@ -46,6 +56,10 @@ module.exports = class extends Generator {
       context.config = await SalsaLogin.login(context);
     }
 
-    BecasService.loadProyectos(context);
+    context.permiso = {};
+    context.permiso.id = this.answers.username;
+    context.permiso.areas = this.answers.areas.split(',');
+
+    BecasService.loadPermisos(context);
   }
 };
