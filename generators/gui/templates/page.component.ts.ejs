@@ -94,6 +94,7 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
 
   mounted(): void {
     this.initCatalogos();
+    this.get();
   }
 
   public initCatalogos(): void {
@@ -107,6 +108,26 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
       });
       <%_ } _%>
     <%_ }; _%>    
+  }
+
+  public get(): void {
+    this.<%= page.name.camelCase%>Api()
+      .get<%= page.name.pascalCase%>()
+      .then(res => {
+        this.<%= page.name.camelCase%> = res.data;
+      })
+      .catch(() => { });
+  }
+
+  public save(): void {
+    this.<%= page.name.camelCase%>Api()
+      .update<%= page.name.pascalCase%>ById(1, this.<%= page.name.camelCase%>)
+      .then(res => {
+        this.alertService().showSuccess(this, this.$t('global.messages.saved.detail', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
+      })
+      .catch(err => {
+        this.alertService().showError(this, this.$t('global.messages.error.saved', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
+      });
   }
 
   public previousState(): void {
