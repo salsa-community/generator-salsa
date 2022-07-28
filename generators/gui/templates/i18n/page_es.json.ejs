@@ -11,10 +11,10 @@
       "tooltip": "<%= campo.tooltip%>",
       "placeHolder": "<%= campo.placeHolder%>",
       "validations": {
-        "required": "The field <%= campo.title%> is required",
-        "minMessage": "The number of characters must be at least of {min}",
-        "maxMessage": "The number of characters must be as much as {max}",
-        "regexMessage": "Invalid <%= campo.title%> format"
+        "required": "El campo <%= campo.title%> es requerido",
+        "minMessage": "El número de caracteres debe ser de al menos {min}",
+        "maxMessage": "El número de caracteres debe ser máximo de {max}",
+        "regexMessage": "Formato de <%= campo.title%> inválido"
       }<%_ if (campo.type === 'array') { _%>,
         <%_ let items = Object.keys(campo.items.properties); _%>
         <%_ items.forEach((key, idx) => { _%>
