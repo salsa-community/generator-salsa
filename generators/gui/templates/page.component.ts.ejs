@@ -130,6 +130,10 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
       });
   }
 
+  public cancel(): void {
+    this.$router.push('/');
+  }
+
   public previousState(): void {
     this.$router.go(-1);
   }
