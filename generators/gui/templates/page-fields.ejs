@@ -18,4 +18,6 @@
 <%- include('fields/input-text', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
 <%_ } else if (campo.uiType === 'correo') { _%>
 <%- include('fields/input-text', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (campo.uiType === 'identificador') { _%>
+<%- include('fields/identificador', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
 <%_ } _%>

@@ -1,6 +1,8 @@
-      <input-text-area
+      <%_ let context = locals.context ? locals.context: false; _%>
+      <identificador
         id="<%= page.name.dashCase%>-<%= campo.name.dashCase%>-id"
-        v-model="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$model"
+        src=""
+        v-model="$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.$model"
         :label="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.label')"
         :description="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.description')"
         <%_ if (campo.tooltip) { _%>
@@ -11,26 +13,23 @@
         <%_ } _%>
         :readonly="<%= campo.validations.readonly %>"
         :required="<%= campo.validations.required %>"
-        :valid="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$dirty ? !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$error : null"
+        :valid="$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.$dirty ? !$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.$error : null"
         :validationsCommons="{
           <%_ if (campo.validations.required) { _%>
-          requiredValue: !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.required,
+          requiredValue: !$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.required,
           requiredMessage: $t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.validations.required'),
           <%_ } _%>
           <%_ if (campo.validations.min) { _%>
-          minValue: !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.minLength,
+          minValue: !$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.minLength,
           minMessage: $t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.validations.minMessage', { min: '<%=campo.validations.min%>' }),
           <%_ } _%>
           <%_ if (campo.validations.max) { _%>
-          maxValue: !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.maxLength,
+          maxValue: !$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.maxLength,
           maxMessage: $t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.validations.maxMessage', { max: '<%=campo.validations.max%>' }),
           <%_ } _%>
           <%_ if (campo.validations.regex) { _%>
-          regexValue: !$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.<%= campo.name.constantCase%>,
+          regexValue: !$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.<%= campo.name.constantCase%>,
           regexMessage: $t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.validations.regexMessage'),
           <%_ } _%>
         }"
-        <%_ if (campo.validations.max) { _%>
-        :maxCaracteres="<%=campo.validations.max%>"
-        <%_ } _%>
       />

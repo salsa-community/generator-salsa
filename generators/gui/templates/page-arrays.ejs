@@ -1,3 +1,5 @@
 <%_ if (array.uiType === 'cards-list') { _%>
 <%- include('fields/cards-list', {page: page, array: array, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (array.uiType === 'contacto') { _%>
+<%- include('fields/contacto', {page: page, array: array, pathSubseccion: pathSubseccion}); %>
 <%_ } _%>

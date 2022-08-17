@@ -1,10 +1,5 @@
 <template>
   <b-row class="row mb-5">
-    <b-col md="12" class="mb-5">
-      <div class="alert alert-success">
-        <span>Alert basetemplate</span>
-      </div>
-    </b-col>
     <%_ let pathSubseccion = page.name.dashCase; _%>
     <b-col md="12">
       <header class="mt-5 bx-header-title">
@@ -25,11 +20,11 @@
       <%_ }; _%>
     </b-col>
     <b-col class="mb-5">
-      <b-button variant="outline-primary" size="lg">
+      <b-button @click="cancel" variant="outline-primary" size="lg">
         <font-awesome-icon icon="ban" class="mr-2"></font-awesome-icon>
         <span>Cancelar</span>
       </b-button>
-      <b-button @click="$v.<%= page.name.camelCase%>.$touch" variant="primary" size="lg">
+      <b-button @click="save" variant="primary" size="lg">
         <font-awesome-icon icon="save" class="mr-2"></font-awesome-icon>
         <span>Guardar</span>
       </b-button>
