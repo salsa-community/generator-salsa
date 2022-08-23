@@ -116,7 +116,13 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
       .then(res => {
         this.<%= page.name.camelCase%> = res.data;
       })
-      .catch(() => { });
+      .catch( err => {
+        if (err.response.data.status === 404) {
+          this.<%= page.name.camelCase%> = {};
+        } else {
+          this.alertService().showError(this, err.response.data.detail);
+        }
+      });
   }
 
   public save(): void {
