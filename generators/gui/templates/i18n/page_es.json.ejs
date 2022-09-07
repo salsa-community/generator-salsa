@@ -23,11 +23,12 @@
         "label": "<%= item.title%>",
         "description": "<%= item.description%>",
         "tooltip": "<%= item.tooltip%>",
+        "placeHolder": "<%= item.placeHolder%>",
         "validations": {
-          "required": "El campo <%= campo.title%> es requerido",
+          "required": "El campo <%= item.title%> es requerido",
           "minMessage": "El número de caracteres debe ser de al menos {min}",
           "maxMessage": "El número de caracteres debe ser máximo de {max}",
-          "regexMessage": "Formato de <%= campo.title%> inválido"
+          "regexMessage": "Formato de <%= item.title%> inválido"
         }
       }<% if (items.length -1 !== idx ) { %>,<% } %>
         <%_ }) _%>
