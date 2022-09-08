@@ -1,0 +1,19 @@
+<%_ if (campo.uiType === 'input-date') { _%>
+  <%_ if (campo.validations.min) { _%>
+public minDate<%= campo.name.pascalCase%> = new Date('<%=campo.validations.min%>');
+  <%_ } _%>
+  <%_ if (campo.validations.max) { _%>
+public maxDate<%= campo.name.pascalCase%> = new Date('<%=campo.validations.max%>');
+  <%_ } _%>
+<%_ } _%>
+<%_ if (campo.uiType === 'input-image') { _%>
+  <%_ if (campo.validations) { _%>
+public estadoInvalido<%= campo.name.pascalCase%> = false;
+  <%_ } _%>
+<%_ } _%>
+<%_ if (campo.uiType === 'input-select-many') { _%>
+public selected<%= campo.name.pascalCase%> = [];
+<%_ } _%>
+<%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
+public <%= campo.name.camelCase%>Options: Array<any> = [];
+<%_ } _%>

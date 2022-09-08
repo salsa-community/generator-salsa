@@ -1,0 +1,14 @@
+<%= campo.name.camelCase%>: {
+  <%_ if (campo.validations.required) { _%>
+      required,
+  <%_ }_%>
+  <%_ if (campo.validations.min) { _%>
+      minLength: minLength(<%= campo.validations.min%>),
+  <%_ } _%>
+  <%_ if (campo.validations.max) { _%>
+      maxLength: maxLength(<%= campo.validations.max%>),
+  <%_ } _%>
+  <%_ if (campo.validations.regex) { _%>
+      <%= campo.name.constantCase%>,
+  <%_ } _%>
+    },

@@ -1,0 +1,7 @@
+<%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
+  this.catalogoService()
+    .get('<%= campo.catalog%>')
+    .then(result => {
+      this.<%= campo.name.camelCase%>Options = result;
+    });
+<%_ } _%>
