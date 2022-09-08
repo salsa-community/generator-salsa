@@ -17,24 +17,20 @@ const <%= campo.name.constantCase%> = helpers.regex(
     <%_ }; _%>
 
 const validations: any = {
-
   <%= page.name.camelCase%>: {
   <%_ for (const idx in page.properties) { _%>
     <%_ let campo = page.properties[idx]; _%>
-    <%= campo.name.camelCase%>: {
-      <%_ if (campo.validations.required) { _%>
-      required,
-      <%_ }_%>
-      <%_ if (campo.validations.min) { _%>
-      minLength: minLength(<%= campo.validations.min%>),
+    <%_ if (campo.uiType === 'cards-list') { _%>
+      <%- include('page-validations', {campo: campo}); %>
+      <%= campo.items.name.singular%> : {
+      <%_ for (const iidx in campo.items.properties) { _%>
+        <%_ let prop = campo.items.properties[iidx]; _%>
+          <%- include('page-validations', {campo: prop}); %>
       <%_ } _%>
-      <%_ if (campo.validations.max) { _%>
-      maxLength: maxLength(<%= campo.validations.max%>),
-      <%_ } _%>
-      <%_ if (campo.validations.regex) { _%>
-      <%= campo.name.constantCase%>,
-      <%_ } _%>
-    },
+          }
+    <%_ } else { _%>
+    <%- include('page-validations', {campo: campo}); %>
+    <%_ } _%>
   <%_ }; _%>
   },
 };
@@ -51,28 +47,19 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
   public isSaving = false;
   public currentLanguage = '';
 
-        <%_ for (const idx in page.properties) { _%>
-          <%_ let campo = page.properties[idx]; _%>
-          <%_ if (campo.uiType === 'input-date') { _%>
-            <%_ if (campo.validations.min) { _%>
-  public minDate<%= campo.name.pascalCase%> = new Date('<%=campo.validations.min%>');
-            <%_ } _%>
-            <%_ if (campo.validations.max) { _%>
-  public maxDate<%= campo.name.pascalCase%> = new Date('<%=campo.validations.max%>');
-            <%_ } _%>
-          <%_ } _%>
-          <%_ if (campo.uiType === 'input-image') { _%>
-            <%_ if (campo.validations) { _%>
-  public estadoInvalido<%= campo.name.pascalCase%> = false;
-            <%_ } _%>
-          <%_ } _%>
-          <%_ if (campo.uiType === 'input-select-many') { _%>
-  public selected<%= campo.name.pascalCase%> = [];
-          <%_ } _%>
-          <%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
-  public <%= campo.name.camelCase%>Options: Array<any> = [];
-          <%_ } _%>
-        <%_ }; _%>
+<%_ for (const idx in page.properties) { _%>
+    <%_ let campo = page.properties[idx]; _%>
+  <%_ if (campo.uiType === 'cards-list') { _%>
+  public <%= campo.items.name.singular%>: <%= campo.items.name.pascalCase%> = {};
+  public <%= campo.items.name.plural%>Cards: Array<any> = [];
+    <%_ for (const iidx in campo.items.properties) { _%>
+      <%_ let prop = campo.items.properties[iidx]; _%>
+  <%- include('page-variables', {campo: prop}); %>
+    <%_ } _%>
+  <%_ } else { _%>
+  <%- include('page-variables', {campo: campo}); %>
+  <%_ } _%>
+<%_ }; _%>
 
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -100,14 +87,15 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
   public initCatalogos(): void {
     <%_ for (const idx in page.properties) { _%>
       <%_ let campo = page.properties[idx]; _%>
-      <%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
-    this.catalogoService()
-      .get('<%= campo.catalog%>')
-      .then(result => {
-        this.<%= campo.name.camelCase%>Options = result;
-      });
-      <%_ } _%>
-    <%_ }; _%>    
+      <%_ if (campo.uiType === 'cards-list') { _%>
+        <%_ for (const iidx in campo.items.properties) { _%>
+          <%_ let prop = campo.items.properties[iidx]; _%>
+  <%- include('page-catalogs', {campo: prop}); %>
+          <%_ } _%>
+        <%_ } else { _%>
+  <%- include('page-catalogs', {campo: campo}); %>
+        <%_ } _%>
+    <%_ }; _%>
   }
 
   public get(): void {
@@ -145,4 +133,37 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
   }
 
   public initRelationships(): void {}
+
+  <%_ for (const idx in page.properties) { _%>
+    <%_ let campo = page.properties[idx]; _%>
+    <%_ if (campo.uiType === 'cards-list') { _%>
+  public add<%= campo.items.name.pascalCase%>(): void {
+    this.<%= campo.items.name.plural%>.push(this.<%= campo.items.name.singular%>);
+    this.<%= campo.items.name.plural%>Cards.push(this.creaRegistroCard(this.<%= campo.items.name.singular%>));
+    this.<%= campo.items.name.singular%> = {};
+  }
+
+  public remove<%= campo.items.name.pascalCase%>(removeId): void {
+    this.<%= campo.items.name.plural%>.splice(removeId, 1);
+    this.<%= campo.items.name.plural%>Cards.splice(removeId, 1);
+  }
+
+  public mapCards() {
+    if (this.<%= campo.items.name.plural%>) {
+      this.<%= campo.items.name.plural%>.forEach(e => {
+        this.<%= campo.items.name.plural%>Cards.push(this.creaRegistroCard(e));
+      });
+    }
+  }
+
+  private creaRegistroCard(val): any {
+    return {
+      title: val,
+      description: '',
+      footer: '',
+      icon: '',
+    };
+  }
+  <%_ }_%>
+  <%_ }; _%>
 }
