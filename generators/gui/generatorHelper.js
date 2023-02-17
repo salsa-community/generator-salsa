@@ -161,8 +161,7 @@ ${Constants.ENTITY_ROUTER_IMPORT}`;
           `
         ${properties[key].name.camelCase}:
           description: ${properties[key].name.camelCase}
-          allOf:
-            - $ref: '#/components/schemas/BaseCatalogo'`;
+          $ref: '#/components/schemas/BaseCatalogo'`;
       } else if (properties[key].type == 'array') {
         prop =
           prop +
