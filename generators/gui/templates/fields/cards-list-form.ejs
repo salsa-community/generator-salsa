@@ -1,0 +1,47 @@
+      <div v-if="!isEdit" class="float-right">
+        <b-button @click="edit" variant="primary" :disabled="loadingCards">
+          <span v-text="$t('entity.action.add')">Agregar</span>
+          <span class="icon-mas"></span>
+        </b-button>
+      </div>
+    <b-skeleton-wrapper :loading="loadingCards">
+      <template #loading>
+        <skeleton type="card" />
+      </template>
+      <cards-list
+        v-if="<%= array.name.plural%>Cards.length > 0 && !isEdit"
+        id="<%= page.name.dashCase%>-<%= array.name.dashCase%>-id"
+        :items="<%= array.name.plural%>Cards"
+        @remove="remove<%= array.items.name.pascalCase%>"
+        @edit="prepare<%= array.items.name.pascalCase%>">
+      </cards-list>
+      <infinite-loading ref="infiniteLoading" v-if="totalItems > itemsPerPage && !isEdit" :identifier="infiniteId" @infinite="loadMore">
+        <div slot="no-more"><span v-text="$t('entity.infinite-messages')">No hay más resultados</span></div>
+      </infinite-loading>
+      <alerta-card v-if="<%= array.name.plural%>Cards.length == 0 && !isEdit" />
+      </b-skeleton-wrapper>
+      <template v-if="isEdit">
+        <b-skeleton-wrapper :loading="loadingForm">
+          <template #loading>
+            <skeleton type="form" />
+          </template>
+        <%_ for (const idx in array.items.properties){ _%>
+          <%_ let campo = array.items.properties[idx]; _%>
+          <%_ array.items.name.dashCase = page.name.dashCase + '.' + array.name.dashCase; _%>
+          <%_ let subPath = pathSubseccion + '.' + array.name.dashCase; _%>
+  <%- include('../page-fields', {page: array.items, campo: campo, pathSubseccion: subPath, context: array.items}); %>
+        <%_ }; _%>
+        <div class="border-top mt-4 mb-4"></div>
+        <div class="mb-5 mt-5 float-right">
+          <b-button @click="cancel" variant="outline-primary" size="lg">
+            <span v-text="$t('entity.action.cancel')">Cancelar</span>
+            <font-awesome-icon icon="ban" class="mr-2"></font-awesome-icon>
+          </b-button>
+          <b-button @click="add<%= array.items.name.pascalCase%>($v.<%= array.items.name.camelCase%>.$model)" variant="primary" size="lg" :disabled="editingIndex != null && esIgual($v.<%= array.items.name.camelCase%>.$model, editingIndex)">
+            <span v-if="editingIndex === null" v-text="$t('entity.action.save')">Guardar</span>
+            <span v-else v-text="$t('entity.action.edit')">Editar</span>
+            <font-awesome-icon icon="save" class="mr-2"></font-awesome-icon>
+          </b-button>
+        </div>
+      </b-skeleton-wrapper>
+      </template>

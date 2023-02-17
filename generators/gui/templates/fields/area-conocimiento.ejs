@@ -1,0 +1,8 @@
+      <area-conocimiento
+            id="<%= page.name.dashCase%>-<%= campo.name.dashCase%>-id"
+            v-model="$v.<%= page.name.camelCase %>.<%= campo.name.camelCase%>.$model"
+            :readonly="false"
+            :required="true"
+            :edit="editingIndex"
+            :validA="this.validChildArea"
+      />

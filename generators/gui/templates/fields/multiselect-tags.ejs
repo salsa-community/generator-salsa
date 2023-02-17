@@ -1,0 +1,11 @@
+        <multiselect-tags
+          id="<%= page.name.dashCase%>-<%= campo.name.dashCase%>-id"
+          v-model="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$model"
+          :label="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.label')"
+          :description="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.description')"
+          :tags="<%= campo.name.camelCase%>Options"
+          :required="<%= campo.validations.required %>"
+          :valid="$v.<%= page.name.camelCase%>.<%=campo.name.camelCase%>.$dirty ? !$v.<%= page.name.camelCase%>.<%=campo.name.camelCase%>.$error : null"
+          :requiredValue="!$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.required"
+          :requiredMessage="$t('<%= pathSubseccion %>.<%= campo.name.dashCase%>.validations.required')"
+        />

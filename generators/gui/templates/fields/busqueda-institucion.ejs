@@ -1,0 +1,6 @@
+        <busqueda-institucion
+          id="<%= page.name.dashCase%>-<%= campo.name.dashCase%>-id"
+          v-if="validInstitucion"
+          v-model="$v.<%= page.name.camelCase%>.<%= campo.name.camelCase%>.$model"
+          :validInst="this.validChildInstitucion"
+        />

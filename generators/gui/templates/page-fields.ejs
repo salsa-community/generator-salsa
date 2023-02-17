@@ -20,4 +20,12 @@
 <%- include('fields/input-text', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
 <%_ } else if (campo.uiType === 'identificador') { _%>
 <%- include('fields/identificador', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (campo.uiType === 'domicilio') { _%>
+<%- include('fields/domicilio', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (campo.uiType === 'multiselect-tags') { _%>
+<%- include('fields/multiselect-tags', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (campo.uiType === 'area-conocimiento') { _%>
+  <%- include('fields/area-conocimiento', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
+<%_ } else if (campo.uiType === 'institucion') { _%>
+  <%- include('fields/busqueda-institucion', {page: page, campo: campo, pathSubseccion: pathSubseccion}); %>
 <%_ } _%>
