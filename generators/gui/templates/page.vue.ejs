@@ -3,11 +3,14 @@
     <%_ let pathSubseccion = page.name.dashCase; _%>
     <b-col md="12">
       <header class="mt-5 bx-header-title">
-        <h2 id="<%= page.name.dashCase %>-id" v-text="$t('<%= pathSubseccion %>.title')">
+        <h2 id="<%= page.name.dashCase %>-id" v-text="$t('<%= pathSubseccion %>.title')"  class="inline">
           <%= page.name.pascalCase %>
           <small v-text="$t('<%= pathSubseccion %>.subtitle')"><%= page.name.pascalCase %></small>
         </h2>
       </header>
+    </b-col>
+    <b-col md="12">
+      <alerta ref="alerta" />
     </b-col>
     <b-col md="12">
       <%_ for (const idx in page.properties){ _%>

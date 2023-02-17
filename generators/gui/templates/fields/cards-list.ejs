@@ -1,6 +1,6 @@
       <cards-list
         id="<%= page.name.dashCase%>-<%= array.name.dashCase%>-id"
-        :items="<%= array.name.plural%>Cards"
+        :items="<%= array.items.name.plural%>Cards"
         :title="$t('<%= pathSubseccion %>.<%= array.name.dashCase%>.label')"
         @remove="remove<%= array.items.name.pascalCase%>">
         <%_ for (const idx in array.items.properties){ _%>
@@ -11,7 +11,7 @@
         <%_ }; _%>
         <div class="form-group float-right">
           <span class="label-hidden"></span>
-          <b-button @click="add<%= array.items.name.pascalCase%>" variant="outline-primary">
+          <b-button @click="add<%= array.items.name.pascalCase%>($v.<%= array.items.name.camelCase%>.$model)" variant="outline-primary">
             <span>Agregar</span>
             <span class="icon-mas"></span>
           </b-button>

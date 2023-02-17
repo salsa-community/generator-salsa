@@ -27,6 +27,7 @@ npm link
 ```sh
 yo salsa:cvu
 yo salsa:rcea
+yo salsa:gui
 ```
 
 ## Install in production

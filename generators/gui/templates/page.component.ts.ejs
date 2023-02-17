@@ -1,10 +1,14 @@
-import { Component, Vue, Inject } from 'vue-property-decorator';
+import { Component, Inject } from 'vue-property-decorator';
 
 import CatalogoService from '@/shared/catalogo/catalogo.service';
 import AlertService from '@/shared/alert/alert.service';
 
 import { <%= page.name.pascalCase%>, <%= page.name.pascalCase%>Api } from '@/shared/perfil-usuario/api';
-import { required, minLength, maxLength, helpers } from 'vuelidate/lib/validators';
+import { required, minLength, maxLength } from 'vuelidate/lib/validators';
+import JhiDataUtils from '@/shared/data/data-utils.service';
+import UtilityMixin from '@/shared/mixins/utility.mixin';
+import { mixins } from 'vue-class-component';
+import isEqual from 'lodash.isequal';
 
     <%_ for (const idx in page.properties) { _%>
       <%_ let campo = page.properties[idx]; _%>
@@ -16,29 +20,31 @@ const <%= campo.name.constantCase%> = helpers.regex(
         <%_ } _%>
     <%_ }; _%>
 
-const validations: any = {
-  <%= page.name.camelCase%>: {
-  <%_ for (const idx in page.properties) { _%>
-    <%_ let campo = page.properties[idx]; _%>
-    <%_ if (campo.uiType === 'cards-list') { _%>
+const VALIDATIONS = function () {
+  return {
+    <%= page.name.camelCase%>: {
+    <%_ for (const idx in page.properties) { _%>
+      <%_ let campo = page.properties[idx]; _%>
+      <%_ if (campo.uiType === 'cards-list') { _%>
+        <%- include('page-validations', {campo: campo}); %>
+        <%= campo.items.name.singular%> : {
+        <%_ for (const iidx in campo.items.properties) { _%>
+          <%_ let prop = campo.items.properties[iidx]; _%>
+            <%- include('page-validations', {campo: prop}); %>
+        <%_ } _%>
+            }
+      <%_ } else { _%>
       <%- include('page-validations', {campo: campo}); %>
-      <%= campo.items.name.singular%> : {
-      <%_ for (const iidx in campo.items.properties) { _%>
-        <%_ let prop = campo.items.properties[iidx]; _%>
-          <%- include('page-validations', {campo: prop}); %>
       <%_ } _%>
-          }
-    <%_ } else { _%>
-    <%- include('page-validations', {campo: campo}); %>
-    <%_ } _%>
-  <%_ }; _%>
-  },
+    <%_ }; _%>
+    },
+  };
 };
 
 @Component({
-  validations,
+  validations: VALIDATIONS,
 })
-export default class <%= page.name.pascalCase%>Component extends Vue {
+export default class <%= page.name.pascalCase%>Component extends mixins(JhiDataUtils, UtilityMixin) {
   @Inject('alertService') private alertService: () => AlertService;
   @Inject('<%= page.name.camelCase%>Api') private <%= page.name.camelCase%>Api: () => <%= page.name.pascalCase%>Api;
   @Inject('catalogoService') private catalogoService: () => CatalogoService;
@@ -52,6 +58,8 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
   <%_ if (campo.uiType === 'cards-list') { _%>
   public <%= campo.items.name.singular%>: <%= campo.items.name.pascalCase%> = {};
   public <%= campo.items.name.plural%>Cards: Array<any> = [];
+  public isEdit = false;
+  public editingIndex = null;
     <%_ for (const iidx in campo.items.properties) { _%>
       <%_ let prop = campo.items.properties[iidx]; _%>
   <%- include('page-variables', {campo: prop}); %>
@@ -81,6 +89,7 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
 
   mounted(): void {
     this.initCatalogos();
+    this.loadingCards = true;
     this.get();
   }
 
@@ -102,26 +111,77 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
     this.<%= page.name.camelCase%>Api()
       .get<%= page.name.pascalCase%>()
       .then(res => {
-        this.<%= page.name.camelCase%> = res.data;
+        if (res.data && res.data.length > 0) {
+          for (const element of res.data) {
+            this.<%= page.name.camelCase%>.push(element);
+          }
+        }
+        this.totalItems = Number(res.headers['x-total']);
+        if ((<any>this.$refs).infiniteLoading) {
+          (<any>this.$refs.infiniteLoading).stateChanger.loaded();
+          if (this.page == Number(res.headers['x-total-pages'])) {
+            (<any>this.$refs.infiniteLoading).stateChanger.complete();
+          }
+        }
+        this.mapCards();
+        this.errorCards = false;
       })
       .catch( err => {
         if (err.response.data.status === 404) {
-          this.<%= page.name.camelCase%> = {};
+          this.<%= page.name.camelCase%> = [];
         } else {
+          this.errorCards = false;
           this.alertService().showError(this, err.response.data.detail);
         }
+        this.loadingCards = false;
       });
   }
 
-  public save(): void {
-    this.<%= page.name.camelCase%>Api()
-      .update<%= page.name.pascalCase%>ById(1, this.<%= page.name.camelCase%>)
-      .then(res => {
-        this.alertService().showSuccess(this, this.$t('global.messages.saved.detail', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
-      })
-      .catch(err => {
-        this.alertService().showError(this, this.$t('global.messages.error.saved', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
-      });
+  public save() {
+    return new Promise((resolve, reject) => {
+      this.<%= page.name.camelCase%>Api()
+        .save<%= page.name.pascalCase%>(this.<%= page.name.camelCase%>[0])
+        .then(res => {
+          this.alertService().showSuccess(this, this.$t('global.messages.saved.detail', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
+          this.loadingForm = false;
+          resolve('ok');
+        })
+        .catch(err => {
+          this.alertService().showError(this, this.$t('global.messages.error.saved', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
+          this.loadingForm = false;
+          reject(err);
+        });
+    });
+  }
+
+  public update() {
+    return new Promise((resolve, reject) => {
+      this.<%= page.name.camelCase%>Api()
+        .update<%= page.name.pascalCase%>ById(this.<%= page.name.camelCase%>[this.editingIndex].id, this.<%= page.name.camelCase%>[this.editingIndex])
+        .then(() => {
+          this.alertService().showSuccess(this, this.$t('global.messages.saved.detail', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
+          this.loadingForm = false;
+          resolve('ok');
+        })
+        .catch(err => {
+          this.alertService().showError(this, this.$t('global.messages.error.saved', { section: this.$t('<%= page.name.dashCase%>.title') }).toString());
+          this.loadingForm = false;
+          reject(err);
+        });
+    });
+  }
+
+  public delete() {
+    return new Promise((resolve, reject) => {
+      this.<%= page.name.camelCase%>Api()
+        .delete<%= page.name.pascalCase%>ById(this.<%= page.name.camelCase%>[this.editingIndex].id)
+        .then(res => {
+          resolve('ok');
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   }
 
   public cancel(): void {
@@ -137,32 +197,151 @@ export default class <%= page.name.pascalCase%>Component extends Vue {
   <%_ for (const idx in page.properties) { _%>
     <%_ let campo = page.properties[idx]; _%>
     <%_ if (campo.uiType === 'cards-list') { _%>
-  public add<%= campo.items.name.pascalCase%>(): void {
-    this.<%= campo.items.name.plural%>.push(this.<%= campo.items.name.singular%>);
-    this.<%= campo.items.name.plural%>Cards.push(this.creaRegistroCard(this.<%= campo.items.name.singular%>));
-    this.<%= campo.items.name.singular%> = {};
+
+  public cancel(): void {
+    this.<%= campo.items.name.singular%> = { };
+    this.$v.<%= campo.items.name.singular%>.$reset();
+    this.editingIndex = null;
+    this.alerta.limpiar();
+    this.edit();
+    this.resetInfinite();
+  }
+
+  public prepare<%= campo.items.name.pascalCase%>(index) {
+    this.loadingForm = true;
+    this.editingIndex = index;
+    this.$store.commit('setIdCardNull');
+    this.<%= campo.items.name.singular%> = this.prepareObject(this.<%= campo.items.name.plural%>.at(this.editingIndex));
+    this.edit();
+  }
+
+  public add<%= campo.items.name.pascalCase%>(val): void {
+    this.loadingForm = true;
+    if (!this.$v.<%= campo.items.name.singular%>.$invalid) {
+      this.alerta.limpiar();
+      if (!this.esDuplicado(val)) {
+        const previous<%= campo.items.name.pascalCase%> = Object.assign([], this.<%= campo.items.name.plural%>);
+        if (this.editingIndex === null) {
+          this.<%= campo.items.name.plural%>.unshift(this.<%= campo.items.name.singular%>);
+          this.save()
+            .then(() => {
+              this.edit();
+              this.resetForm();
+              this.resetInfinite();
+            })
+            .catch(() => {
+              this.<%= campo.items.name.plural%> = previous<%= campo.items.name.pascalCase%>;
+            });
+        } else {
+          // update
+          this.$set(this.<%= campo.items.name.plural%>, this.editingIndex, this.<%= campo.items.name.singular%>);
+          this.update()
+          .then(() => {
+            this.updateCards<%= campo.items.name.pascalCase%>();
+          })
+          .catch(() => {
+            this.<%= campo.items.name.plural%> = previous<%= campo.items.name.pascalCase%>;
+          });
+        }
+      } else {
+        this.modalDuplicados();
+        this.loadingForm = false;
+      }
+    } else {
+      this.$v.<%= campo.items.name.singular%>.$touch();
+      this.alerta.mostrar(this.$t('global.messages.alert.required'), 'primary', 20);
+      this.loadingForm = false;
+      this.scrollTop();
+    }
+  }
+
+  public updateCards<%= campo.items.name.pascalCase%>(): void {
+    if (this.editingIndex === null) {
+      this.<%= campo.items.name.plural%>Cards.unshift(this.creaRegistroCard(this.<%= campo.items.name.singular%>));
+    } else {
+      this.$set(this.<%= campo.items.name.plural%>Cards, this.editingIndex, this.creaRegistroCard(this.<%= campo.items.name.singular%>));
+      this.scrollToCard(this.$store.getters.idCard);
+      this.editingIndex = null;
+    }
+    this.edit();
+    this.resetForm();
+    this.resetInfinite();    
+  }
+
+  public resetForm() {
+    this.<%= campo.items.name.singular%> = {}; // TODO CAMBIAR POR ENTITYFACTORY
+    this.$v.<%= campo.items.name.singular%>.$reset();
   }
 
   public remove<%= campo.items.name.pascalCase%>(removeId): void {
-    this.<%= campo.items.name.plural%>.splice(removeId, 1);
-    this.<%= campo.items.name.plural%>Cards.splice(removeId, 1);
+    this.loadingCards = true;
+    const previous<%= campo.items.name.pascalCase%> = Object.assign([], this.<%= campo.items.name.plural%>);
+    this.delete()
+      .then(() => {
+        this.editingIndex = null;
+        this.resetInfinite();
+        this.scrollTop();
+        this.loadingCards = false;
+      })
+      .catch(() => {
+        this.<%= campo.items.name.plural%> = previous<%= campo.items.name.pascalCase%>;
+        this.editingIndex = null;
+        this.loadingCards = false;
+      });
   }
 
   public mapCards() {
     if (this.<%= campo.items.name.plural%>) {
+      this.<%= campo.items.name.plural%>Cards = [];
       this.<%= campo.items.name.plural%>.forEach(e => {
         this.<%= campo.items.name.plural%>Cards.push(this.creaRegistroCard(e));
       });
+      this.scrollToCard(this.$store.getters.idCard);
     }
+    this.loadingCards = false;
   }
 
-  private creaRegistroCard(val): any {
+  private creaRegistroCard(val: <%= campo.items.name.pascalCase%>): any {
     return {
       title: val,
       description: '',
       footer: '',
       icon: '',
+      badge: [
+        {
+          badge: '',
+          primary: false,
+        },
+      ],
     };
+  }
+
+  public edit() {
+    this.isEdit = !this.isEdit;
+    this.loadingForm = false;
+  }
+
+  public esIgual(ac: any, indice: string | number) {
+    const ob = this.prepareObject(this.<%= campo.items.name.plural%>[indice]);
+    return isEqual(ob, ac);
+  }
+
+  public esDuplicado(val) {
+    return this.<%= campo.items.name.plural%>.some(g => isEqual(g, val));
+  }
+
+  public resetInfinite() {
+    this.page = 1;
+    this.infiniteId += 1;
+    this.<%= campo.items.name.plural%> = [];
+    this.get();
+  }
+
+  public loadMore($state): void {
+    if (!this.errorCards) {
+      this.page++;
+      this.get();
+    }
   }
   <%_ }_%>
   <%_ }; _%>

@@ -14,6 +14,13 @@ public estadoInvalido<%= campo.name.pascalCase%> = false;
 <%_ if (campo.uiType === 'input-select-many') { _%>
 public selected<%= campo.name.pascalCase%> = [];
 <%_ } _%>
-<%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio') { _%>
+<%_ if (campo.uiType === 'input-select-one' || campo.uiType === 'input-select-radio'  || campo.uiType === 'multiselect-tags') { _%>
 public <%= campo.name.camelCase%>Options: Array<any> = [];
+<%_ } _%>
+<%_ if (campo.uiType === 'area-conocimiento') { _%>
+public validChildArea = false; //manda a validar componente <area-conocimiento>
+<%_ } _%>
+<%_ if (campo.uiType === 'busqueda-institucion') { _%>
+public validInstitucion = false; //Indica que el componente institucion este cargado
+public validChildInstitucion = false; //manda a validar componente <busqueda-institucion>
 <%_ } _%>
