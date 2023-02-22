@@ -25,7 +25,7 @@ const VALIDATIONS = function () {
     <%= page.name.camelCase%>: {
     <%_ for (const idx in page.properties) { _%>
       <%_ let campo = page.properties[idx]; _%>
-      <%_ if (campo.uiType === 'cards-list') { _%>
+      <%_ if (campo.uiType === 'cards-list-form') { _%>
         <%- include('page-validations', {campo: campo}); %>
         <%= campo.items.name.singular%> : {
         <%_ for (const iidx in campo.items.properties) { _%>
@@ -55,7 +55,7 @@ export default class <%= page.name.pascalCase%>Component extends mixins(JhiDataU
 
 <%_ for (const idx in page.properties) { _%>
     <%_ let campo = page.properties[idx]; _%>
-  <%_ if (campo.uiType === 'cards-list') { _%>
+  <%_ if (campo.uiType === 'cards-list-form') { _%>
   public <%= campo.items.name.singular%>: <%= campo.items.name.pascalCase%> = {};
   public <%= campo.items.name.plural%>Cards: Array<any> = [];
   public isEdit = false;
@@ -96,7 +96,7 @@ export default class <%= page.name.pascalCase%>Component extends mixins(JhiDataU
   public initCatalogos(): void {
     <%_ for (const idx in page.properties) { _%>
       <%_ let campo = page.properties[idx]; _%>
-      <%_ if (campo.uiType === 'cards-list') { _%>
+      <%_ if (campo.uiType === 'cards-list-form') { _%>
         <%_ for (const iidx in campo.items.properties) { _%>
           <%_ let prop = campo.items.properties[iidx]; _%>
   <%- include('page-catalogs', {campo: prop}); %>
@@ -196,7 +196,7 @@ export default class <%= page.name.pascalCase%>Component extends mixins(JhiDataU
 
   <%_ for (const idx in page.properties) { _%>
     <%_ let campo = page.properties[idx]; _%>
-    <%_ if (campo.uiType === 'cards-list') { _%>
+    <%_ if (campo.uiType === 'cards-list-form') { _%>
 
   public cancel(): void {
     this.<%= campo.items.name.singular%> = { };
