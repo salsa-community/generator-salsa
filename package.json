@@ -39,7 +39,7 @@
     "pluralize": "^8.0.0",
     "prettycli": "^1.4.3",
     "prompts": "^2.4.1",
-    "sequelize": "^6.6.5",
+    "sequelize": "^6.29.0",
     "simple-node-logger": "^21.8.12",
     "snake-case": "^3.0.4",
     "terminal-link": "^2.1.1",
